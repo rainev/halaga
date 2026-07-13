@@ -1,0 +1,139 @@
+# Dev stack for the PSE valuation app.
+#   Start:  ./infrastructure/scripts/up.sh
+#   Seed:   ./infrastructure/scripts/seed.sh   (after the stack is up)
+name: valuation
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app # live app source
+      - /app/node_modules # keep the image's install, unshadowed by the host
+    environment:
+      # Vite reads this to reach the API from the browser (host machine).
+      VITE_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app # live app source (uvicorn --reload picks up changes)
+      # Seed scripts read the sibling PH-Stocks data for the company seed.
+      - ./PH-Stocks:/data/PH-Stocks:ro
+    environment:
+      APP_ENV: development
+      PORT: 8000
+      CLIENT_URL: http://localhost:5173
+      # Postgres
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      # Redis — backs the revocable refresh-token sessions.
+      REDIS_URL: redis://redis:6379
+      # Object storage
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      # Auth
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_ACCESS_EXPIRES_MIN: ${JWT_ACCESS_EXPIRES_MIN:-15}
+      JWT_REFRESH_EXPIRES_DAYS: ${JWT_REFRESH_EXPIRES_DAYS:-7}
+      # Seed
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@valuation.app}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # Host port remapped (5442) to avoid clashing with other local Postgres /
+      # the catalyst stack on 5432. Containers still reach it as db:5432.
+      - "5442:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # *.sql files here run once, on first initialization of the data volume.
+      - ./infrastructure/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    ports:
+      # Host port remapped (6389); containers still reach it as redis:6379.
+      - "6389:6379"
+    volumes:
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      # Host ports remapped (9100/9101) to avoid the catalyst stack's MinIO on
+      # 9000/9001. Containers still reach the API as minio:9000.
+      - "9100:9000" # S3 API
+      - "9101:9001" # web console
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # One-shot: waits for MinIO, creates the bucket, then exits.
+  minio-setup:
+    image: minio/mc:latest
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+    volumes:
+      - ./infrastructure/minio/create-buckets.sh:/create-buckets.sh:ro
+    entrypoint: ["/bin/sh", "/create-buckets.sh"]
+    depends_on:
+      minio:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  miniodata:
+  redisdata:

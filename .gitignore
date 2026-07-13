@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / frontend
+node_modules/
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+*.local
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.sw?
+
+# Infrastructure / data volumes
+infrastructure/**/data/
+minio-data/
+redis-data/
+
+# Coverage / test output
+coverage/
+htmlcov/
+.coverage
+
+# Source financial data (kept local, not committed)
+JFC FS Reports/
+Refinitiv Interface/
+*.xlsx
+~$*

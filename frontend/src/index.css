@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cool porcelain paper — not cream, to sidestep the serif/terracotta default. */
+    --background: 200 20% 96%;
+    --foreground: 199 55% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 199 55% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 199 55% 11%;
+
+    /* Jade primary — reads "money" without the acid-green default. */
+    --primary: 172 74% 26%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 20% 93%;
+    --secondary-foreground: 199 45% 15%;
+
+    --muted: 200 20% 93%;
+    --muted-foreground: 200 12% 42%;
+
+    --accent: 172 40% 92%;
+    --accent-foreground: 172 74% 18%;
+
+    /* Loss = muted rose, not pure red — more considered. */
+    --destructive: 349 56% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 154 58% 33%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 34 82% 40%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Brass — the single premium accent, used with restraint. */
+    --brass: 36 55% 44%;
+
+    --border: 200 18% 87%;
+    --input: 200 18% 87%;
+    --ring: 172 74% 26%;
+
+    --radius: 0.5rem;
+
+    /* Deep teal-ink for the top bar and hero surfaces. */
+    --ink: 199 62% 9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+  /* Numbers should align in tables and stat tiles. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
