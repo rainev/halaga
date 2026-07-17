@@ -1,0 +1,9 @@
+{
+  "name": "Gabay Markets",
+  "short_name": "Gabay",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f2",
+  "theme_color": "#12251f",
+  "description": "Philippine filing-based fundamentals without live quotes."
+}

@@ -41,5 +41,8 @@ htmlcov/
 # Source financial data (kept local, not committed)
 JFC FS Reports/
 Refinitiv Interface/
+PH-Stocks/
+tmp/
+Financial Health Metrics.pdf
 *.xlsx
 ~$*

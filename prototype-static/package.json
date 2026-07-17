@@ -1,0 +1,13 @@
+{
+  "name": "gabay-markets",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "No-cost Philippine industrial-stock fundamentals mockup",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "test": "node --test",
+    "check": "node --check src/app.js && node --check src/engine.js && node --test"
+  }
+}

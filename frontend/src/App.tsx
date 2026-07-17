@@ -1,34 +1,32 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Companies from './pages/Companies'
-import Valuation from './pages/Valuation'
-import Saved from './pages/Saved'
+import { OnboardingGate } from './research/Onboarding'
+import { ResearchProvider } from './research/ResearchContext'
+import Rankings from './research/pages/Rankings'
+import ValuationLab from './research/pages/ValuationLab'
+import FinancialHealth from './research/pages/FinancialHealth'
+import Briefings from './research/pages/Briefings'
+import Portfolio from './research/pages/Portfolio'
+import SmartBrief from './research/pages/SmartBrief'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/" element={<Companies />} />
-            <Route path="/value" element={<Valuation />} />
-            <Route path="/saved" element={<Saved />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AuthProvider>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <ResearchProvider>
+        <OnboardingGate>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<Rankings />} />
+              <Route path="valuation" element={<ValuationLab />} />
+              <Route path="health" element={<FinancialHealth />} />
+              <Route path="briefings" element={<Briefings />} />
+              <Route path="portfolio" element={<Portfolio />} />
+              <Route path="brief" element={<SmartBrief />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </OnboardingGate>
+      </ResearchProvider>
     </BrowserRouter>
   )
 }

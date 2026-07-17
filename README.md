@@ -1,96 +1,62 @@
-# Halaga — PSE Valuation App
+# Halaga · Gabay Research
 
-Value Philippine Stock Exchange (PSE) companies with four classic models — **DCF,
-Dividend Discount, Graham, and Multiples** — calibrated for the PH market (PHP,
-local risk-free rate & equity risk premium). Users sign in, run valuations
-against manually-entered fundamentals, and save runs to their portfolio.
+This branch builds the beginner-investor research experience on top of [rainev/halaga](https://github.com/rainev/halaga), retaining Halaga's React/TypeScript + FastAPI architecture and Philippine-adjusted valuation foundation.
 
-Built on the [`talentNet`](../talentNet) architecture, with the backend ported
-from Node/Express to **Python/FastAPI**.
+The default experience is a no-cost, browser-local mockup for four Industrial-sector companies. It requires no account, API key, database, live quote feed, or generative-AI call.
 
-## Stack
+## Included in this branch
 
-| Layer | Tech |
-|---|---|
-| Frontend | Vite + React + TypeScript |
-| Backend | FastAPI (Python), raw SQL via **psycopg** (no ORM) |
-| Auth | JWT access token (in-memory) + rotating refresh token (httpOnly cookie), revocable sessions in Redis |
-| Data | Postgres 16, Redis 7, MinIO (S3-compatible) |
-| Orchestration | docker-compose |
+- Risk-appetite onboarding from 1 to 5
+- Filing-based Industrial rankings plus a 282-company PSE directory
+- DCF, DDM, Graham, and multiples valuation views
+- Bear, base, and bull assumption cases
+- Risk-adjusted P&L and balance-sheet screens
+- Filing-derived company and sector briefings
+- Browser-local portfolio cost organizer
+- Transparent rules-based Smart Brief
+- Responsive desktop and mobile navigation
 
-## Quick start
+Current and historical market prices are intentionally excluded. Portfolio current value and P/L are therefore not calculated.
 
-```sh
-cp .env.example .env            # then edit secrets
-./infrastructure/scripts/up.sh  # build + start the whole stack
-./infrastructure/scripts/seed.sh  # (in another shell, once up) admin + PH market + companies
-```
-
-- Frontend: http://localhost:5173
-- API + docs: http://localhost:8000 (OpenAPI UI at `/docs`)
-- Sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`, or register a new user.
-
-Other scripts: `down.sh` (stop, keep data), `reset.sh` (wipe volumes and re-init).
-
-## Layout
-
-```
-backend/            FastAPI service
-  app/
-    valuation/      pure valuation engine (dcf, ddm, graham, multiples, assumptions)
-    routers/        HTTP boundary  → services → db
-    services/       business logic + persistence (raw SQL)
-    security/       jwt + password hashing
-    seed/           admin, market assumptions, companies
-  tests/            engine, jwt, and API tests  (pytest)
-frontend/           Vite React app (auth + valuation UI)
-infrastructure/     postgres init SQL, redis.conf, minio bucket, dev scripts
-docker-compose.yml
-```
-
-## The valuation models
-
-All four are ported from the original `Valuation-Models-Test.xlsx`, with the
-spreadsheet's bugs fixed and US assumptions swapped for PH ones:
-
-- **DCF** — projects FCF, adds a Gordon-growth terminal value, discounts to an
-  intrinsic price per share. CAGR uses the correct interval count (the sheet's
-  `^(1/5)` over 5 points was an off-by-one).
-- **DDM** — `P = D₁ / (r − g)`.
-- **Graham** — `V = EPS · (8.5 + 2g) · 4.4 / Y`. **`g` is whole-number percent**
-  (e.g. `9.63`, not `0.0963` — the sheet's bug, which understated value ~3×). `Y`
-  is a PHP benchmark yield, not a US AAA yield.
-- **Multiples** — peer average/median P/E applied to a target EPS.
-
-### PH calibration
-
-Market-wide inputs live in the `market_assumptions` table (the `PH` row, seeded
-from `app/valuation/assumptions.py`) and can be edited without code changes:
-
-| Input | Default | Notes |
-|---|---|---|
-| Risk-free rate | 6.0% | PHP 10Y govt / BVAL |
-| Equity risk premium | 7.5% | for CAPM cost of equity |
-| Graham current yield (Y) | 6.0 | PHP benchmark, replaces US AAA |
-| Perpetual growth | 3.0% | PH long-run nominal |
-
-Discount rates can be entered directly or derived from a **beta** via CAPM
-(`r = risk_free + beta · ERP`).
-
-## Tests
+## Run the no-cost frontend
 
 ```sh
-cd backend && python -m pytest        # engine correctness, jwt, API routes
+cd frontend
+npm ci
+npm run dev
 ```
 
-The engine tests verify the models against the original spreadsheet's numbers
-(where it was correct) and against hand-computed values (where bugs were fixed).
+Open `http://localhost:5173`.
 
-## Notes / v1 scope
+To verify the build and calculation engine:
 
-- **Data entry is manual** for v1 (no PSE scraping; `GOOGLEFINANCE` doesn't cover
-  the PSE anyway). Company records are seeded from the `PH-Stocks/` folders.
-- Seeded **tickers are best-effort** — verify against PSE and correct via
-  `POST /api/companies` (admin), which upserts by ticker.
-- Frontend/backend types are kept in sync by hand across the Python↔TS boundary
-  (`frontend/src/lib/types.ts` ↔ `backend/app/models/*.py`).
+```sh
+cd frontend
+npm test
+npm run build
+```
+
+## Optional full Halaga stack
+
+Halaga's original FastAPI, Postgres, Redis, MinIO, authentication, and manual valuation services remain under `backend/`, `infrastructure/`, and `docker-compose.yml`. They are not required for the local research mockup.
+
+```sh
+cp .env.example .env
+./infrastructure/scripts/up.sh
+./infrastructure/scripts/seed.sh
+```
+
+## Data and methodology
+
+The derived demo dataset in `frontend/src/research/` was transcribed from the supplied FY2025 Industrial-company filings. User-supplied PDFs and workbooks remain local and are intentionally excluded from Git.
+
+The Graham-style model replaces the original U.S. AAA-yield term with a Philippine long-government-bond proxy. It uses the 7.052% accepted average yield from the Bureau of the Treasury's 23 June 2026 auction and an explicit 6.0% through-cycle normalizer.
+
+Health thresholds start from the supplied `Financial Health Metrics.pdf` and become stricter or more permissive according to the user's risk profile. They are investor screens, not universal accounting rules.
+
+## Repository notes
+
+- Active feature branch: `feature/gabay-industrial-investor-app`
+- The earlier dependency-free mockup is preserved in `prototype-static/` for reference.
+- This is an educational prototype, not investment advice.
+- Production use requires validated ingestion, licensed news/data feeds where applicable, security review, privacy controls, and legal/compliance review.
