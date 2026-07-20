@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertTriangle, BriefcaseBusiness, Plus, Trash2 } from 'lucide-react'
+import { AlertTriangle, BriefcaseBusiness, Plus, Trash2, Undo2 } from 'lucide-react'
 import { INDUSTRIAL_COMPANIES } from '../data.js'
 import { portfolioCostBasis, portfolioRealizedReturn } from '../engine.js'
 import { PageHeading, panel, peso } from '../format'
@@ -69,6 +69,15 @@ export default function Portfolio() {
     setSaleDate(localToday())
   }
 
+  function deleteStock(lot: PortfolioLot) {
+    const message = isSold(lot)
+      ? 'Delete this stock? This removes both its purchase and sale history.'
+      : 'Delete this stock? This removes its purchase history.'
+    if (!window.confirm(message)) return
+    removeLot(lot.id)
+    if (saleLotId === lot.id) setSaleLotId(null)
+  }
+
   return (
     <>
       <PageHeading eyebrow="Portfolio" title="Track buys and sells." description="Save trade dates, costs, and realized returns on this device." />
@@ -131,9 +140,10 @@ export default function Portfolio() {
                       <LotValue label="BOUGHT" value={peso(lot.purchasePrice)} />
                       <LotValue label="DATE" value={formatDate(lot.purchaseDate)} />
                     </div>
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex flex-wrap items-center justify-end gap-2">
                       <button onClick={() => beginSale(lot)} className="h-9 rounded-xl border border-[var(--app-border)] px-3 text-[10px] font-bold">{sold ? 'Edit sale' : 'Record sale'}</button>
-                      <button onClick={() => removeLot(lot.id)} aria-label={`Remove ${company.symbol} lot`} className="grid h-9 w-9 place-items-center rounded-xl border border-[var(--app-border)] text-[var(--app-muted-strong)]"><Trash2 className="h-4 w-4" /></button>
+                      {sold && <button onClick={() => deleteSale(lot)} className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--app-border)] px-3 text-[10px] font-bold text-[var(--app-muted-strong)] hover:bg-[var(--app-subtle)]"><Undo2 className="h-3.5 w-3.5" />Delete sale</button>}
+                      <button onClick={() => deleteStock(lot)} aria-label={`Delete ${company.symbol} stock lot`} className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--app-border)] px-3 text-[10px] font-bold text-[var(--app-muted-strong)] hover:bg-[var(--app-subtle)]"><Trash2 className="h-3.5 w-3.5" />Delete stock</button>
                     </div>
                   </div>
 
@@ -147,11 +157,10 @@ export default function Portfolio() {
                   )}
 
                   {saleLotId === lot.id && (
-                    <form onSubmit={(event) => recordSale(event, lot)} className="grid items-end gap-3 border-t border-[var(--app-border)] bg-[var(--app-subtle)] p-4 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
+                    <form onSubmit={(event) => recordSale(event, lot)} className="grid items-end gap-3 border-t border-[var(--app-border)] bg-[var(--app-subtle)] p-4 sm:grid-cols-[1fr_1fr_auto_auto]">
                       <Field label="Sell price (PHP)"><input value={salePrice} onChange={(event) => setSalePrice(event.target.value)} type="number" min="0.01" step="0.01" required className={inputClass} /></Field>
                       <Field label="Date sold"><input value={saleDate} onChange={(event) => setSaleDate(event.target.value)} type="date" min={lot.purchaseDate || undefined} max={localToday()} required className={inputClass} /></Field>
                       <button type="submit" className="h-11 rounded-xl bg-[var(--app-text)] px-5 text-xs font-bold text-[var(--app-bg)]">Save sale</button>
-                      {sold && <button type="button" onClick={() => deleteSale(lot)} className="h-11 rounded-xl border border-[var(--app-border)] px-4 text-xs font-bold text-[var(--app-muted-strong)] hover:bg-[var(--app-surface)]">Delete sale</button>}
                       <button type="button" onClick={() => setSaleLotId(null)} className="h-11 rounded-xl border border-[var(--app-border)] px-4 text-xs font-bold">Cancel</button>
                     </form>
                   )}
