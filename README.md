@@ -1,6 +1,6 @@
-# Halaga · Gabay Research
+# FinSight
 
-This branch builds the beginner-investor research experience on top of [rainev/halaga](https://github.com/rainev/halaga), retaining Halaga's React/TypeScript + FastAPI architecture and Philippine-adjusted valuation foundation.
+FinSight is a beginner-focused Philippine company research app built on [rainev/halaga](https://github.com/rainev/halaga). It retains the React/TypeScript + FastAPI architecture and Philippine-adjusted valuation foundation.
 
 The default experience is a no-cost, browser-local mockup for four Industrial-sector companies. It requires no account, API key, database, live quote feed, or generative-AI call.
 
@@ -36,9 +36,9 @@ npm test
 npm run build
 ```
 
-## Optional full Halaga stack
+## Optional full stack
 
-Halaga's original FastAPI, Postgres, Redis, MinIO, authentication, and manual valuation services remain under `backend/`, `infrastructure/`, and `docker-compose.yml`. They are not required for the local research mockup.
+The original FastAPI, Postgres, Redis, MinIO, authentication, and manual valuation services remain under `backend/`, `infrastructure/`, and `docker-compose.yml`. They are not required for the local research app.
 
 ```sh
 cp .env.example .env

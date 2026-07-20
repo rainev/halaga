@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { INDUSTRIAL_COMPANIES } from './data.js'
-import { buildSmartBrief, calculateValuation, getHealthMetrics, portfolioCostBasis, scoreCompany } from './engine.js'
+import { buildSmartBrief, calculateValuation, getHealthMetrics, portfolioCostBasis, portfolioRealizedReturn, scoreCompany } from './engine.js'
 
 test('sentiment cases are ordered for every Industrial company', () => {
   for (const company of INDUSTRIAL_COMPANIES) {
@@ -28,6 +28,14 @@ test('health engine returns both statement groups', () => {
 
 test('portfolio calculates cost basis without inventing current value', () => {
   assert.equal(portfolioCostBasis([{ quantity: 100, purchasePrice: 25.5 }]), 2550)
+})
+
+test('portfolio calculates realized returns only for sold lots', () => {
+  const result = portfolioRealizedReturn([
+    { quantity: 100, purchasePrice: 20, salePrice: 25, saleDate: '2026-07-20' },
+    { quantity: 50, purchasePrice: 10 },
+  ])
+  assert.deepEqual(result, { cost: 2000, proceeds: 2500, amount: 500, percent: 0.25 })
 })
 
 test('Smart Brief calls intrinsic value not a market quote', () => {

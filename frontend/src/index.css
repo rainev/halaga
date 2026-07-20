@@ -4,9 +4,15 @@
 
 @layer base {
   :root {
-    /* Cool porcelain paper — not cream, to sidestep the serif/terracotta default. */
-    --background: 200 20% 96%;
-    --foreground: 199 55% 11%;
+    --app-bg: #fafafa;
+    --app-text: #121212;
+    --app-surface: #ffffff;
+    --app-subtle: #f1f1f1;
+    --app-border: #e2e2e2;
+    --app-muted: #6d6d6d;
+    --app-muted-strong: #505050;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 7%;
 
     --card: 0 0% 100%;
     --card-foreground: 199 55% 11%;
@@ -14,18 +20,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 199 55% 11%;
 
-    /* Jade primary — reads "money" without the acid-green default. */
-    --primary: 172 74% 26%;
+    --primary: 0 0% 7%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 20% 93%;
-    --secondary-foreground: 199 45% 15%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 7%;
 
-    --muted: 200 20% 93%;
-    --muted-foreground: 200 12% 42%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 172 40% 92%;
-    --accent-foreground: 172 74% 18%;
+    --accent: 0 0% 92%;
+    --accent-foreground: 0 0% 7%;
 
     /* Loss = muted rose, not pure red — more considered. */
     --destructive: 349 56% 52%;
@@ -40,14 +45,41 @@
     /* Brass — the single premium accent, used with restraint. */
     --brass: 36 55% 44%;
 
-    --border: 200 18% 87%;
-    --input: 200 18% 87%;
-    --ring: 172 74% 26%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 7%;
 
-    --radius: 0.5rem;
+    --radius: 0.875rem;
 
-    /* Deep teal-ink for the top bar and hero surfaces. */
-    --ink: 199 62% 9%;
+    --ink: 0 0% 7%;
+  }
+
+  .dark {
+    --app-bg: #121212;
+    --app-text: #fafafa;
+    --app-surface: #1b1b1b;
+    --app-subtle: #242424;
+    --app-border: #343434;
+    --app-muted: #a3a3a3;
+    --app-muted-strong: #cfcfcf;
+
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 7%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 98%;
   }
 }
 
@@ -57,7 +89,10 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'cv11', 'ss01';
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
+    font-feature-settings: 'cv11', 'ss01', 'tnum';
+    text-rendering: optimizeLegibility;
+    transition: background-color 360ms cubic-bezier(.22, 1, .36, 1), color 360ms cubic-bezier(.22, 1, .36, 1);
   }
   h1, h2, h3 {
     @apply font-display;
@@ -65,5 +100,71 @@
   /* Numbers should align in tables and stat tiles. */
   .tnum {
     font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--app-text);
+    color: var(--app-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--app-text);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .page-enter {
+    animation: page-enter 520ms cubic-bezier(.22, 1, .36, 1) both;
+  }
+
+  .launch-panel {
+    transition: transform 420ms cubic-bezier(.22, 1, .36, 1),
+      box-shadow 420ms cubic-bezier(.22, 1, .36, 1),
+      border-color 240ms ease;
+  }
+
+  @media (hover: hover) {
+    .launch-panel:hover {
+      transform: translateY(-3px);
+      border-color: var(--app-muted);
+      box-shadow: 0 18px 50px rgba(18, 18, 18, .09);
+    }
+  }
+}
+
+button, a, input, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, select {
+  color: var(--app-text);
+}
+
+input::placeholder {
+  color: var(--app-muted);
+}
+
+button, a {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: 240ms;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+button:active, a:active {
+  transform: scale(.97);
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(14px) scale(.995); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
   }
 }

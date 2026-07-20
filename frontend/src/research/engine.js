@@ -390,6 +390,24 @@ export function portfolioCostBasis(lots = []) {
   );
 }
 
+export function portfolioRealizedReturn(lots = []) {
+  const soldLots = lots.filter(
+    (lot) => Number(lot.salePrice) > 0 && Boolean(lot.saleDate),
+  );
+  const cost = portfolioCostBasis(soldLots);
+  const proceeds = soldLots.reduce(
+    (total, lot) => total + Number(lot.quantity || 0) * Number(lot.salePrice || 0),
+    0,
+  );
+  const amount = proceeds - cost;
+  return {
+    cost,
+    proceeds,
+    amount,
+    percent: cost > 0 ? amount / cost : 0,
+  };
+}
+
 export function buildSmartBrief(company, risk = 3, sentiment = "base", lots = []) {
   const profile = RISK_PROFILES[risk] || RISK_PROFILES[3];
   const health = getHealthMetrics(company, risk);
@@ -401,7 +419,10 @@ export function buildSmartBrief(company, risk = 3, sentiment = "base", lots = []
   const valuation = calculateValuation(company, sentiment);
   const score = scoreCompany(company, risk);
   const companyLots = lots.filter((lot) => lot.symbol === company.symbol);
-  const invested = portfolioCostBasis(companyLots);
+  const openCompanyLots = companyLots.filter(
+    (lot) => !(Number(lot.salePrice) > 0 && lot.saleDate),
+  );
+  const invested = portfolioCostBasis(openCompanyLots);
   const topPass = passes.sort((a, b) => b.score - a.score)[0];
   const topWatch = watches.sort((a, b) => a.score - b.score)[0];
 
@@ -413,7 +434,7 @@ export function buildSmartBrief(company, risk = 3, sentiment = "base", lots = []
     `${company.shortName} clears ${passes.length} of ${metrics.length} available checks for a ${profile.short.toLowerCase()} investor. ${topPass ? `${topPass.label} is a relative strength.` : "No single metric leads the case."} ${topWatch ? `${topWatch.label} is the first item to investigate.` : "No major threshold miss appears in the available set."}`,
     `Under the ${SENTIMENTS[sentiment].label.toLowerCase()} case, the filing-based models center on PHP${valuation.blended.toFixed(2)} per share, with a PHP${valuation.low.toFixed(2)}-PHP${valuation.high.toFixed(2)} range. This is an intrinsic-value estimate, not a market quote.`,
     invested > 0
-      ? `Your organizer contains ${companyLots.length} ${company.symbol} lot${companyLots.length === 1 ? "" : "s"} with PHP${Math.round(invested).toLocaleString("en-PH")} invested at cost. Current value and profit/loss stay blank because the app does not publish live prices.`
+      ? `Your organizer contains ${openCompanyLots.length} open ${company.symbol} lot${openCompanyLots.length === 1 ? "" : "s"} with PHP${Math.round(invested).toLocaleString("en-PH")} invested at cost. Current value stays blank because the app does not publish live prices.`
       : `You have no ${company.symbol} lot in the organizer yet. If you add one, this brief will include your quantity and cost basis without estimating a current market value.`,
   ];
 

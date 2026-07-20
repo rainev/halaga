@@ -24,6 +24,12 @@ export function calculateValuation(company: any, sentiment?: Sentiment): {
   models: Record<string, any>
 }
 export function portfolioCostBasis(lots?: Array<{ quantity: number; purchasePrice: number }>): number
+export function portfolioRealizedReturn(lots?: Array<{ quantity: number; purchasePrice: number; salePrice?: number; saleDate?: string }>): {
+  cost: number
+  proceeds: number
+  amount: number
+  percent: number
+}
 export function buildSmartBrief(company: any, risk?: number, sentiment?: Sentiment, lots?: PortfolioLot[]): {
   headline: string
   score: number

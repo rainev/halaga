@@ -15,7 +15,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
             <LineChart className="h-5 w-5" />
           </span>
           <span className="font-display text-lg font-bold tracking-tight">
-            Halaga<span className="text-primary">.</span>
+            FinSight<span className="text-primary">.</span>
           </span>
         </div>
 
@@ -45,7 +45,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden">
             <span className="font-display text-2xl font-bold tracking-tight">
-              Halaga<span className="text-primary">.</span>
+              FinSight<span className="text-primary">.</span>
             </span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
