@@ -13,15 +13,15 @@ export function OnboardingGate({ children }: { children: React.ReactNode }) {
   return (
     <main className="grid min-h-screen bg-[var(--app-bg)] text-[var(--app-text)] lg:grid-cols-[.9fr_1.1fr]">
       <ThemeToggle className="fixed right-5 top-5 z-50" />
-      <section className="relative flex min-h-[390px] flex-col justify-between overflow-hidden bg-[var(--app-text)] px-7 py-8 text-[var(--app-bg)] lg:min-h-screen lg:px-[6vw] lg:py-11">
+      <section className="relative flex min-h-[390px] flex-col justify-between overflow-hidden border-b border-[var(--app-border)] bg-[var(--app-feature)] px-7 py-8 text-[var(--app-text)] lg:min-h-screen lg:border-b-0 lg:border-r lg:px-[6vw] lg:py-11">
         <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--app-bg)] font-serif text-2xl font-bold text-[var(--app-text)]">F</span>
         <div className="relative z-10 my-10">
           <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--app-muted)]">FinSight</p>
           <h1 className="mt-4 max-w-2xl font-serif text-5xl font-semibold leading-[.95] tracking-[-.055em] sm:text-6xl lg:text-[5.4rem]">Understand value.<br />Invest with context.</h1>
           <p className="mt-6 max-w-md text-sm leading-relaxed text-[var(--app-muted)]">Clear research from Philippine company filings.</p>
         </div>
-        <div className="relative z-10 flex max-w-md gap-3 rounded-2xl border border-white/10 bg-[var(--app-surface)]/[.045] p-4 text-xs leading-relaxed text-[var(--app-muted)]"><span className="font-serif text-[var(--app-bg)]">01</span>Your risk level sets the screening thresholds.</div>
-        <div className="absolute -bottom-40 -right-28 h-[430px] w-[430px] rounded-full border border-white/[.06] shadow-[0_0_0_55px_rgba(255,255,255,.018),0_0_0_110px_rgba(255,255,255,.012)]" />
+        <div className="relative z-10 flex max-w-md gap-3 rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface)] p-4 text-xs leading-relaxed text-[var(--app-muted)]"><span className="font-serif text-[var(--app-text)]">01</span>Your risk level sets the screening thresholds.</div>
+        <div className="absolute -bottom-40 -right-28 h-[430px] w-[430px] rounded-full border border-[var(--app-border)] opacity-60 shadow-[0_0_0_55px_var(--app-shadow),0_0_0_110px_var(--app-shadow)]" />
       </section>
 
       <section className="mx-auto flex w-full max-w-2xl flex-col justify-center px-6 py-10 lg:px-12">

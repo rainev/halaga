@@ -40,14 +40,14 @@ export default function Rankings() {
         </div>
       </PageHeading>
 
-      <section className="grid overflow-hidden rounded-[26px] bg-[var(--app-text)] text-[var(--app-bg)] shadow-[0_18px_50px_rgba(21,42,34,.12)] lg:grid-cols-[1.05fr_.95fr]">
+      <section className="grid overflow-hidden rounded-[26px] border border-[var(--app-border)] bg-[var(--app-feature)] text-[var(--app-text)] shadow-[0_18px_50px_var(--app-shadow)] lg:grid-cols-[1.05fr_.95fr]">
         <div className="p-7 sm:p-10 lg:p-12">
-          <span className="inline-flex rounded-lg border border-white/10 px-3 py-2 text-[9px] font-bold tracking-[.15em] text-[var(--app-muted)]">FUNDAMENTALS ONLY</span>
-          <h2 className="mt-7 font-serif text-5xl font-semibold leading-[.94] tracking-[-.05em] sm:text-6xl">Quality first.<br /><span className="text-[var(--app-bg)]">Price later.</span></h2>
+          <span className="inline-flex rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] px-3 py-2 text-[9px] font-bold tracking-[.15em] text-[var(--app-muted)]">FUNDAMENTALS ONLY</span>
+          <h2 className="mt-7 font-serif text-5xl font-semibold leading-[.94] tracking-[-.05em] sm:text-6xl">Quality first.<br /><span className="text-[var(--app-muted-strong)]">Price later.</span></h2>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-[var(--app-muted)]">Scores compare filing data with your level {activeRisk} thresholds.</p>
         </div>
-        <div className="flex items-center gap-6 border-t border-white/[.08] bg-[var(--app-surface)]/[.025] p-7 lg:border-l lg:border-t-0 lg:p-10">
-          <div className="grid h-32 w-32 shrink-0 place-items-center rounded-full p-2 sm:h-40 sm:w-40" style={{ background: `conic-gradient(#fafafa ${top.score}%, rgba(255,255,255,.1) 0)` }}><div className="grid h-full w-full place-items-center rounded-full bg-[var(--app-text)] text-center"><span><strong className="block font-serif text-5xl font-normal">{top.score}</strong><small className="text-[var(--app-muted)]">/ 100</small></span></div></div>
+        <div className="flex items-center gap-6 border-t border-[var(--app-border)] bg-[var(--app-surface)]/70 p-7 lg:border-l lg:border-t-0 lg:p-10">
+          <div className="grid h-32 w-32 shrink-0 place-items-center rounded-full p-2 sm:h-40 sm:w-40" style={{ background: `conic-gradient(var(--app-text) ${top.score}%, var(--app-border) 0)` }}><div className="grid h-full w-full place-items-center rounded-full bg-[var(--app-feature)] text-center"><span><strong className="block font-serif text-5xl font-normal">{top.score}</strong><small className="text-[var(--app-muted)]">/ 100</small></span></div></div>
           <div><small className="text-[9px] font-bold tracking-[.13em] text-[var(--app-muted)]">TOP SCREEN</small><strong className="mt-2 block text-lg">{top.company.symbol} · {top.company.shortName}</strong><p className="mt-2 text-xs leading-relaxed text-[var(--app-muted)]">{top.company.insight}</p></div>
         </div>
       </section>

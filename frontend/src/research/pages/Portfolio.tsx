@@ -61,6 +61,14 @@ export default function Portfolio() {
     setSaleDate(localToday())
   }
 
+  function deleteSale(lot: PortfolioLot) {
+    if (!window.confirm('Delete this sale? The lot will return to open holdings.')) return
+    updateLot(lot.id, { salePrice: undefined, saleDate: undefined })
+    setSaleLotId(null)
+    setSalePrice('')
+    setSaleDate(localToday())
+  }
+
   return (
     <>
       <PageHeading eyebrow="Portfolio" title="Track buys and sells." description="Save trade dates, costs, and realized returns on this device." />
@@ -139,10 +147,11 @@ export default function Portfolio() {
                   )}
 
                   {saleLotId === lot.id && (
-                    <form onSubmit={(event) => recordSale(event, lot)} className="grid items-end gap-3 border-t border-[var(--app-border)] bg-[var(--app-subtle)] p-4 sm:grid-cols-[1fr_1fr_auto_auto]">
+                    <form onSubmit={(event) => recordSale(event, lot)} className="grid items-end gap-3 border-t border-[var(--app-border)] bg-[var(--app-subtle)] p-4 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
                       <Field label="Sell price (PHP)"><input value={salePrice} onChange={(event) => setSalePrice(event.target.value)} type="number" min="0.01" step="0.01" required className={inputClass} /></Field>
                       <Field label="Date sold"><input value={saleDate} onChange={(event) => setSaleDate(event.target.value)} type="date" min={lot.purchaseDate || undefined} max={localToday()} required className={inputClass} /></Field>
                       <button type="submit" className="h-11 rounded-xl bg-[var(--app-text)] px-5 text-xs font-bold text-[var(--app-bg)]">Save sale</button>
+                      {sold && <button type="button" onClick={() => deleteSale(lot)} className="h-11 rounded-xl border border-[var(--app-border)] px-4 text-xs font-bold text-[var(--app-muted-strong)] hover:bg-[var(--app-surface)]">Delete sale</button>}
                       <button type="button" onClick={() => setSaleLotId(null)} className="h-11 rounded-xl border border-[var(--app-border)] px-4 text-xs font-bold">Cancel</button>
                     </form>
                   )}
