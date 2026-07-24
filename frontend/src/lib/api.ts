@@ -7,12 +7,20 @@
 import type {
   AuthResponse,
   Company,
+  FeedInsight,
+  HealthResponse,
+  Holding,
   PublicUser,
+  RankingsResponse,
+  ResearchCompany,
+  ResearchValuation,
   SavedValuation,
+  Sentiment,
+  SmartBrief,
   ValuationResult,
 } from './types'
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:4001'
 
 let accessToken: string | null = null
 export function setAccessToken(token: string | null) {
@@ -70,6 +78,17 @@ export async function login(email: string, password: string): Promise<PublicUser
   return data.user
 }
 
+// Sign in / register with Google: sends the ID token from Google Identity
+// Services; the backend verifies it and finds-or-creates the account.
+export async function google(credential: string): Promise<PublicUser> {
+  const data = await request<AuthResponse>('/auth/google', {
+    method: 'POST',
+    body: JSON.stringify({ credential }),
+  })
+  setAccessToken(data.access_token)
+  return data.user
+}
+
 export async function refresh(): Promise<PublicUser> {
   const data = await request<AuthResponse>('/auth/refresh', { method: 'POST' })
   setAccessToken(data.access_token)
@@ -101,4 +120,46 @@ export function listValuations(): Promise<SavedValuation[]> {
 
 export function deleteValuation(id: number): Promise<null> {
   return request<null>(`/valuations/${id}`, { method: 'DELETE' })
+}
+
+// --- Holdings (portfolio) ---
+export function listHoldings(): Promise<Holding[]> {
+  return request<Holding[]>('/holdings')
+}
+
+export function addHolding(ticker: string): Promise<Holding> {
+  return request<Holding>('/holdings', {
+    method: 'POST',
+    body: JSON.stringify({ ticker }),
+  })
+}
+
+export function removeHolding(id: number): Promise<null> {
+  return request<null>(`/holdings/${id}`, { method: 'DELETE' })
+}
+
+// --- Insights feed (holdings-scoped) ---
+export function listInsights(limit = 50): Promise<FeedInsight[]> {
+  return request<FeedInsight[]>(`/insights?limit=${limit}`)
+}
+
+// --- Research workbench (filing-based) ---
+export function listResearchCompanies(): Promise<ResearchCompany[]> {
+  return request<ResearchCompany[]>('/research/companies')
+}
+
+export function getRankings(risk: number): Promise<RankingsResponse> {
+  return request<RankingsResponse>(`/research/rankings?risk=${risk}`)
+}
+
+export function getHealth(ticker: string, risk: number): Promise<HealthResponse> {
+  return request<HealthResponse>(`/research/health/${ticker}?risk=${risk}`)
+}
+
+export function getValuation(ticker: string, sentiment: Sentiment): Promise<ResearchValuation> {
+  return request<ResearchValuation>(`/research/valuation/${ticker}?sentiment=${sentiment}`)
+}
+
+export function getBrief(ticker: string, risk: number, sentiment: Sentiment): Promise<SmartBrief> {
+  return request<SmartBrief>(`/research/brief/${ticker}?risk=${risk}&sentiment=${sentiment}`)
 }

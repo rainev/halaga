@@ -6,6 +6,7 @@ import uuid
 from typing import Any, TypedDict
 
 from ..errors import AppError
+from ..security.google import verify_google_id_token
 from ..security.jwt import (
     TokenError,
     sign_access_token,
@@ -50,9 +51,33 @@ def register(email: str, password: str) -> AuthResult:
 
 def login(email: str, password: str) -> AuthResult:
     user = user_service.find_by_email(email)
-    # Same error whether the email or the password is wrong — don't leak which.
-    if not user or not verify_password(password, user["password_hash"]):
+    # Same error whether the email is unknown, the account is Google-only (no
+    # password set), or the password is wrong — never leak which.
+    if not user or not user["password_hash"]:
         raise AppError("Invalid credentials", 401)
+    if not verify_password(password, user["password_hash"]):
+        raise AppError("Invalid credentials", 401)
+    return _result(user)
+
+
+def google_auth(credential: str) -> AuthResult:
+    """"Sign in with Google". Verify the Google ID token, then find-or-create the
+    user and issue our own tokens (so Google plugs into our sessions):
+      - known google_sub          -> sign in
+      - same verified email       -> link Google to the existing account
+      - otherwise                 -> create a new Google-only account
+    """
+    identity = verify_google_id_token(credential)
+    if not identity["email_verified"]:
+        raise AppError("Your Google account email is not verified.", 401)
+
+    user = user_service.find_by_google_sub(identity["sub"])
+    if not user:
+        existing = user_service.find_by_email(identity["email"])
+        if existing:
+            user = user_service.link_google_sub(existing["id"], identity["sub"])
+        else:
+            user = user_service.create_with_google(identity["email"], identity["sub"])
     return _result(user)
 
 

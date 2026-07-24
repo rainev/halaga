@@ -1,4 +1,4 @@
-# Halaga — PSE Valuation App
+# FinSight — PSE Valuation App
 
 Value Philippine Stock Exchange (PSE) companies with four classic models — **DCF,
 Dividend Discount, Graham, and Multiples** — calibrated for the PH market (PHP,
@@ -26,8 +26,8 @@ cp .env.example .env            # then edit secrets
 ./infrastructure/scripts/seed.sh  # (in another shell, once up) admin + PH market + companies
 ```
 
-- Frontend: http://localhost:5173
-- API + docs: http://localhost:8000 (OpenAPI UI at `/docs`)
+- Frontend: http://localhost:4000
+- API + docs: http://localhost:4001 (OpenAPI UI at `/docs`)
 - Sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`, or register a new user.
 
 Other scripts: `down.sh` (stop, keep data), `reset.sh` (wipe volumes and re-init).

@@ -9,13 +9,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      # Vite listens on 4000 inside the container (see vite.config.ts); same
+      # host port so HMR's websocket resolves correctly.
+      - "4000:4000"
     volumes:
       - ./frontend:/app # live app source
       - /app/node_modules # keep the image's install, unshadowed by the host
     environment:
       # Vite reads this to reach the API from the browser (host machine).
-      VITE_API_URL: http://localhost:8000
+      VITE_API_URL: http://localhost:4001
     depends_on:
       - backend
 
@@ -24,7 +26,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      # Host 4001 -> container 8000 (uvicorn stays on 8000 inside the image).
+      - "4001:8000"
     volumes:
       - ./backend:/app # live app source (uvicorn --reload picks up changes)
       # Seed scripts read the sibling PH-Stocks data for the company seed.
@@ -32,7 +35,7 @@ services:
     environment:
       APP_ENV: development
       PORT: 8000
-      CLIENT_URL: http://localhost:5173
+      CLIENT_URL: http://localhost:4000
       # Postgres
       PGHOST: db
       PGPORT: 5432
@@ -51,6 +54,19 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       JWT_ACCESS_EXPIRES_MIN: ${JWT_ACCESS_EXPIRES_MIN:-15}
       JWT_REFRESH_EXPIRES_DAYS: ${JWT_REFRESH_EXPIRES_DAYS:-7}
+      # Google sign-in (optional — blank disables the /auth/google endpoint).
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      # Rate limiting (Redis-backed; Redis is a compose dependency below).
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+      # OpenAI — powers the news→insight pipeline (blank = LLM steps skipped;
+      # deterministic ticker/sector matching still runs).
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_INSIGHT_MODEL: ${OPENAI_INSIGHT_MODEL:-gpt-4o}
+      OPENAI_EXTRACT_MODEL: ${OPENAI_EXTRACT_MODEL:-gpt-4o-mini}
+      OPENAI_EMBED_MODEL: ${OPENAI_EMBED_MODEL:-text-embedding-3-small}
+      # Insights pipeline.
+      INSIGHT_CONFIDENCE_THRESHOLD: ${INSIGHT_CONFIDENCE_THRESHOLD:-0.5}
+      PIPELINE_AUTO: ${PIPELINE_AUTO:-false}
       # Seed
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@valuation.app}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}

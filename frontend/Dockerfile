@@ -8,6 +8,6 @@ COPY package.json ./
 RUN npm install
 
 # App source is bind-mounted in dev (see docker-compose.yml).
-EXPOSE 5173
+EXPOSE 4000
 
 CMD ["npm", "run", "dev", "--", "--host"]

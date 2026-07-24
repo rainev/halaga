@@ -16,6 +16,13 @@ class Credentials(BaseModel):
     password: str = Field(min_length=8)
 
 
+class GoogleCredential(BaseModel):
+    """The ID token (a JWT) that Google Identity Services hands the browser after
+    a successful "Sign in with Google". Verified server-side (see security/google)."""
+
+    credential: str = Field(min_length=1)
+
+
 class PublicUser(BaseModel):
     id: int
     email: EmailStr

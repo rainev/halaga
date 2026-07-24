@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FinSight — Insights (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#eef1f3; --ink:#0b1f2a; --card:#fff;
+    --fg:#101c26; --soft:#55697a; --muted:#8496a3; --line:#e2e8ec;
+    --jade:#0f7a6e; --jade-soft:#e6f3f1;
+    --rose:#c0485b; --rose-soft:#fbebed;
+    --slate:#5a6b78; --slate-soft:#eef2f4;
+    --brass:#b0842b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0}
+  .mono{font-family:'Space Mono',ui-monospace,monospace}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:5;background:var(--ink);color:#e8edf0;height:62px;display:flex;align-items:center;padding:0 26px;gap:30px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:30px;height:30px;border-radius:8px;background:var(--jade);display:grid;place-items:center;color:#fff}
+  .logo svg{width:17px;height:17px}
+  .brand .name{font-family:'Space Grotesk';font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .brand .dot{color:var(--jade)}
+  .brand .sub{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#7c8b98;margin-top:1px}
+  nav{display:flex;gap:2px}
+  nav a{color:#aebac4;text-decoration:none;font-size:14px;font-weight:500;padding:8px 13px;border-radius:8px}
+  nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  nav a.active{background:rgba(255,255,255,.1);color:#fff}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .who{font-family:'Space Mono';font-size:12px;color:#8496a3}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:30px 26px 70px}
+  .grid{display:grid;grid-template-columns:1fr 322px;gap:26px;align-items:start}
+
+  /* Page head */
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--jade)}
+  .page-title{font-size:28px;letter-spacing:-.02em;margin-top:4px}
+  .page-sub{color:var(--muted);font-size:14px;margin-top:3px}
+
+  /* Filter chips */
+  .chips{display:flex;gap:8px;margin:18px 0 4px}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--soft);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  /* Insight card — the signature */
+  .feed{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+  .insight{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px 16px;box-shadow:0 1px 2px rgba(16,28,38,.05),0 10px 26px rgba(16,28,38,.05);overflow:hidden}
+  .insight::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .insight.headwind::before{background:var(--rose)}
+  .insight.tailwind::before{background:var(--jade)}
+  .insight.context::before{background:var(--slate)}
+
+  .i-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .src{font-family:'Space Mono';font-size:11px;letter-spacing:.03em;color:var(--muted);text-transform:uppercase}
+  .marker{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .marker .glyph{font-size:12px;line-height:1}
+  .marker.headwind{background:var(--rose-soft);color:var(--rose)}
+  .marker.tailwind{background:var(--jade-soft);color:var(--jade)}
+  .marker.context{background:var(--slate-soft);color:var(--slate)}
+
+  .headline{font-family:'Space Grotesk';font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;margin:12px 0 0}
+
+  /* the "touches" thread — connection motif */
+  .thread{margin:14px 0 4px;border:1px dashed var(--line);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:12px;background:#fafcfc}
+  .thread .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .holdings{display:flex;gap:7px;flex-wrap:wrap}
+  .hchip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 8px;font-family:'Space Mono';font-size:12.5px;font-weight:700;color:var(--fg)}
+  .sdot{width:8px;height:8px;border-radius:50%}
+  .prop{background:#14b8a6}.fin{background:#3b82f6}.ind{background:#f59e0b}.svc{background:#f43f5e}.hold{background:#8b5cf6}.mine{background:#78716c}
+
+  .note{margin:12px 0 0;color:var(--soft);font-size:14px;line-height:1.55}
+  .note b{color:var(--fg);font-weight:600}
+
+  .i-foot{margin-top:15px;padding-top:13px;border-top:1px solid var(--line);display:flex;align-items:center;gap:16px;font-size:13px}
+  .i-foot a{color:var(--jade);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+  .i-foot a:hover{text-decoration:underline}
+  .disclaimer{color:var(--muted);font-size:12px;margin-left:auto;display:inline-flex;align-items:center;gap:6px}
+  .disclaimer .lock{opacity:.7}
+
+  /* Portfolio sidebar */
+  .side{position:sticky;top:86px;display:flex;flex-direction:column;gap:16px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 2px rgba(16,28,38,.05)}
+  .panel-head{padding:16px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .panel-head .t{font-family:'Space Grotesk';font-weight:700;font-size:15px}
+  .addbtn{border:1px solid var(--line);background:#fff;color:var(--fg);font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+  .hold-row{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);cursor:pointer}
+  .hold-row:last-child{border-bottom:none}
+  .hold-row:hover{background:#fafcfc}
+  .hold-row .tk{font-family:'Space Mono';font-weight:700;font-size:14px}
+  .hold-row .nm{font-size:13px}
+  .hold-row .sh{font-family:'Space Mono';font-size:11px;color:var(--muted);margin-top:1px}
+  .hold-row .meta{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .zap{display:inline-flex;align-items:center;gap:4px;background:var(--jade-soft);color:var(--jade);font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:999px;font-family:'Space Mono'}
+  .zap.none{background:transparent;color:var(--muted);font-weight:400}
+
+  .callout{background:linear-gradient(180deg,#0b1f2a,#122c39);color:#cdd8de;border-radius:var(--radius);padding:16px 18px;font-size:13px;line-height:1.5}
+  .callout .h{font-family:'Space Grotesk';font-weight:700;color:#fff;font-size:14px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+  .callout .h .k{color:var(--jade)}
+
+  .mocktag{position:fixed;left:14px;bottom:14px;background:var(--brass);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+
+  @media(max-width:880px){.grid{grid-template-columns:1fr}.side{position:static}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 4-6"/></svg></span>
+    <div>
+      <div class="name">FinSight<span class="dot">.</span></div>
+      <div class="sub">PSE Valuation</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#" class="active">Insights</a>
+    <a href="#">Portfolio</a>
+    <a href="#">Companies</a>
+    <a href="#">Valuation</a>
+    <a href="#">Saved</a>
+  </nav>
+  <div class="right">
+    <span class="who">r.villaver@gmail.com</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- FEED -->
+    <main>
+      <div class="eyebrow">For your portfolio</div>
+      <h1 class="page-title">Insights</h1>
+      <div class="page-sub">What's happening that touches your 6 holdings — updated continuously.</div>
+
+      <div class="chips">
+        <span class="chip on">All</span>
+        <span class="chip">Direct</span>
+        <span class="chip">Macro</span>
+      </div>
+
+      <div class="feed">
+
+        <!-- Macro — headwind -->
+        <article class="insight headwind">
+          <div class="i-top">
+            <span class="src">Bangko Sentral · Macro · 2h ago</span>
+            <span class="marker headwind"><span class="glyph">▾</span> Potential headwind</span>
+          </div>
+          <h2 class="headline">BSP raises the policy rate 25bp to 6.25%</h2>
+          <div class="thread">
+            <span class="lbl">Touches</span>
+            <div class="holdings">
+              <span class="hchip"><span class="sdot prop"></span>MEG</span>
+              <span class="hchip"><span class="sdot ind"></span>AP</span>
+            </div>
+          </div>
+          <p class="note">Higher policy rates tend to raise borrowing costs. This can pressure <b>property developers</b> like <b>MEG</b> (financing + big-ticket demand) and adds interest expense for capital-heavy firms such as <b>AP</b>. Effects vary by each company's debt profile.</p>
+          <div class="i-foot">
+            <a href="#">🔗 PSE disclosure &amp; BSP release</a>
+            <a href="#">Value MEG →</a>
+            <span class="disclaimer"><span class="lock">🔒</span> Not advice · your call</span>
+          </div>
+        </article>
+
+        <!-- Direct — context -->
+        <article class="insight context">
+          <div class="i-top">
+            <span class="src">PSE EDGE · Disclosure · 5h ago</span>
+            <span class="marker context"><span class="glyph">◆</span> Context</span>
+          </div>
+          <h2 class="headline">Aboitiz Power reports FY2024 core income of ₱33.7B, up 5%</h2>
+          <div class="thread">
+            <span class="lbl">Touches</span>
+            <div class="holdings">
+              <span class="hchip"><span class="sdot ind"></span>AP</span>
+            </div>
+          </div>
+          <p class="note">A filing on a company you hold. Core income rose ~5% year-on-year; net-debt-to-equity improved to 0.8×. This is <b>context on your position</b>, not a signal — worth a look against your own thesis.</p>
+          <div class="i-foot">
+            <a href="#">🔗 SEC Form 17-A</a>
+            <a href="#">Value AP →</a>
+            <span class="disclaimer"><span class="lock">🔒</span> Not advice · your call</span>
+          </div>
+        </article>
+
+        <!-- Direct — headwind -->
+        <article class="insight headwind">
+          <div class="i-top">
+            <span class="src">PSE EDGE · Disclosure · 1d ago</span>
+            <span class="marker headwind"><span class="glyph">▾</span> Potential headwind</span>
+          </div>
+          <h2 class="headline">Semirara flags softer coal prices and higher production costs</h2>
+          <div class="thread">
+            <span class="lbl">Touches</span>
+            <div class="holdings">
+              <span class="hchip"><span class="sdot ind"></span>SCC</span>
+            </div>
+          </div>
+          <p class="note">Softer selling prices with rising costs can compress margins for a coal producer like <b>SCC</b>. How much depends on volumes and hedging — the disclosure has the detail.</p>
+          <div class="i-foot">
+            <a href="#">🔗 Full-year results disclosure</a>
+            <a href="#">Value SCC →</a>
+            <span class="disclaimer"><span class="lock">🔒</span> Not advice · your call</span>
+          </div>
+        </article>
+
+        <!-- Macro — mixed / tailwind -->
+        <article class="insight tailwind">
+          <div class="i-top">
+            <span class="src">Market data · Macro · 1d ago</span>
+            <span class="marker tailwind"><span class="glyph">▴</span> Potential tailwind</span>
+          </div>
+          <h2 class="headline">Peso weakens to ₱58.90 / USD, a three-month low</h2>
+          <div class="thread">
+            <span class="lbl">Touches</span>
+            <div class="holdings">
+              <span class="hchip"><span class="sdot svc"></span>JFC</span>
+              <span class="hchip"><span class="sdot svc"></span>GLO</span>
+            </div>
+          </div>
+          <p class="note">A weaker peso cuts both ways. It can <b>lift peso value of overseas earnings</b> for firms with foreign revenue like <b>JFC</b>, while raising import and USD-debt costs elsewhere. Direction for any single holding depends on its FX exposure.</p>
+          <div class="i-foot">
+            <a href="#">🔗 BSP reference rate</a>
+            <a href="#">Value JFC →</a>
+            <span class="disclaimer"><span class="lock">🔒</span> Not advice · your call</span>
+          </div>
+        </article>
+
+      </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <section class="panel">
+        <div class="panel-head">
+          <span class="t">Portfolio</span>
+          <button class="addbtn">+ Add holding</button>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">AP</div></div>
+          <div><div class="nm">Aboitiz Power</div><div class="sh">1,000 sh</div></div>
+          <div style="text-align:right"><span class="zap">⚡ 2</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot ind"></span>Industrial</div></div>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">MEG</div></div>
+          <div><div class="nm">Megaworld</div><div class="sh">5,000 sh</div></div>
+          <div style="text-align:right"><span class="zap">⚡ 1</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot prop"></span>Property</div></div>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">SCC</div></div>
+          <div><div class="nm">Semirara Mining</div><div class="sh">800 sh</div></div>
+          <div style="text-align:right"><span class="zap">⚡ 1</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot ind"></span>Industrial</div></div>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">JFC</div></div>
+          <div><div class="nm">Jollibee Foods</div><div class="sh">300 sh</div></div>
+          <div style="text-align:right"><span class="zap">⚡ 1</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot svc"></span>Services</div></div>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">BDO</div></div>
+          <div><div class="nm">BDO Unibank</div><div class="sh">200 sh</div></div>
+          <div style="text-align:right"><span class="zap none">—</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot fin"></span>Financial</div></div>
+        </div>
+
+        <div class="hold-row">
+          <div><div class="tk">GLO</div></div>
+          <div><div class="nm">Globe Telecom</div><div class="sh">150 sh</div></div>
+          <div style="text-align:right"><span class="zap">⚡ 1</span><div class="meta" style="justify-content:flex-end;margin-top:4px"><span class="sdot svc"></span>Services</div></div>
+        </div>
+      </section>
+
+      <section class="callout">
+        <div class="h"><span class="k">◆</span> How to read this</div>
+        Insights connect market news to what you own and explain a <b style="color:#fff">possible</b> effect — with a source. They're awareness, not recommendations. Every decision stays yours.
+      </section>
+    </aside>
+
+  </div>
+</div>
+
+<div class="mocktag">Design mockup</div>
+</body>
+</html>

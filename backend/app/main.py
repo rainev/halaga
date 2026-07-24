@@ -14,9 +14,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .db import pool
+from .db_migrate import run_migrations
 from .env import env
 from .errors import AppError
 from .routers import api_router
+from .security.headers import add_security_headers
 from .storage import ensure_bucket
 
 log = logging.getLogger("uvicorn.error")
@@ -25,6 +27,11 @@ log = logging.getLogger("uvicorn.error")
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     pool.open()
+    # Ensure the schema exists before serving. Essential for a managed DB
+    # (Supabase, Neon, …) that never runs infrastructure/postgres/init/*.sql.
+    # Skipped under tests, which run hermetically without a real database.
+    if env.APP_ENV != "test":
+        run_migrations()
     try:
         ensure_bucket()
     except Exception as exc:  # storage not ready shouldn't stop the API booting
@@ -34,6 +41,10 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="PSE Valuation API", lifespan=lifespan)
+
+# Secure response headers (Helmet-equivalent). Added first so it wraps every
+# response, including CORS preflights and error responses.
+add_security_headers(app)
 
 # credentials=True + a specific origin is required for the refresh cookie to be
 # sent/received cross-origin (Vite dev server -> API).

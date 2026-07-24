@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FinSight Wire — Market Dispatches (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#16130e;         /* warm espresso canvas */
+    --panel:#1e1a13;      /* raised */
+    --panel-2:#241f16;
+    --paper:#efe7d6;      /* warm off-white ink */
+    --muted:#9c9078;      /* warm taupe */
+    --faint:#6f664f;
+    --line:#332c20;       /* warm border */
+    --amber:#e3a63c;      /* ticker amber — signal */
+    --oxblood:#cf5b43;    /* headwind */
+    --olive:#9bb06a;      /* tailwind */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--paper);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(1200px 500px at 70% -10%, rgba(227,166,60,.06), transparent 70%);}
+  .slab{font-family:'Zilla Slab',Georgia,serif}
+  .mono{font-family:'Space Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+
+  /* ── Live ticker tape (top) ── */
+  .tape{background:#100d09;border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;
+    font-family:'Space Mono';font-size:12px;letter-spacing:.04em;color:var(--muted);padding:7px 0}
+  .tape b{color:var(--amber);font-weight:700}
+  .tape .up{color:var(--olive)} .tape .dn{color:var(--oxblood)}
+  .tape span{display:inline-block;padding:0 22px;animation:scroll 38s linear infinite}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ── Masthead ── */
+  .masthead{max-width:820px;margin:0 auto;padding:30px 26px 14px;border-bottom:2px solid var(--paper)}
+  .m-top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .wordmark{font-family:'Zilla Slab';font-weight:700;font-size:38px;letter-spacing:-.02em;line-height:1}
+  .wordmark .amber{color:var(--amber)}
+  .m-meta{font-family:'Space Mono';font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;text-align:right}
+  .m-rule{display:flex;justify-content:space-between;font-family:'Space Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-top:12px}
+
+  /* ── Feed ── */
+  .wire{max-width:820px;margin:0 auto;padding:6px 26px 80px}
+  .sectionbar{display:flex;align-items:center;gap:12px;margin:26px 0 4px;color:var(--amber);
+    font-family:'Space Mono';font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+  .sectionbar::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .dispatch{display:grid;grid-template-columns:118px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .gutter{border-right:1px solid var(--line);padding-right:18px;font-family:'Space Mono';font-size:11px;line-height:1.5;color:var(--muted)}
+  .gutter .tag{display:inline-block;color:var(--amber);border:1px solid var(--line);border-radius:3px;padding:2px 7px;letter-spacing:.1em;margin-bottom:8px}
+  .gutter .when{color:var(--faint);letter-spacing:.05em}
+  .gutter .src{margin-top:10px;color:var(--muted);display:block}
+
+  .body .marker{font-family:'Space Mono';font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .marker.headwind{color:var(--oxblood)} .marker.tailwind{color:var(--olive)} .marker.context{color:var(--muted)}
+  .marker .br{opacity:.5}
+
+  .headline{font-family:'Zilla Slab';font-weight:600;font-size:26px;line-height:1.16;letter-spacing:-.01em;margin:8px 0 0}
+
+  /* ── the signature: ticker-tape connection strip ── */
+  .affects{display:flex;align-items:center;gap:0;background:#100d09;border:1px solid var(--line);
+    border-radius:5px;margin:14px 0 2px;overflow:hidden;font-family:'Space Mono';font-size:13px}
+  .affects .lead{background:var(--amber);color:#16130e;font-weight:700;font-size:10px;letter-spacing:.14em;
+    padding:8px 10px;text-transform:uppercase;white-space:nowrap}
+  .affects .tick{padding:8px 14px;color:var(--amber);font-weight:700;display:inline-flex;align-items:center;gap:7px}
+  .affects .tick .car{color:var(--faint)}
+  .affects .tick small{color:var(--muted);font-weight:400;font-size:11px}
+
+  .note{margin:13px 0 0;color:#d8cfbc;font-size:15px;line-height:1.62}
+  .note b{color:var(--paper);font-weight:600}
+
+  .foot{margin-top:14px;display:flex;align-items:center;gap:18px;font-family:'Space Mono';font-size:11.5px;letter-spacing:.03em}
+  .foot a.link{color:var(--amber)} .foot a.link:hover{text-decoration:underline}
+  .foot .value{color:var(--paper);border-bottom:1px dashed var(--faint);padding-bottom:1px}
+  .stamp{margin-left:auto;color:var(--faint);border:1px solid var(--line);padding:4px 9px;border-radius:3px;
+    letter-spacing:.1em;text-transform:uppercase;font-size:10px}
+  .stamp b{color:var(--amber)}
+
+  /* footer note */
+  .colophon{max-width:820px;margin:0 auto;padding:0 26px;color:var(--faint);font-family:'Space Mono';
+    font-size:11px;letter-spacing:.05em;line-height:1.7}
+
+  .mocktag{position:fixed;left:14px;bottom:14px;background:var(--amber);color:#16130e;font-family:'Space Mono';
+    font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:3px}
+  @media(max-width:640px){.dispatch{grid-template-columns:1fr}.gutter{border-right:none;border-bottom:1px solid var(--line);padding:0 0 12px}}
+</style>
+</head>
+<body>
+
+<!-- Live ticker tape -->
+<div class="tape"><span>
+  <b>PSEi</b> 6,412.30 <i class="up">▲ 0.8%</i> &nbsp;·&nbsp; <b>USD/PHP</b> 58.90 <i class="dn">▼</i> &nbsp;·&nbsp; <b>AP</b> 41.25 <i class="up">▲</i> &nbsp;·&nbsp; <b>MEG</b> 1.92 <i class="dn">▼</i> &nbsp;·&nbsp; <b>SCC</b> 21.45 <i class="dn">▼</i> &nbsp;·&nbsp; <b>JFC</b> 244.00 <i class="up">▲</i> &nbsp;·&nbsp; <b>BDO</b> 123.00 <i class="up">▲</i> &nbsp;·&nbsp; <b>GLO</b> 1,690 <i class="up">▲</i> &nbsp;·&nbsp;
+  <b>PSEi</b> 6,412.30 <i class="up">▲ 0.8%</i> &nbsp;·&nbsp; <b>USD/PHP</b> 58.90 <i class="dn">▼</i> &nbsp;·&nbsp; <b>AP</b> 41.25 <i class="up">▲</i> &nbsp;·&nbsp; <b>MEG</b> 1.92 <i class="dn">▼</i> &nbsp;·&nbsp; <b>SCC</b> 21.45 <i class="dn">▼</i> &nbsp;·&nbsp; <b>JFC</b> 244.00 <i class="up">▲</i> &nbsp;·&nbsp; <b>BDO</b> 123.00 <i class="up">▲</i> &nbsp;·&nbsp; <b>GLO</b> 1,690 <i class="up">▲</i> &nbsp;·&nbsp;
+</span></div>
+
+<!-- Masthead -->
+<header class="masthead">
+  <div class="m-top">
+    <div class="wordmark">FinSight <span class="amber">Wire</span></div>
+    <div class="m-meta">Tue · 15 Jul 2026<br/>Market dispatches for your holdings</div>
+  </div>
+  <div class="m-rule">
+    <span>Manila Edition</span>
+    <span>6 Holdings Monitored</span>
+    <span>Awareness, not advice</span>
+  </div>
+</header>
+
+<main class="wire">
+
+  <div class="sectionbar">Today's dispatches</div>
+
+  <!-- MACRO — headwind -->
+  <article class="dispatch">
+    <div class="gutter">
+      <span class="tag">MACRO</span><br/>
+      <span class="when">02:14 PM · 2h ago</span>
+      <span class="src">Bangko Sentral<br/>ng Pilipinas</span>
+    </div>
+    <div class="body">
+      <span class="marker headwind"><span class="br">[</span> Potential headwind <span class="br">]</span></span>
+      <h2 class="headline">BSP raises the policy rate 25bp to 6.25%</h2>
+      <div class="affects">
+        <span class="lead">Affects</span>
+        <span class="tick"><span class="car">▸</span> MEG <small>Property</small></span>
+        <span class="tick"><span class="car">▸</span> AP <small>Industrial</small></span>
+      </div>
+      <p class="note">Higher policy rates tend to lift borrowing costs. This can pressure <b>property developers</b> like <b>MEG</b> — financing and big-ticket demand — and adds interest expense for capital-heavy firms such as <b>AP</b>. The size of the effect depends on each company's debt profile.</p>
+      <div class="foot">
+        <a class="link">🔗 BSP release</a>
+        <a class="value">Value MEG →</a>
+        <span class="stamp"><b>◆</b> Not advice · your call</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- DISCLOSURE — context -->
+  <article class="dispatch">
+    <div class="gutter">
+      <span class="tag">DISCLOSURE</span><br/>
+      <span class="when">11:02 AM · 5h ago</span>
+      <span class="src">PSE EDGE<br/>SEC Form 17-A</span>
+    </div>
+    <div class="body">
+      <span class="marker context"><span class="br">[</span> Context <span class="br">]</span></span>
+      <h2 class="headline">Aboitiz Power posts FY2024 core income of ₱33.7B, up 5%</h2>
+      <div class="affects">
+        <span class="lead">Affects</span>
+        <span class="tick"><span class="car">▸</span> AP <small>Industrial</small></span>
+      </div>
+      <p class="note">A filing on a company you hold. Core income rose ~5% year-on-year, and net-debt-to-equity improved to 0.8×. This is <b>context on your position</b> — read it against your own thesis, not a signal to act.</p>
+      <div class="foot">
+        <a class="link">🔗 Full filing</a>
+        <a class="value">Value AP →</a>
+        <span class="stamp"><b>◆</b> Not advice · your call</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- DISCLOSURE — headwind -->
+  <article class="dispatch">
+    <div class="gutter">
+      <span class="tag">DISCLOSURE</span><br/>
+      <span class="when">Mon · 1d ago</span>
+      <span class="src">PSE EDGE<br/>17-C disclosure</span>
+    </div>
+    <div class="body">
+      <span class="marker headwind"><span class="br">[</span> Potential headwind <span class="br">]</span></span>
+      <h2 class="headline">Semirara flags softer coal prices and higher production costs</h2>
+      <div class="affects">
+        <span class="lead">Affects</span>
+        <span class="tick"><span class="car">▸</span> SCC <small>Industrial</small></span>
+      </div>
+      <p class="note">Softer selling prices alongside rising costs can compress margins for a coal producer like <b>SCC</b>. How much depends on volumes and hedging — the disclosure carries the detail.</p>
+      <div class="foot">
+        <a class="link">🔗 Results disclosure</a>
+        <a class="value">Value SCC →</a>
+        <span class="stamp"><b>◆</b> Not advice · your call</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- MACRO — tailwind -->
+  <article class="dispatch">
+    <div class="gutter">
+      <span class="tag">MACRO · FX</span><br/>
+      <span class="when">Mon · 1d ago</span>
+      <span class="src">Market data<br/>BSP reference</span>
+    </div>
+    <div class="body">
+      <span class="marker tailwind"><span class="br">[</span> Potential tailwind <span class="br">]</span></span>
+      <h2 class="headline">Peso weakens to ₱58.90 / USD, a three-month low</h2>
+      <div class="affects">
+        <span class="lead">Affects</span>
+        <span class="tick"><span class="car">▸</span> JFC <small>Services</small></span>
+        <span class="tick"><span class="car">▸</span> GLO <small>Services</small></span>
+      </div>
+      <p class="note">A weaker peso cuts both ways. It can <b>lift the peso value of overseas earnings</b> for firms with foreign revenue like <b>JFC</b>, while raising import and USD-debt costs elsewhere. Direction for any one holding depends on its FX exposure.</p>
+      <div class="foot">
+        <a class="link">🔗 Reference rate</a>
+        <a class="value">Value JFC →</a>
+        <span class="stamp"><b>◆</b> Not advice · your call</span>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<p class="colophon">FINSIGHT WIRE surfaces market news connected to what you own and explains a <span style="color:var(--amber)">possible</span> effect, with a source. It is awareness — not investment advice, not a recommendation, not a price prediction. Every decision is yours.</p>
+
+<div class="mocktag">Design B · Wire</div>
+</body>
+</html>

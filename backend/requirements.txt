@@ -3,9 +3,12 @@ uvicorn[standard]==0.34.0
 psycopg[binary,pool]==3.2.3
 redis==5.2.1
 PyJWT==2.10.1
+google-auth==2.37.0
+requests==2.32.3
 passlib[bcrypt]==1.7.4
 bcrypt==4.2.1
 pydantic[email]==2.10.4
+openai==1.59.6
 boto3==1.35.90
 python-multipart==0.0.20
 pytest==8.3.4

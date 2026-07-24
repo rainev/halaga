@@ -1,0 +1,237 @@
+{
+  "assumptions": {
+    "valuationDate": "17 Jul 2026",
+    "riskFreeRate": 0.07052,
+    "grahamBaselineYield": 0.06,
+    "corporateTaxReference": 0.25,
+    "sourceLabel": "Bureau of the Treasury - 10-year T-bond auction, 23 Jun 2026",
+    "sourceUrl": "https://www.treasury.gov.ph/wp-content/uploads/2026/06/Treasury-Bonds-Auction-Result-on-23-June-2026-.pdf",
+    "note": "The workbook's U.S. AAA-bond input is replaced with a Philippine 10-year government-bond proxy. The 6.0% normalizer is a transparent through-cycle assumption; 7.052% is the latest accepted 9.7-year average auction yield reviewed."
+  },
+  "companies": [
+    {
+      "symbol": "AP",
+      "name": "Aboitiz Power Corporation",
+      "shortName": "AboitizPower",
+      "sector": "Industrial",
+      "subsector": "Power generation & distribution",
+      "color": "#2563eb",
+      "dataConfidence": 0.96,
+      "insight": "Scale leader; leverage and the 2025 EPS decline are the main checks.",
+      "source": {
+        "label": "2025 Aboitiz Integrated Report - AboitizPower statements, pp. 158-165",
+        "href": "./PH-Stocks/Industrial/Aboitiz%20Financial%20Statements/2025%20Aboitiz%20Integrated%20Report.pdf#page=80"
+      },
+      "financials": {
+        "period": "FY 2025",
+        "revenue": 198479280000,
+        "grossProfit": null,
+        "operatingIncome": 37505708000,
+        "generalAdmin": 15600137000,
+        "interestExpense": 17987956000,
+        "pretaxIncome": 29080876000,
+        "taxExpense": 6619884000,
+        "netIncome": 22460992000,
+        "parentNetIncome": 19450127000,
+        "cash": 58932061000,
+        "debt": 327548364000,
+        "liabilities": 408157678000,
+        "equity": 214640174000,
+        "retainedEarnings": 187239124000,
+        "retainedEarningsPrevious": 184782755000,
+        "treasuryStock": 4891831000,
+        "preferredStock": 0,
+        "eps": 2.7,
+        "epsPrevious": 4.7,
+        "shares": 7203750741,
+        "operatingCashFlow": 51722480000
+      },
+      "valuation": {
+        "normalizedFcf": 38000000000,
+        "fcfGrowth": 0.035,
+        "discountRate": 0.115,
+        "terminalGrowth": 0.035,
+        "epsGrowthPercent": 4,
+        "peerPe": 11,
+        "dividendPerShare": 1.9,
+        "dividendGrowth": 0.03,
+        "dividendDiscountRate": 0.105,
+        "weights": {
+          "dcf": 0.4,
+          "graham": 0.2,
+          "multiples": 0.25,
+          "ddm": 0.15
+        },
+        "note": "Normalized FCF smooths project timing; use reported cash flow and debt schedules in production."
+      }
+    },
+    {
+      "symbol": "SCC",
+      "name": "Semirara Mining and Power Corporation",
+      "shortName": "Semirara",
+      "sector": "Industrial",
+      "subsector": "Integrated coal & power",
+      "color": "#0f766e",
+      "dataConfidence": 0.98,
+      "insight": "Cash exceeds debt and margins remain strong; earnings fell year on year.",
+      "source": {
+        "label": "Semirara 2025 SEC Form 17-A - consolidated statements, pp. 140-143",
+        "href": "./PH-Stocks/Industrial/Semirara%20Financial%20Statements/MSRD%20SEC%20Form%2017A%202025%20Amended%20Semirara%20Mining%20and%20Power%20Corporation%2020April2026.pdf#page=140"
+      },
+      "financials": {
+        "period": "FY 2025",
+        "revenue": 52232196279,
+        "grossProfit": 21362757434,
+        "operatingIncome": 14167377047,
+        "generalAdmin": 7195380387,
+        "interestExpense": 204977442,
+        "pretaxIncome": 14723762616,
+        "taxExpense": 1663573558,
+        "netIncome": 13060189058,
+        "parentNetIncome": 13060189058,
+        "cash": 4363886635,
+        "debt": 996694792,
+        "liabilities": 10711462115,
+        "equity": 55781748831,
+        "retainedEarnings": 45723794480,
+        "retainedEarningsPrevious": 46477885187,
+        "treasuryStock": 739526678,
+        "preferredStock": 0,
+        "eps": 3.07,
+        "epsPrevious": 4.62,
+        "shares": 4254133244,
+        "operatingCashFlow": 16434115891
+      },
+      "valuation": {
+        "normalizedFcf": 11000000000,
+        "fcfGrowth": 0.02,
+        "discountRate": 0.115,
+        "terminalGrowth": 0.025,
+        "epsGrowthPercent": 3,
+        "peerPe": 9,
+        "dividendPerShare": 3.24,
+        "dividendGrowth": 0.01,
+        "dividendDiscountRate": 0.11,
+        "weights": {
+          "dcf": 0.35,
+          "graham": 0.2,
+          "multiples": 0.2,
+          "ddm": 0.25
+        },
+        "note": "Normalized FCF tempers the commodity cycle and excludes a one-year peak assumption."
+      }
+    },
+    {
+      "symbol": "ACR",
+      "name": "Alsons Consolidated Resources, Inc.",
+      "shortName": "Alsons",
+      "sector": "Industrial",
+      "subsector": "Power generation & property",
+      "color": "#7c3aed",
+      "dataConfidence": 0.95,
+      "insight": "Revenue and parent EPS improved, but leverage and finance costs are elevated.",
+      "source": {
+        "label": "Alsons 2025 SEC Form 17-A - consolidated statements, pp. 63-69",
+        "href": "./PH-Stocks/Industrial/Alsons%20Financial%20Statements/2026-04-15%20ACR%2017A_2025_Final_compressed.pdf#page=63"
+      },
+      "financials": {
+        "period": "FY 2025",
+        "revenue": 14942499489,
+        "grossProfit": 5877292358,
+        "operatingIncome": 4514084326,
+        "generalAdmin": 1363308032,
+        "interestExpense": 2049670811,
+        "pretaxIncome": 2934529423,
+        "taxExpense": 497228669,
+        "netIncome": 2437300754,
+        "parentNetIncome": 799810619,
+        "cash": 2806074979,
+        "debt": 28553293368,
+        "liabilities": 33777453774,
+        "equity": 18784624535,
+        "retainedEarnings": 5391063896,
+        "retainedEarningsPrevious": 4721483277,
+        "treasuryStock": 0,
+        "preferredStock": 0,
+        "eps": 0.126,
+        "epsPrevious": 0.114,
+        "shares": 6347703325,
+        "operatingCashFlow": 4792812561
+      },
+      "valuation": {
+        "normalizedFcf": 3359294057,
+        "fcfGrowth": 0.035,
+        "discountRate": 0.125,
+        "terminalGrowth": 0.03,
+        "epsGrowthPercent": 6,
+        "peerPe": 10,
+        "dividendPerShare": 0.0205,
+        "dividendGrowth": 0.03,
+        "dividendDiscountRate": 0.12,
+        "weights": {
+          "dcf": 0.45,
+          "graham": 0.2,
+          "multiples": 0.25,
+          "ddm": 0.1
+        },
+        "note": "Base FCF is 2025 operating cash flow less reported additions to property and equipment."
+      }
+    },
+    {
+      "symbol": "PERC",
+      "name": "PetroEnergy Resources Corporation",
+      "shortName": "PetroEnergy",
+      "sector": "Industrial",
+      "subsector": "Renewables & upstream energy",
+      "color": "#c2410c",
+      "dataConfidence": 0.93,
+      "insight": "Revenue grew, while lower oil income and project debt pressured returns.",
+      "source": {
+        "label": "PetroEnergy 2025 SEC Form 17-A - MD&A financial tables, pp. 30 and 34",
+        "href": "./PH-Stocks/Industrial/PetroEnergy%20Financial%20Statements/PERC%20SEC%2017-A%202025.pdf#page=30"
+      },
+      "financials": {
+        "period": "FY 2025",
+        "revenue": 3724205637,
+        "grossProfit": 1571315876,
+        "operatingIncome": 1158066618,
+        "generalAdmin": 413249258,
+        "interestExpense": 652655083,
+        "pretaxIncome": 672887431,
+        "taxExpense": 54554306,
+        "netIncome": 618333125,
+        "parentNetIncome": 284178362,
+        "cash": 1791498636,
+        "debt": 9431852000,
+        "liabilities": 11580457887,
+        "equity": 14133667727,
+        "retainedEarnings": null,
+        "retainedEarningsPrevious": null,
+        "treasuryStock": 0,
+        "preferredStock": 0,
+        "eps": 0.5,
+        "epsPrevious": 0.83,
+        "shares": 568356724,
+        "operatingCashFlow": null
+      },
+      "valuation": {
+        "normalizedFcf": 1050000000,
+        "fcfGrowth": 0.05,
+        "discountRate": 0.13,
+        "terminalGrowth": 0.03,
+        "epsGrowthPercent": 5,
+        "peerPe": 11,
+        "dividendPerShare": null,
+        "dividendGrowth": 0.02,
+        "dividendDiscountRate": 0.12,
+        "weights": {
+          "dcf": 0.45,
+          "graham": 0.25,
+          "multiples": 0.3,
+          "ddm": 0
+        },
+        "note": "Normalized FCF is illustrative while new renewable projects are in a heavy build-out phase."
+      }
+    }
+  ]
+}

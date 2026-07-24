@@ -15,6 +15,9 @@ from .env import env
 _conninfo = (
     f"host={env.PGHOST} port={env.PGPORT} user={env.PGUSER} "
     f"password={env.PGPASSWORD} dbname={env.PGDATABASE}"
+    # Managed providers (Supabase, Neon, RDS) require TLS. `require` encrypts
+    # without verifying the CA — fine for staging; use verify-full + a CA in prod.
+    + (" sslmode=require" if env.PGSSL else "")
 )
 
 # open=False so importing this module never blocks on a DB connection (keeps the

@@ -20,6 +20,30 @@ def create(email: str, password_hash: str) -> dict[str, Any]:
     )
 
 
+def find_by_google_sub(google_sub: str) -> dict[str, Any] | None:
+    return query_one("SELECT * FROM users WHERE google_sub = %s", (google_sub,))
+
+
+def create_with_google(email: str, google_sub: str) -> dict[str, Any]:
+    """A Google-only account: no password_hash. Email is trusted (Google verified
+    it), so the account starts verified."""
+    return query_one(
+        "INSERT INTO users (email, google_sub, is_verified) VALUES (%s, %s, TRUE) "
+        "RETURNING *",
+        (email, google_sub),
+    )
+
+
+def link_google_sub(user_id: int, google_sub: str) -> dict[str, Any]:
+    """Attach a Google identity to an existing (password) account with the same
+    verified email, and mark it verified."""
+    return query_one(
+        "UPDATE users SET google_sub = %s, is_verified = TRUE, updated_at = now() "
+        "WHERE id = %s RETURNING *",
+        (google_sub, user_id),
+    )
+
+
 def list_public() -> list[dict[str, Any]]:
     """Safe columns only (no password hash) — used by the admin users listing."""
     return query("SELECT id, email, role, is_verified FROM users ORDER BY id")

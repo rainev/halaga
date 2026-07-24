@@ -7,6 +7,9 @@ a real DB/Redis/S3 connection.
 
 import os
 
+# Marks the whole suite as test mode: rate limiting disables itself and the app
+# skips DB migrations, keeping these tests hermetic (no real DB/Redis needed).
+os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("JWT_ACCESS_SECRET", "test-access-secret")
 os.environ.setdefault("JWT_REFRESH_SECRET", "test-refresh-secret")
 os.environ.setdefault("PGHOST", "localhost")

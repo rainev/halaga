@@ -3,13 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Halaga — PSE Valuation</title>
+    <meta name="theme-color" content="#fafafa" />
+    <meta name="description" content="Portfolio-aware insights and valuation for PSE investors." />
+    <!-- Apply the saved theme before React mounts, so there's no flash of the
+         wrong mode. Mirrors ThemeContext's storage key. -->
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('finsight-theme');
+        const useDark = savedTheme === 'dark' || (!savedTheme && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', useDark);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', useDark ? '#121212' : '#fafafa');
+      } catch {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <title>FinSight · Investing, simplified</title>
   </head>
   <body>
     <div id="root"></div>

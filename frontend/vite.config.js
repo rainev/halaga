@@ -8,7 +8,7 @@ export default defineConfig({
     },
     server: {
         host: true, // listen on 0.0.0.0 so the container is reachable
-        port: 5173,
+        port: 4000,
         watch: {
             usePolling: true, // reliable file-watching across the Docker bind mount
         },
