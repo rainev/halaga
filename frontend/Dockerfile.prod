@@ -1,0 +1,35 @@
+# Production image for the Vite React app (Cloud Run).
+# Two stages: build the static bundle with Node, then serve it with `serve`.
+# Vite bakes VITE_* into the bundle AT BUILD TIME, so the API URL and Google
+# client id are passed as build args (see .github/workflows/deploy.yml).
+FROM node:22-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+# These reach the browser bundle — not secrets. Undefined → empty string, and
+# the client falls back to its localhost default (see src/lib/api.ts).
+ARG VITE_API_URL
+ARG VITE_GOOGLE_CLIENT_ID
+ENV VITE_API_URL=$VITE_API_URL \
+    VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+
+RUN npm run build
+
+# ── Runtime: static file server on $PORT ────────────────────────────
+FROM node:22-alpine AS runtime
+
+WORKDIR /app
+RUN npm install -g serve@14
+
+COPY --from=build /app/dist ./dist
+
+ENV PORT=8080
+EXPOSE 8080
+
+# -s = single-page-app fallback (all routes → index.html).
+CMD ["sh", "-c", "serve -s dist -l ${PORT}"]

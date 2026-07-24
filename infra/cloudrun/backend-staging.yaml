@@ -1,0 +1,121 @@
+# Cloud Run service — finsight backend (staging).
+#
+# Applied declaratively by .github/workflows/deploy.yml: the workflow runs
+# `envsubst` to fill ${IMAGE} and the ${...} env values from GitHub repo
+# Variables, then `gcloud run services replace` this file.
+#
+# The region label below must match env.REGION in the workflow — Cloud Run
+# rejects `services replace` on a location mismatch. serviceAccountName is
+# omitted so the service uses the project's default compute SA, which
+# scripts/bootstrap-gcp.sh grants secretAccessor. Secrets are pulled from
+# Secret Manager at container start; every secretKeyRef below must exist first
+# (bootstrap-gcp.sh creates them) or the deploy fails with "Secret not found".
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: finsight-backend-staging
+  labels:
+    cloud.googleapis.com/location: asia-southeast1
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/startup-cpu-boost: "true"
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/cpu-throttling: "true"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+        - image: ${IMAGE}
+          ports:
+            - name: http1
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 3
+            periodSeconds: 30
+            timeoutSeconds: 10
+            tcpSocket:
+              port: 8080
+          env:
+            # ── Non-secret config (from GitHub repo Variables) ──────────
+            - name: APP_ENV
+              value: "staging"
+            - name: GIT_COMMIT
+              value: "${GIT_COMMIT}"
+            - name: CLIENT_URL
+              value: "${CLIENT_URL}"
+            # Cross-site cookie: frontend and backend are different Cloud Run
+            # domains, so the refresh cookie must be SameSite=None (see
+            # app/routers/auth.py — Secure is auto-forced alongside it).
+            - name: COOKIE_SAMESITE
+              value: "none"
+            - name: RATE_LIMIT_ENABLED
+              value: "true"
+            # Postgres (managed — Supabase). Password is a secret, below.
+            - name: PGHOST
+              value: "${PGHOST}"
+            - name: PGPORT
+              value: "${PGPORT}"
+            - name: PGUSER
+              value: "${PGUSER}"
+            - name: PGDATABASE
+              value: "${PGDATABASE}"
+            - name: PGSSL
+              value: "true"
+            # Object storage — GCS via its S3-compatible endpoint. The HMAC
+            # key/secret are mounted as MINIO_ROOT_USER/PASSWORD below.
+            - name: MINIO_ENDPOINT
+              value: "https://storage.googleapis.com"
+            - name: MINIO_BUCKET
+              value: "${MINIO_BUCKET}"
+            # Optional — Google sign-in. Blank disables /auth/google.
+            - name: GOOGLE_CLIENT_ID
+              value: "${GOOGLE_CLIENT_ID}"
+            # ── Secrets (from Secret Manager) ───────────────────────────
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-jwt-access-secret
+                  key: latest
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-jwt-refresh-secret
+                  key: latest
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-pgpassword
+                  key: latest
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-redis-url
+                  key: latest
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-gcs-hmac-key
+                  key: latest
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-gcs-hmac-secret
+                  key: latest
+            # OPENAI_API_KEY is intentionally omitted: it's optional (the
+            # pipeline's LLM steps are skipped without it) and wiring a missing
+            # secret would fail the deploy. Add it later with:
+            #   gcloud run services update finsight-backend-staging \
+            #     --region=asia-southeast1 \
+            #     --update-secrets OPENAI_API_KEY=finsight-staging-openai-api-key:latest
+  traffic:
+    - latestRevision: true
+      percent: 100

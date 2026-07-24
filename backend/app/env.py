@@ -22,6 +22,12 @@ class Env:
     # Where the React app runs — needed for CORS + cookie handling.
     CLIENT_URL: str = os.environ.get("CLIENT_URL", "http://localhost:4000")
 
+    # Refresh-cookie SameSite policy. Default "lax" for same-site local dev.
+    # In staging/prod the frontend and backend live on different Cloud Run
+    # domains, so the cross-site refresh cookie must be "none" (browsers then
+    # also require Secure — enforced in routers/auth.py:_set_refresh_cookie).
+    COOKIE_SAMESITE: str = os.environ.get("COOKIE_SAMESITE", "lax").lower()
+
     # Auth / JWT
     JWT_ACCESS_SECRET: str = _required("JWT_ACCESS_SECRET")
     JWT_REFRESH_SECRET: str = _required("JWT_REFRESH_SECRET")

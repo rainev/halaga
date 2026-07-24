@@ -27,8 +27,9 @@ def _set_refresh_cookie(response: Response, token: str) -> None:
         key=REFRESH_COOKIE,
         value=token,
         httponly=True,
-        secure=env.is_production,  # HTTPS-only in prod
-        samesite="lax",
+        # SameSite=None requires Secure; also Secure whenever running prod-like.
+        secure=env.is_production or env.COOKIE_SAMESITE == "none",
+        samesite=env.COOKIE_SAMESITE,
         path=_COOKIE_PATH,
         max_age=_REFRESH_MAX_AGE,
     )
