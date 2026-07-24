@@ -1,7 +1,7 @@
 """Unit tests for the "Sign in with Google" service logic.
 
-The Google token verifier, the user store, and the Redis session store are all
-stubbed, so these run without network/DB/Redis and pin the find-or-create-or-link
+The Google token verifier, the user store, and the Postgres session store are
+all stubbed, so these run without network/DB and pin the find-or-create-or-link
 branching (the security-sensitive part).
 """
 
@@ -15,7 +15,7 @@ VERIFIED = {"sub": "g-123", "email": "a@b.com", "email_verified": True, "name": 
 
 @pytest.fixture(autouse=True)
 def _stub_sessions(monkeypatch):
-    # Issuing tokens records a session in Redis — stub it out.
+    # Issuing tokens records a session in Postgres — stub it out.
     monkeypatch.setattr(session_service, "create", lambda _uid, _jti: None)
 
 

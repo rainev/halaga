@@ -8,7 +8,7 @@ the data services are managed and live outside GCP:
 | Frontend / Backend compute | Cloud Run (2 services) |
 | Container images | Artifact Registry (`asia-southeast1`) |
 | Postgres (+pgvector) | **Supabase** (managed) |
-| Redis (sessions + rate limit) | **Upstash** (serverless) |
+| Sessions + rate limiting | **Postgres** (same Supabase DB — no separate Redis) |
 | Object storage | **GCS bucket** via its S3-compatible endpoint + HMAC key |
 | Secrets | Secret Manager |
 | CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) |
@@ -25,8 +25,10 @@ The backend runs DB migrations and ensures the storage bucket **on boot**
   (`aws-0-<region>.pooler.supabase.com`), user (`postgres.<project-ref>`),
   db (`postgres`), and the database password. pgvector is available; the
   boot migration enables it.
-- **Upstash**: new Redis database → copy the `rediss://…` URL (includes the
-  password).
+
+> No Redis to set up: revocable sessions and rate-limit counters live in
+> Postgres (`sessions` / `rate_limits` tables, created by the boot migration).
+> If you later outgrow that, reintroduce Redis for just those two paths.
 
 ### 2. Bootstrap GCP
 ```bash
@@ -35,7 +37,7 @@ PROJECT_ID=your-gcp-project ./scripts/bootstrap-gcp.sh
 ```
 This enables APIs, creates the Artifact Registry repo, a GCS bucket + HMAC key,
 the `github-deployer` service account, and the Secret Manager entries. It will
-prompt you to paste the Supabase password and the Upstash URL. It prints the
+prompt you to paste the Supabase database password. It prints the
 exact GitHub secrets/variables to set — then delete the emitted key file.
 
 ### 3. Configure GitHub
@@ -94,5 +96,6 @@ gcloud run services update finsight-backend-staging --region=asia-southeast1 \
 ```
 
 ## Cost note
-Cloud Run scales to zero (pay per request). Supabase/Upstash have free tiers.
-The only always-on cost is Artifact Registry storage (cents) + the GCS bucket.
+Cloud Run scales to zero (pay per request). Supabase has a free tier. The only
+always-on cost is Artifact Registry storage (cents) + the GCS bucket. No Redis
+bill — sessions and rate limits share the Postgres you already have.

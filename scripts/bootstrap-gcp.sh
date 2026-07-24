@@ -8,9 +8,8 @@
 #
 # Data services live OUTSIDE GCP by design (see docs/DEPLOY-staging.md):
 #   • Postgres  → Supabase (managed, pgvector)
-#   • Redis     → Upstash (serverless)
-# This script only asks you to paste their connection strings; it does not
-# create them.
+# Sessions + rate limiting also live in that Postgres (no Redis). This script
+# only asks you to paste the DB password; it does not create the database.
 #
 # Run interactively the FIRST time. Re-running is safe — create steps that hit
 # an existing resource just warn and continue.
@@ -115,11 +114,10 @@ openssl rand -base64 48 | tr -d '\n' | put_secret finsight-staging-jwt-refresh-s
 openssl rand -base64 24 | tr -d '/+=\n' | put_secret finsight-staging-admin-password
 
 echo ""
-echo "→ Paste external connection strings (input hidden):"
+echo "→ Paste the Supabase DB password (input hidden):"
 read -r -s -p "  Supabase DB password (PGPASSWORD): " PGPASSWORD; echo
 printf '%s' "${PGPASSWORD}" | put_secret finsight-staging-pgpassword
-read -r -s -p "  Upstash REDIS_URL (rediss://…):     " REDIS_URL; echo
-printf '%s' "${REDIS_URL}" | put_secret finsight-staging-redis-url
+# Sessions + rate limiting live in Postgres now — no Redis to provision.
 
 # ─── 8. GitHub Actions deployer key ─────────────────────────────────
 KEY_FILE="$(pwd)/github-deployer-key.json"

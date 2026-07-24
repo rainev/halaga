@@ -2,13 +2,13 @@
 
 env.py reads (and validates) configuration at import time, so these must be in
 place first. The values are throwaway — the pure valuation + jwt tests never open
-a real DB/Redis/S3 connection.
+a real DB/S3 connection.
 """
 
 import os
 
 # Marks the whole suite as test mode: rate limiting disables itself and the app
-# skips DB migrations, keeping these tests hermetic (no real DB/Redis needed).
+# skips DB migrations, keeping these tests hermetic (no real DB needed).
 os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("JWT_ACCESS_SECRET", "test-access-secret")
 os.environ.setdefault("JWT_REFRESH_SECRET", "test-refresh-secret")

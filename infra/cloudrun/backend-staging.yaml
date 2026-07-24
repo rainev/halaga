@@ -95,11 +95,7 @@ spec:
                 secretKeyRef:
                   name: finsight-staging-pgpassword
                   key: latest
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: finsight-staging-redis-url
-                  key: latest
+            # Sessions + rate limits now live in Postgres — no Redis/REDIS_URL.
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:

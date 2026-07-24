@@ -3,7 +3,6 @@
 from fastapi import APIRouter
 
 from ..db import query_one
-from ..redis_client import client
 
 router = APIRouter(tags=["health"])
 
@@ -15,14 +14,12 @@ def health() -> dict:
 
 @router.get("/status")
 def status() -> dict:
-    checks = {"db": False, "redis": False}
+    # Postgres is the only stateful dependency now (sessions + rate limits live
+    # there too, alongside the app data).
+    checks = {"db": False}
     try:
         query_one("SELECT 1 AS ok")
         checks["db"] = True
-    except Exception:
-        pass
-    try:
-        checks["redis"] = client.ping()
     except Exception:
         pass
     ok = all(checks.values())

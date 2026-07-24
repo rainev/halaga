@@ -1,7 +1,7 @@
 """End-to-end router tests via FastAPI's TestClient.
 
 Auth is overridden and market assumptions / storage are stubbed so these run
-without a live DB, Redis, or MinIO — they exercise input validation, the resolve
+without a live DB or MinIO — they exercise input validation, the resolve
 logic, and response shaping. (Persistence paths use save=False.)"""
 
 import pytest

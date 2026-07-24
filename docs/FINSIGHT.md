@@ -65,8 +65,8 @@ disclaimer, and uses non-imperative language.
 |---|---|
 | Frontend | Vite + React + TypeScript, Tailwind, Radix UI |
 | Backend | FastAPI (Python), raw SQL via **psycopg** (no ORM) |
-| Auth | JWT access token + rotating refresh token (httpOnly cookie), revocable sessions in Redis; Google Sign-In |
-| Data | Postgres 16, Redis 7, MinIO (S3-compatible) |
+| Auth | JWT access token + rotating refresh token (httpOnly cookie), revocable sessions in Postgres; Google Sign-In |
+| Data | Postgres 16 (app data + sessions + rate limits), MinIO (S3-compatible) |
 | Orchestration | docker-compose |
 
 ## Layout
@@ -81,7 +81,7 @@ backend/            FastAPI service
     seed/           admin, market assumptions, companies
   tests/            engine, jwt, and API tests (pytest)
 frontend/           Vite React app (auth + valuation UI)
-infrastructure/     postgres init SQL, redis.conf, minio bucket, dev scripts
+infrastructure/     postgres init SQL, minio bucket, dev scripts
 docs/               product specs (e.g. portfolio-aware insights)
 design/             HTML mockups
 docker-compose.yml

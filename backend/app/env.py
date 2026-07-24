@@ -40,10 +40,7 @@ class Env:
     # frontend's VITE_GOOGLE_CLIENT_ID (the OAuth 2.0 Web client ID).
     GOOGLE_CLIENT_ID: str = os.environ.get("GOOGLE_CLIENT_ID", "")
 
-    # Redis — backs the revocable refresh-token sessions + rate limiting.
-    REDIS_URL: str = os.environ.get("REDIS_URL", "redis://localhost:6379")
-
-    # Rate limiting. Disabled automatically under tests (no Redis server there).
+    # Rate limiting. Disabled automatically under tests (no DB there).
     RATE_LIMIT_ENABLED: bool = (
         os.environ.get(
             "RATE_LIMIT_ENABLED",

@@ -1,8 +1,8 @@
 # FinSight (Halaga) — Worklog
 
 **Project:** PSE (Philippine Stock Exchange) valuation workbench
-**Stack:** Vite + React + TypeScript · **FastAPI** (Python, raw SQL via psycopg, no ORM) · Postgres 16 + Redis 7 + MinIO · docker-compose
-**Auth:** JWT access token (in-memory) + rotating refresh token (httpOnly cookie), revocable sessions in Redis
+**Stack:** Vite + React + TypeScript · **FastAPI** (Python, raw SQL via psycopg, no ORM) · Postgres 16 + MinIO · docker-compose
+**Auth:** JWT access token (in-memory) + rotating refresh token (httpOnly cookie), revocable sessions in Postgres (staging consolidated off Redis)
 **Version control:** git · branch `main`
 
 ---
@@ -43,7 +43,7 @@ backend/app/
   seed/        admin, market assumptions, companies
   tests/       engine, jwt, API tests (pytest)
 frontend/      Vite React app (auth + valuation UI)
-infrastructure/  postgres init SQL, redis.conf, minio bucket, dev scripts
+infrastructure/  postgres init SQL, minio bucket, dev scripts
 ```
 Reference data in repo: `PH-Stocks/`, `JFC FS Reports/`, `Refinitiv Interface/`, valuation/model test spreadsheets.
 

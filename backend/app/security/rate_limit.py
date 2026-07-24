@@ -1,8 +1,10 @@
-"""Redis-backed rate limiting — a fixed-window counter per key (IP or user).
+"""Postgres-backed rate limiting — a fixed-window counter per key (IP or user).
 
-Because the counter lives in Redis, the limit holds across multiple backend
-instances. This blunts abuse, brute-force, and credential stuffing. It does NOT
-stop a volumetric DDoS — that needs an edge layer (Cloudflare / a load balancer).
+Because the counter lives in Postgres (shared by every backend instance), the
+limit holds across instances. This blunts abuse, brute-force, and credential
+stuffing. It does NOT stop a volumetric DDoS — that needs an edge layer
+(Cloudflare / a load balancer). Consolidated here from Redis so staging needs
+only one datastore — see docs/DEPLOY-staging.md.
 
 Used as a FastAPI dependency so a route (or a whole router) can opt into a limit:
 
@@ -11,7 +13,7 @@ Used as a FastAPI dependency so a route (or a whole router) can opt into a limit
     @router.post("/login", dependencies=[Depends(strict)])
     def login(...): ...
 
-If Redis is briefly unavailable we fail OPEN (a rate-limit backend hiccup
+If the store is briefly unavailable we fail OPEN (a rate-limit backend hiccup
 shouldn't take the API down).
 """
 
@@ -19,9 +21,9 @@ import logging
 
 from fastapi import Request, Response
 
+from ..db import query_one
 from ..env import env
 from ..errors import AppError
-from ..redis_client import client
 
 log = logging.getLogger("uvicorn.error")
 
@@ -74,15 +76,32 @@ class RateLimiter:
 
         key = f"rl:{self.key_prefix}:{self._who(request)}"
         try:
-            count = client.incr(key)
-            if count == 1:
-                client.expire(key, self.window_sec)
+            # One atomic upsert = the whole fixed-window step: start a new window
+            # (count=1) when the row is absent or its window has elapsed,
+            # otherwise increment. RETURNING gives the new count and the seconds
+            # left in the window (for Retry-After).
+            row = query_one(
+                """
+                INSERT INTO rate_limits (key, count, reset_at)
+                VALUES (%s, 1, now() + make_interval(secs => %s))
+                ON CONFLICT (key) DO UPDATE SET
+                  count = CASE WHEN rate_limits.reset_at <= now()
+                               THEN 1 ELSE rate_limits.count + 1 END,
+                  reset_at = CASE WHEN rate_limits.reset_at <= now()
+                                  THEN now() + make_interval(secs => %s)
+                                  ELSE rate_limits.reset_at END
+                RETURNING count,
+                          GREATEST(0, CEIL(EXTRACT(EPOCH FROM (reset_at - now()))))::int AS ttl
+                """,
+                (key, self.window_sec, self.window_sec),
+            )
+            count = row["count"]
+            ttl = row["ttl"]
 
             response.headers["X-RateLimit-Limit"] = str(self.max_hits)
             response.headers["X-RateLimit-Remaining"] = str(max(0, self.max_hits - count))
 
             if count > self.max_hits:
-                ttl = client.ttl(key)
                 if ttl > 0:
                     response.headers["Retry-After"] = str(ttl)
                 raise AppError(
@@ -90,5 +109,5 @@ class RateLimiter:
                 )
         except AppError:
             raise
-        except Exception as exc:  # Redis blip: fail open, don't take the API down.
+        except Exception as exc:  # store blip: fail open, don't take the API down.
             log.warning("Rate limiter unavailable, allowing request: %s", exc)

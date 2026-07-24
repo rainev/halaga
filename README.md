@@ -14,8 +14,8 @@ from Node/Express to **Python/FastAPI**.
 |---|---|
 | Frontend | Vite + React + TypeScript |
 | Backend | FastAPI (Python), raw SQL via **psycopg** (no ORM) |
-| Auth | JWT access token (in-memory) + rotating refresh token (httpOnly cookie), revocable sessions in Redis |
-| Data | Postgres 16, Redis 7, MinIO (S3-compatible) |
+| Auth | JWT access token (in-memory) + rotating refresh token (httpOnly cookie), revocable sessions in Postgres |
+| Data | Postgres 16 (app data + sessions + rate limits), MinIO (S3-compatible) |
 | Orchestration | docker-compose |
 
 ## Quick start
@@ -44,7 +44,7 @@ backend/            FastAPI service
     seed/           admin, market assumptions, companies
   tests/            engine, jwt, and API tests  (pytest)
 frontend/           Vite React app (auth + valuation UI)
-infrastructure/     postgres init SQL, redis.conf, minio bucket, dev scripts
+infrastructure/     postgres init SQL, minio bucket, dev scripts
 docker-compose.yml
 ```
 

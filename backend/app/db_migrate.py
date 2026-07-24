@@ -50,6 +50,27 @@ _STATEMENTS: tuple[str, ...] = (
     END $$
     """,
     "ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL",
+    # --- Auth sessions (revocable refresh tokens; formerly Redis) ---
+    # One row per live refresh token. is_valid() checks expires_at; rows are
+    # pruned opportunistically on create() (see services/session_service.py).
+    """
+    CREATE TABLE IF NOT EXISTS sessions (
+      jti        TEXT PRIMARY KEY,
+      user_id    INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      expires_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    "CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id)",
+    "CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions (expires_at)",
+    # --- Rate-limit counters (fixed window per key; formerly Redis) ---
+    """
+    CREATE TABLE IF NOT EXISTS rate_limits (
+      key      TEXT PRIMARY KEY,
+      count    INTEGER NOT NULL,
+      reset_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    "CREATE INDEX IF NOT EXISTS idx_rate_limits_reset ON rate_limits (reset_at)",
     # --- Files ---
     """
     CREATE TABLE IF NOT EXISTS files (

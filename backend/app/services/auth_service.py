@@ -25,7 +25,7 @@ class AuthResult(TypedDict):
 
 def _issue_tokens(user: dict[str, Any]) -> tuple[str, str]:
     """Issue an access/refresh pair and record the refresh token's session in
-    Redis (keyed by a fresh jti) so it can later be revoked."""
+    Postgres (keyed by a fresh jti) so it can later be revoked."""
     jti = str(uuid.uuid4())
     session_service.create(user["id"], jti)
     access = sign_access_token(user["id"], user["email"], user["role"])

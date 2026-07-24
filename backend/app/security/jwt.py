@@ -3,8 +3,8 @@
 - The access token carries {sub, email, role} and is sent in the Authorization
   header on every request.
 - The refresh token additionally carries a `jti` (a unique session id). The
-  server tracks live jtis in Redis, which is what makes refresh tokens revocable
-  (see services/session_service.py).
+  server tracks live jtis in Postgres, which is what makes refresh tokens
+  revocable (see services/session_service.py).
 
 verify_* checks the signature/expiry AND the payload shape, so a token with a
 missing/renamed claim is rejected even if its signature is valid.
