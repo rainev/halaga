@@ -99,3 +99,22 @@ gcloud run services update finsight-backend-staging --region=asia-southeast1 \
 Cloud Run scales to zero (pay per request). Supabase has a free tier. The only
 always-on cost is Artifact Registry storage (cents) + the GCS bucket. No Redis
 bill — sessions and rate limits share the Postgres you already have.
+
+## Hard cost cap (`infra/budget-guard/`)
+
+A GCP budget is only an **alert** — it never stops spending. `infra/budget-guard/`
+is a Cloud Function that makes the cap real: a **$10** Cloud Billing budget on the
+project publishes to the `finsight-budget-alerts` Pub/Sub topic, and when actual
+cost reaches the budget the function **unlinks the billing account**, which halts
+every billable resource (Cloud Run stops serving). The function's runtime SA has
+`roles/billing.projectManager` so it can do this.
+
+If the cap ever trips, staging goes offline (by design). Investigate, then
+re-enable:
+
+```bash
+gcloud billing projects link finsight-staging --billing-account=<ACCOUNT_ID>
+```
+
+Change the cap amount by editing the budget:
+`gcloud billing budgets list --billing-account=<ID>` → `budgets update …`.

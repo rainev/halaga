@@ -43,3 +43,4 @@ JFC FS Reports/
 Refinitiv Interface/
 *.xlsx
 ~$*
+github-deployer-key.json
