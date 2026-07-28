@@ -106,6 +106,16 @@ spec:
                 secretKeyRef:
                   name: finsight-staging-gcs-hmac-secret
                   key: latest
+            # GNews API key — powers /api/news and the news→insight pipeline.
+            # Safe to wire declaratively: the secret is created by
+            # scripts/bootstrap-gcp.sh (finsight-staging-gnews-api-key). The
+            # other GNEWS_* knobs (query, lang, country, max, TTL) keep their
+            # code defaults in app/env.py; override via plain env if needed.
+            - name: GNEWS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: finsight-staging-gnews-api-key
+                  key: latest
             # OPENAI_API_KEY is intentionally omitted: it's optional (the
             # pipeline's LLM steps are skipped without it) and wiring a missing
             # secret would fail the deploy. Add it later with:

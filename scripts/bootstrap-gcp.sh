@@ -119,6 +119,21 @@ read -r -s -p "  Supabase DB password (PGPASSWORD): " PGPASSWORD; echo
 printf '%s' "${PGPASSWORD}" | put_secret finsight-staging-pgpassword
 # Sessions + rate limiting live in Postgres now — no Redis to provision.
 
+# GNews API key (gnews.io) — powers /api/news + the news→insight pipeline. The
+# Cloud Run manifest wires it as a secretKeyRef, so the secret must exist before
+# the first deploy. Optional feature key: provide via the GNEWS_API_KEY env var
+# or paste when prompted. If you skip it, either add the secret before deploying
+# or remove the GNEWS_API_KEY secretKeyRef from infra/cloudrun/backend-staging.yaml
+# (else the deploy fails with "Secret not found").
+if [[ -z "${GNEWS_API_KEY:-}" ]]; then
+  read -r -s -p "  GNews API key (GNEWS_API_KEY, blank to skip): " GNEWS_API_KEY; echo
+fi
+if [[ -n "${GNEWS_API_KEY}" ]]; then
+  printf '%s' "${GNEWS_API_KEY}" | put_secret finsight-staging-gnews-api-key
+else
+  echo "  (skipped — add finsight-staging-gnews-api-key before deploy, or drop its secretKeyRef)"
+fi
+
 # ─── 8. GitHub Actions deployer key ─────────────────────────────────
 KEY_FILE="$(pwd)/github-deployer-key.json"
 echo "→ Creating deployer SA key at ${KEY_FILE}…"
