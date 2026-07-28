@@ -45,14 +45,29 @@ CREATE INDEX IF NOT EXISTS idx_companies_sector ON companies (sector);
 CREATE TABLE IF NOT EXISTS market_assumptions (
   id                       SERIAL PRIMARY KEY,
   key                      TEXT NOT NULL UNIQUE,
-  risk_free_rate           NUMERIC NOT NULL,          -- decimal, e.g. 0.06 (PHP 10Y govt / BVAL)
-  equity_risk_premium      NUMERIC NOT NULL,          -- decimal, e.g. 0.075
+  local_government_yield   NUMERIC NOT NULL,          -- local PHP govt benchmark; contains sovereign risk
+  sovereign_default_spread NUMERIC NOT NULL,          -- stripped from local yield for default-free proxy
+  risk_free_rate           NUMERIC NOT NULL,          -- default-free PHP proxy
+  equity_risk_premium      NUMERIC NOT NULL,          -- mature-market ERP; multiplied by beta
+  country_risk_premium     NUMERIC NOT NULL,          -- PH CRP; multiplied by country exposure
+  assumptions_as_of        TEXT NOT NULL,
+  assumptions_source       TEXT NOT NULL,
+  assumptions_source_url   TEXT NOT NULL,
   graham_current_yield     NUMERIC NOT NULL,          -- PERCENT, e.g. 6.0 (Graham's "Y")
   graham_normalizing_yield NUMERIC NOT NULL DEFAULT 4.4, -- Graham's original AAA yield constant
   graham_base_pe           NUMERIC NOT NULL DEFAULT 8.5, -- P/E for a no-growth company
   default_perpetual_growth NUMERIC NOT NULL DEFAULT 0.03, -- PH long-run nominal growth
   updated_at               TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Safe additive upgrade for databases created by the earlier schema.
+ALTER TABLE market_assumptions
+  ADD COLUMN IF NOT EXISTS local_government_yield NUMERIC,
+  ADD COLUMN IF NOT EXISTS sovereign_default_spread NUMERIC,
+  ADD COLUMN IF NOT EXISTS country_risk_premium NUMERIC,
+  ADD COLUMN IF NOT EXISTS assumptions_as_of TEXT,
+  ADD COLUMN IF NOT EXISTS assumptions_source TEXT,
+  ADD COLUMN IF NOT EXISTS assumptions_source_url TEXT;
 
 -- Saved valuation runs. inputs/assumptions/result are stored verbatim as JSON so
 -- a run is fully reproducible even if the engine's defaults change later.

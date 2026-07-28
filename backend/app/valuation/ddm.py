@@ -3,7 +3,7 @@
 Intrinsic value P = D1 / (r - g), where D1 = last_dividend * (1 + g).
 """
 
-from .common import summarize
+from .common import summarize, validate_terminal_spread
 
 
 def ddm_valuation(
@@ -13,8 +13,7 @@ def ddm_valuation(
     discount_rate: float,
     current_price: float | None = None,
 ) -> dict:
-    if discount_rate <= growth_rate:
-        raise ValueError("discount_rate must exceed growth_rate")
+    validate_terminal_spread(discount_rate, growth_rate)
 
     d1 = last_dividend * (1 + growth_rate)
     intrinsic = d1 / (discount_rate - growth_rate)
@@ -26,6 +25,11 @@ def ddm_valuation(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {
+            "status": "pass",
+            "warnings": [],
+            "minimum_rate_growth_spread": 0.03,
+        },
         "detail": {
             "method": "gordon",
             "last_dividend": last_dividend,
@@ -55,8 +59,10 @@ def two_stage_ddm(
     """
     if high_growth_years < 1:
         raise ValueError("high_growth_years must be at least 1")
-    if discount_rate <= terminal_growth:
-        raise ValueError("discount_rate must exceed terminal_growth")
+    try:
+        validate_terminal_spread(discount_rate, terminal_growth)
+    except ValueError as exc:
+        raise ValueError(str(exc).replace("growth_rate", "terminal_growth")) from exc
 
     dividends: list[float] = []
     pv_stage1 = 0.0
@@ -79,6 +85,11 @@ def two_stage_ddm(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {
+            "status": "pass",
+            "warnings": [],
+            "minimum_rate_growth_spread": 0.03,
+        },
         "detail": {
             "method": "two_stage",
             "last_dividend": last_dividend,

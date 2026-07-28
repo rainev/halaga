@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "overrides": {
+    "8114e679e9ea0f065d18de633fc46433cf891c353d77782630fa8bf17334de22": {
+      "expectedSymbol": "OGP",
+      "filename": "OGP Q2 2024 Report - SEC Form 17Q_signed.pdf",
+      "reason": "User-supplied OGP filing is image-only/redacted and cannot be identified from its extracted opening text; hash reviewed against the named source file."
+    },
+    "ac8f57f3178d039fcb34d66ab78cbb46af3c006a707a2f3c3d606d8b306b9ea5": {
+      "expectedSymbol": "OGP",
+      "filename": "2025 AFS compressed_redacted.pdf",
+      "reason": "User-supplied OGP audited financial statements are image-only/redacted and cannot be identified from extracted opening text; hash reviewed against the named source file."
+    }
+  }
+}

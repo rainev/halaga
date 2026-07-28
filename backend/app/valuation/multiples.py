@@ -8,6 +8,8 @@ from statistics import mean, median
 
 from .common import summarize
 
+MIN_VALID_PEERS = 4
+
 
 def multiples_valuation(
     *,
@@ -25,8 +27,10 @@ def multiples_valuation(
             continue
         peer_pes.append({"ticker": p.get("ticker"), "price": price, "eps": eps, "pe": price / eps})
 
-    if not peer_pes:
-        raise ValueError("Need at least one peer with a positive EPS")
+    if target_eps <= 0:
+        raise ValueError("target_eps must be positive for P/E valuation")
+    if len(peer_pes) < MIN_VALID_PEERS:
+        raise ValueError("Need at least four valid peers with positive EPS")
 
     pes = [p["pe"] for p in peer_pes]
     avg_pe = mean(pes)
@@ -43,6 +47,7 @@ def multiples_valuation(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {"status": "pass", "warnings": [], "valid_peer_count": len(peer_pes)},
         "detail": {
             "metric": "pe",
             "target_eps": target_eps,
@@ -73,8 +78,10 @@ def pb_valuation(
             continue
         rows.append({"ticker": p.get("ticker"), "price": price, "bvps": bvps, "pb": price / bvps})
 
-    if not rows:
-        raise ValueError("Need at least one peer with a positive book value per share")
+    if target_book_value_per_share <= 0:
+        raise ValueError("target_book_value_per_share must be positive for P/B valuation")
+    if len(rows) < MIN_VALID_PEERS:
+        raise ValueError("Need at least four valid peers with positive book value per share")
 
     pbs = [r["pb"] for r in rows]
     avg_pb = mean(pbs)
@@ -88,6 +95,7 @@ def pb_valuation(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {"status": "pass", "warnings": [], "valid_peer_count": len(rows)},
         "detail": {
             "metric": "pb",
             "target_book_value_per_share": target_book_value_per_share,
@@ -114,6 +122,8 @@ def ev_ebitda_valuation(
     list of {ticker?, ev, ebitda}."""
     if shares_outstanding <= 0:
         raise ValueError("shares_outstanding must be positive")
+    if target_ebitda <= 0:
+        raise ValueError("target_ebitda must be positive for EV/EBITDA valuation")
 
     rows = []
     for p in peers:
@@ -123,8 +133,8 @@ def ev_ebitda_valuation(
             continue
         rows.append({"ticker": p.get("ticker"), "ev": ev, "ebitda": ebitda, "ev_ebitda": ev / ebitda})
 
-    if not rows:
-        raise ValueError("Need at least one peer with positive EBITDA")
+    if len(rows) < MIN_VALID_PEERS:
+        raise ValueError("Need at least four valid peers with positive EBITDA")
 
     multiples = [r["ev_ebitda"] for r in rows]
     avg_mult = mean(multiples)
@@ -141,6 +151,7 @@ def ev_ebitda_valuation(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {"status": "pass", "warnings": [], "valid_peer_count": len(rows)},
         "detail": {
             "metric": "ev_ebitda",
             "target_ebitda": target_ebitda,

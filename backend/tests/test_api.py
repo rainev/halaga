@@ -58,8 +58,7 @@ def test_dcf_endpoint(client):
     assert body["intrinsic_value"] == pytest.approx(143.18, abs=0.05)
 
 
-def test_dcf_derives_discount_from_beta(client):
-    # No discount_rate given, but beta 1.0 -> CAPM = 0.06 + 1*0.075 = 0.135.
+def test_firm_dcf_rejects_beta_only_cost_of_equity(client):
     r = client.post(
         "/api/valuations/dcf",
         json={
@@ -67,6 +66,25 @@ def test_dcf_derives_discount_from_beta(client):
             "growth_rate": 0.05,
             "years": 5,
             "beta": 1.0,
+            "shares_outstanding": 10,
+        },
+    )
+    assert r.status_code == 400
+    assert "WACC" in r.json()["error"]
+
+
+def test_firm_dcf_builds_wacc_from_complete_inputs(client):
+    r = client.post(
+        "/api/valuations/dcf",
+        json={
+            "method": "fcff",
+            "base_fcf": 100,
+            "growth_rate": 0.05,
+            "years": 5,
+            "beta": 1.0,
+            "cost_of_debt": 0.06,
+            "current_price": 10,
+            "total_debt": 100,
             "shares_outstanding": 10,
         },
     )
@@ -89,7 +107,7 @@ def test_graham_uses_ph_yield_default(client):
     assert r.status_code == 200
     body = r.json()
     assert body["intrinsic_value"] == pytest.approx(168.36, abs=0.1)
-    assert body["verdict"] == "Sell"
+    assert body["verdict"] == "Above margin-of-safety threshold"
 
 
 def test_multiples_endpoint(client):
@@ -99,12 +117,37 @@ def test_multiples_endpoint(client):
             "peers": [
                 {"ticker": "META", "price": 669.21, "eps": 27.52},
                 {"ticker": "AAPL", "price": 315.32, "eps": 8.27},
+                {"ticker": "GOOG", "price": 355.03, "eps": 13.11},
+                {"ticker": "MSFT", "price": 385.10, "eps": 16.79},
             ],
             "target_eps": 25.0,
         },
     )
     assert r.status_code == 200
-    assert r.json()["detail"]["average_pe"] == pytest.approx((669.21 / 27.52 + 315.32 / 8.27) / 2)
+    assert r.json()["validation"]["valid_peer_count"] == 4
+
+
+def test_bank_residual_income_endpoint(client):
+    r = client.post(
+        "/api/valuations/residual-income",
+        json={
+            "book_value_per_share": 121.78484165705865,
+            "current_roe": 0.13947789246329256,
+            "cost_of_equity": 0.1107,
+            "current_payout_ratio": 0.26887,
+            "terminal_roe": 0.125,
+            "terminal_growth": 0.035,
+            "years": 5,
+        },
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["model"] == "residual_income"
+    assert body["intrinsic_value"] == pytest.approx(150.48, abs=0.02)
+    assert body["detail"]["ddm_cross_check"] == pytest.approx(
+        body["intrinsic_value"], abs=0.01
+    )
+    assert body["detail"]["justified_pb_value"] == pytest.approx(144.79, abs=0.02)
 
 
 def test_invalid_shares_is_422(client):
