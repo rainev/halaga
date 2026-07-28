@@ -80,6 +80,17 @@ export interface FeedInsight {
   created_at: string
 }
 
+// --- News feed (raw market news, pre-insight) ---
+
+export interface NewsArticle {
+  id: number
+  source: string
+  url: string
+  title: string
+  snippet: string | null
+  published_at: string | null
+}
+
 // --- Research workbench (filing-based) ---
 
 export type Sentiment = 'bear' | 'base' | 'bull'

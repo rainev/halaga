@@ -25,6 +25,18 @@ class NewsItem(BaseModel):
     status: str
 
 
+class NewsArticle(BaseModel):
+    """One row of the reader-facing /api/news feed: a stored article trimmed to
+    what the UI shows (a snippet rather than the full body)."""
+
+    id: int
+    source: str
+    url: str
+    title: str
+    snippet: str | None = None
+    published_at: datetime | None = None
+
+
 class FeedInsight(BaseModel):
     """One row of a user's holdings-scoped feed: the insight + its article and
     the company it concerns."""

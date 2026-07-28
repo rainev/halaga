@@ -6,6 +6,7 @@ import {
   HeartPulse,
   LogOut,
   Newspaper,
+  Rss,
   Scale,
   Sparkles,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ import { ThemeToggle } from './ThemeToggle'
 
 const NAV = [
   { to: '/', label: 'Insights', icon: Newspaper, end: true },
+  { to: '/news', label: 'News', icon: Rss, end: false },
   { to: '/rankings', label: 'Rankings', icon: BarChart3, end: false },
   { to: '/health', label: 'Financial Health', icon: HeartPulse, end: false },
   { to: '/valuation', label: 'Valuation', icon: Scale, end: false },
@@ -107,7 +109,7 @@ export function Layout() {
 
       {/* Mobile bottom nav */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-7 border-t border-[var(--app-border)] bg-[var(--app-surface)]/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-8 border-t border-[var(--app-border)] bg-[var(--app-surface)]/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
         aria-label="Mobile navigation"
       >
         {NAV.map(({ to, label, icon: Icon, end }) => (

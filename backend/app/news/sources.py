@@ -9,9 +9,14 @@ For now only `ManualSource` is wired (articles submitted via the admin API).
 `PseEdgeSource` and vendor adapters are placeholders to fill in later.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Protocol
+
+from ..env import env
+
+log = logging.getLogger("uvicorn.error")
 
 
 @dataclass
@@ -66,12 +71,64 @@ class PseEdgeSource:
         raise NotImplementedError("PSE EDGE ingestion not implemented yet.")
 
 
+def _parse_published(value: str | None) -> datetime | None:
+    """GNews stamps articles as ISO-8601 with a 'Z' suffix; normalize to an
+    aware datetime (or None if absent/unparseable)."""
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _to_raw(article: dict) -> RawArticle | None:
+    """Map one GNews article into a RawArticle, or None if it lacks the url/title
+    the pipeline needs. `content` (truncated on the free tier) is preferred over
+    `description` as the body since it gives the analyzer more to match on."""
+    url = (article.get("url") or "").strip()
+    title = (article.get("title") or "").strip()
+    if not url or not title:
+        return None
+    body = article.get("content") or article.get("description")
+    return RawArticle(
+        source="gnews",
+        url=url,
+        title=title,
+        body=body,
+        published_at=_parse_published(article.get("publishedAt")),
+    )
+
+
 @dataclass
-class NewsApiSource:
-    """A third-party news API (e.g. NewsAPI.org / GNews). TODO: call the vendor
-    with an API key and map its response into RawArticle rows."""
+class GNewsSource:
+    """Pulls PSE-relevant headlines from GNews (gnews.io). Search parameters
+    default to the GNEWS_* env config but can be overridden per instance.
 
-    name: str = "news_api"
+    `fetch()` is a safe no-op when no API key is configured, so this source can
+    sit in the pipeline's SOURCES list unconditionally.
+    """
 
-    def fetch(self) -> list[RawArticle]:  # pragma: no cover - placeholder
-        raise NotImplementedError("News API ingestion not implemented yet.")
+    name: str = "gnews"
+    query: str | None = None
+    lang: str | None = None
+    country: str | None = None
+    max_articles: int | None = None
+
+    def fetch(self) -> list[RawArticle]:
+        # Imported lazily so this module has no import-time dependency on the
+        # HTTP client (and no cycle: gnews_client does not import sources).
+        from .gnews_client import GNewsClient
+
+        client = GNewsClient()
+        if not client.is_enabled():
+            return []
+        raw = client.search(
+            self.query or env.GNEWS_QUERY,
+            lang=self.lang or env.GNEWS_LANG,
+            country=self.country or env.GNEWS_COUNTRY,
+            max_articles=self.max_articles or env.GNEWS_MAX,
+        )
+        articles = [a for a in (_to_raw(x) for x in raw) if a is not None]
+        log.info("GNews fetch: %d articles", len(articles))
+        return articles

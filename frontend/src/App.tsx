@@ -11,6 +11,7 @@ import Valuation from './pages/Valuation'
 import Saved from './pages/Saved'
 import Portfolio from './pages/Portfolio'
 import Insights from './pages/Insights'
+import News from './pages/News'
 import Rankings from './pages/Rankings'
 import FinancialHealth from './pages/FinancialHealth'
 import ValuationLab from './pages/ValuationLab'
@@ -33,6 +34,7 @@ export default function App() {
                 }
               >
                 <Route path="/" element={<Insights />} />
+                <Route path="/news" element={<News />} />
                 <Route path="/rankings" element={<Rankings />} />
                 <Route path="/health" element={<FinancialHealth />} />
                 <Route path="/valuation" element={<ValuationLab />} />

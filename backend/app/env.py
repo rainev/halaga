@@ -71,6 +71,34 @@ class Env:
     # which must match the news_items.embedding column dimension.
     OPENAI_EMBED_MODEL: str = os.environ.get("OPENAI_EMBED_MODEL", "text-embedding-3-small")
 
+    # GNews (gnews.io) — hosted news search that feeds the /api/news feed and the
+    # insights pipeline. Optional: with no key GNews ingestion is skipped and the
+    # manual submit path still works.
+    # `or default` (not get's default) so a present-but-empty value — how
+    # docker-compose passes an unset optional var — still falls back to the default.
+    GNEWS_API_KEY: str = os.environ.get("GNEWS_API_KEY", "")
+    # Search query for PSE-relevant headlines. GNews supports quoted phrases and
+    # AND/OR operators; the default targets the Philippine market.
+    # Broader beats a narrow query: a term like just "Philippine Stock Exchange"
+    # misses same-day market stories (peso/PSEi moves, earnings) that never name
+    # the exchange in full. GNews still sorts these newest-first for us.
+    GNEWS_QUERY: str = os.environ.get("GNEWS_QUERY") or (
+        '"Philippine Stock Exchange" OR PSEi OR "Philippine stocks" '
+        'OR "Philippine economy" OR "Philippine peso"'
+    )
+    GNEWS_LANG: str = os.environ.get("GNEWS_LANG") or "en"
+    GNEWS_COUNTRY: str = os.environ.get("GNEWS_COUNTRY") or "ph"
+    # Articles per pull. The free tier caps a request at 10.
+    GNEWS_MAX: int = int(os.environ.get("GNEWS_MAX") or "10")
+    # Don't re-hit GNews more often than this many seconds — the free tier allows
+    # only ~100 requests/day, so /api/news serves cache and refreshes sparingly.
+    GNEWS_REFRESH_TTL_SEC: int = int(os.environ.get("GNEWS_REFRESH_TTL_SEC") or "900")
+    # Shared secret that lets an automated caller (Cloud Scheduler) trigger
+    # POST /api/news/refresh via an `X-Cron-Key` header instead of an admin login.
+    # Blank (dev default) disables that path entirely — the endpoint stays
+    # admin-JWT-only. Set to a long random string in production.
+    NEWS_CRON_SECRET: str = os.environ.get("NEWS_CRON_SECRET", "")
+
     # Insights pipeline.
     # Only generate an insight for an (article, company) link at/above this
     # confidence, so low-signal matches don't create noise.

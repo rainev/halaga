@@ -15,16 +15,16 @@ from typing import Any
 
 from ..ai import analyzer, insight_generator
 from ..env import env
-from ..news.sources import ManualSource, NewsSource, RawArticle
+from ..news.sources import GNewsSource, ManualSource, NewsSource, RawArticle
 from ..services import article_service, company_service, insight_service, news_service
 
 log = logging.getLogger("uvicorn.error")
 
 # The default source: articles submitted via the admin API are queued here and
-# drained by ingest(). Real feeds (PSE EDGE, a vendor) get appended to SOURCES
-# once their adapters in app/news/sources.py are implemented.
+# drained by ingest(). GNewsSource pulls PSE-relevant headlines from gnews.io and
+# is a no-op when GNEWS_API_KEY is unset, so it's safe to include unconditionally.
 manual_source = ManualSource()
-SOURCES: list[NewsSource] = [manual_source]
+SOURCES: list[NewsSource] = [manual_source, GNewsSource()]
 
 
 def submit(article: RawArticle) -> dict[str, Any]:

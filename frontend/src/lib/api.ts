@@ -10,6 +10,7 @@ import type {
   FeedInsight,
   HealthResponse,
   Holding,
+  NewsArticle,
   PublicUser,
   RankingsResponse,
   ResearchCompany,
@@ -141,6 +142,16 @@ export function removeHolding(id: number): Promise<null> {
 // --- Insights feed (holdings-scoped) ---
 export function listInsights(limit = 50): Promise<FeedInsight[]> {
   return request<FeedInsight[]>(`/insights?limit=${limit}`)
+}
+
+// --- News feed (raw market news) ---
+export function listNews(limit = 50): Promise<NewsArticle[]> {
+  return request<NewsArticle[]>(`/news?limit=${limit}`)
+}
+
+// Force a fresh pull from GNews (admin-only on the backend).
+export function refreshNews(): Promise<{ ingested: number }> {
+  return request<{ ingested: number }>('/news/refresh', { method: 'POST' })
 }
 
 // --- Research workbench (filing-based) ---

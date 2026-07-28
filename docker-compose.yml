@@ -62,6 +62,17 @@ services:
       OPENAI_INSIGHT_MODEL: ${OPENAI_INSIGHT_MODEL:-gpt-4o}
       OPENAI_EXTRACT_MODEL: ${OPENAI_EXTRACT_MODEL:-gpt-4o-mini}
       OPENAI_EMBED_MODEL: ${OPENAI_EMBED_MODEL:-text-embedding-3-small}
+      # GNews (gnews.io) — news feed for /api/news + the insights pipeline
+      # (blank = GNews ingestion skipped; manual submit still works).
+      GNEWS_API_KEY: ${GNEWS_API_KEY:-}
+      GNEWS_QUERY: ${GNEWS_QUERY:-}
+      GNEWS_LANG: ${GNEWS_LANG:-en}
+      GNEWS_COUNTRY: ${GNEWS_COUNTRY:-ph}
+      GNEWS_MAX: ${GNEWS_MAX:-10}
+      GNEWS_REFRESH_TTL_SEC: ${GNEWS_REFRESH_TTL_SEC:-900}
+      # Shared secret for automated POST /api/news/refresh (Cloud Scheduler).
+      # Blank locally = endpoint stays admin-only.
+      NEWS_CRON_SECRET: ${NEWS_CRON_SECRET:-}
       # Insights pipeline.
       INSIGHT_CONFIDENCE_THRESHOLD: ${INSIGHT_CONFIDENCE_THRESHOLD:-0.5}
       PIPELINE_AUTO: ${PIPELINE_AUTO:-false}
