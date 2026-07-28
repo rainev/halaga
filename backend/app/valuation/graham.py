@@ -28,12 +28,16 @@ def graham_valuation(
     intrinsic = eps * (base_pe + 2 * growth_rate_pct) * normalizing_yield / current_yield
     acceptable_buy_price = (1 - margin_of_safety) * intrinsic
 
-    # Graham's rule: only buy below the margin-of-safety price.
+    # Descriptive threshold comparison only; the API does not issue advice.
     verdict = None
     upside = None
     if current_price is not None:
         upside = intrinsic / current_price - 1 if current_price else None
-        verdict = "Buy" if current_price < acceptable_buy_price else "Sell"
+        verdict = (
+            "Below margin-of-safety threshold"
+            if current_price < acceptable_buy_price
+            else "Above margin-of-safety threshold"
+        )
 
     return {
         "model": "graham",
@@ -41,6 +45,10 @@ def graham_valuation(
         "current_price": current_price,
         "upside_pct": upside,
         "verdict": verdict,
+        "validation": {
+            "status": "diagnostic",
+            "warnings": ["Graham output is an educational diagnostic, not a primary valuation"],
+        },
         "detail": {
             "eps": eps,
             "growth_rate_pct": growth_rate_pct,

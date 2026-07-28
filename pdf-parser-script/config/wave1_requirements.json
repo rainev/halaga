@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.2",
+  "templates": {
+    "common_equity": {
+      "required": ["cash", "total_assets", "total_liabilities", "total_equity", "net_income", "shares_outstanding"],
+      "recommended": ["parent_net_income", "parent_equity", "common_equity", "nci", "eps_basic", "eps_diluted", "dividends_per_share", "common_dividends_declared", "dividend_payout_ratio", "treasury_stock", "preferred_equity", "nonoperating_investments", "weighted_average_basic_shares", "weighted_average_diluted_shares", "fully_diluted_shares"]
+    },
+    "standard_opco": {
+      "extends": ["common_equity"],
+      "required": ["revenue", "ebit", "tax_expense", "operating_cash_flow", "capital_expenditure", "total_debt", "depreciation_amortization", "interest_expense", "receivables", "inventory", "accounts_payable"],
+      "recommended": ["cost_of_sales", "gross_profit", "operating_expenses", "ebitda", "lease_liabilities", "change_in_working_capital", "core_operating_working_capital", "net_borrowing", "effective_tax_rate", "gross_margin", "ebit_margin", "ebitda_margin", "maintenance_capex", "weighted_average_borrowing_rate", "return_on_invested_capital"]
+    },
+    "bank": {
+      "extends": ["common_equity"],
+      "required": ["net_interest_income", "gross_loans", "allowance_credit_losses", "customer_deposits", "parent_equity", "book_value_per_share", "dividends_paid", "cet1_ratio", "capital_adequacy_ratio"],
+      "recommended": ["interest_income", "interest_expense", "non_interest_income", "credit_loss_provision", "npl_ratio", "npl_coverage", "nonperforming_loans", "dividends_per_share", "return_on_equity", "return_on_assets", "net_interest_margin", "cost_to_income_ratio", "loan_growth", "deposit_growth", "risk_weighted_assets", "cet1_capital", "total_regulatory_capital", "earning_assets", "tangible_book_value", "tangible_book_value_per_share"]
+    },
+    "holdco": {
+      "extends": ["common_equity"],
+      "required": ["investments_associates_jv", "total_debt", "holdings_market_value", "dividends_from_subsidiaries", "corporate_overhead"],
+      "recommended": ["nci", "parent_cash", "parent_gross_debt", "ownership_percentage", "segment_revenue", "segment_ebit", "segment_ebitda", "segment_assets"]
+    },
+    "property": {
+      "extends": ["standard_opco"],
+      "required": ["property_sales", "land_inventory", "investment_property", "development_costs", "appraised_value"],
+      "recommended": ["rental_income", "investments_associates_jv", "landbank_area", "gross_development_value", "presales", "project_cost_to_complete", "cap_rate"]
+    },
+    "reit": {
+      "extends": ["common_equity"],
+      "required": ["rental_income", "investment_property", "total_debt", "shares_outstanding", "dividends_per_share", "noi", "affo", "occupancy_rate", "wale", "appraised_value", "nav_per_unit"],
+      "recommended": ["operating_cash_flow", "capital_expenditure", "funds_from_operations", "distributable_income", "distribution_per_unit", "maintenance_capex", "real_estate_depreciation_amortization", "gain_on_property_sales", "straight_line_rent_adjustment", "other_affo_adjustments", "cap_rate", "rental_reversion", "gearing_ratio"]
+    },
+    "utility_power": {
+      "extends": ["standard_opco"],
+      "required": ["capacity_mw", "energy_sold"],
+      "recommended": ["purchased_power_cost", "fuel_cost", "energy_generated", "customer_count", "regulatory_assets", "regulatory_liabilities", "concession_life", "capacity_factor", "power_purchase_agreement_term", "maintenance_capex"]
+    },
+    "regulated_distribution": {
+      "extends": ["standard_opco"],
+      "required": ["energy_sold", "customer_count", "regulatory_assets", "regulatory_liabilities", "regulated_asset_base", "allowed_return", "tariff_rate"],
+      "recommended": ["purchased_power_cost", "concession_life", "capacity_factor", "maintenance_capex"]
+    },
+    "telecom": {
+      "extends": ["standard_opco"],
+      "required": ["service_revenue", "subscriber_count"],
+      "recommended": ["arpu", "right_of_use_assets", "lease_liabilities", "intangible_assets", "churn_rate", "spectrum_assets", "cell_site_count"]
+    },
+    "port_concession": {
+      "extends": ["standard_opco"],
+      "required": ["throughput_teu", "concession_assets", "concession_life"],
+      "recommended": ["lease_liabilities", "nci", "tariff_rate"]
+    },
+    "airline": {
+      "extends": ["standard_opco"],
+      "required": ["passengers", "load_factor", "fuel_cost", "right_of_use_assets", "lease_liabilities"],
+      "recommended": ["ask", "rpk", "fleet_size", "ebitda", "passenger_yield", "maintenance_capex"]
+    },
+    "mine": {
+      "extends": ["common_equity"],
+      "required": ["revenue", "operating_cash_flow", "capital_expenditure", "ore_reserves", "mine_life", "production_volume", "realized_price", "cash_cost", "royalties", "closure_provision"],
+      "recommended": ["mineral_resources", "aisc", "total_debt", "ore_grade", "recovery_rate", "sustaining_capex", "development_capex", "rehabilitation_cost"]
+    },
+    "mine_power_hybrid": {
+      "extends": ["utility_power"],
+      "required": ["coal_reserves", "mine_life", "production_volume", "sales_volume", "realized_price", "closure_provision", "cash_cost", "royalties", "segment_revenue", "segment_ebitda", "segment_capex"],
+      "recommended": ["segment_assets", "ore_grade", "recovery_rate", "sustaining_capex", "development_capex"]
+    },
+    "etf": {
+      "required": ["nav_per_unit", "shares_outstanding", "holdings_market_value", "cash", "total_liabilities"],
+      "recommended": ["tracking_error", "expense_ratio", "dividends_per_share", "units_outstanding", "assets_under_management", "bid_ask_spread"]
+    },
+    "consumer_products": {
+      "extends": ["standard_opco"],
+      "recommended": ["sales_volume", "realized_price", "market_share"]
+    },
+    "specialty_manufacturing": {
+      "extends": ["standard_opco"],
+      "recommended": ["capacity_utilization", "sales_volume", "realized_price", "order_backlog", "customer_concentration"]
+    },
+    "retail": {
+      "extends": ["standard_opco"],
+      "recommended": ["same_store_sales_growth", "store_count", "sales_per_sqm", "inventory_turnover", "cash_conversion_cycle", "lease_liabilities"]
+    },
+    "media": {
+      "extends": ["standard_opco"],
+      "recommended": ["advertising_revenue", "digital_revenue", "audience_share", "content_cost", "market_share"]
+    },
+    "technology": {
+      "extends": ["standard_opco"],
+      "recommended": ["annual_recurring_revenue", "customer_retention_rate", "cash_burn", "cash_runway_months", "gross_merchandise_value", "active_users", "churn_rate"]
+    },
+    "hotel": {
+      "extends": ["standard_opco"],
+      "recommended": ["occupancy_rate", "average_daily_rate", "revpar", "gross_operating_profit_margin", "room_count", "appraised_value"]
+    },
+    "education": {
+      "extends": ["standard_opco"],
+      "recommended": ["tuition_revenue", "student_enrollment", "tuition_per_student", "customer_retention_rate", "campus_capacity", "appraised_value"]
+    },
+    "gaming": {
+      "extends": ["standard_opco"],
+      "recommended": ["gaming_revenue", "gross_gaming_revenue", "mass_market_mix", "vip_mix", "gaming_hold_rate", "gaming_license_term", "property_ebitda", "active_users"]
+    },
+    "upstream_oil": {
+      "extends": ["common_equity"],
+      "required": ["revenue", "operating_cash_flow", "capital_expenditure", "oil_gas_reserves", "production_boe", "lifting_cost"],
+      "recommended": ["oil_gas_resources", "sustaining_capex", "development_capex", "rehabilitation_cost", "royalties"]
+    },
+    "downstream_oil": {
+      "extends": ["standard_opco"],
+      "recommended": ["refining_margin", "refinery_throughput", "inventory_gain_loss", "fuel_cost"]
+    }
+  },
+  "subsectors": {
+    "banks": {"name": "Banks", "archetype": "bank", "primary_model": "residual_income", "supporting_models": ["price_to_book", "dividend_discount", "price_earnings"], "templates": ["bank"]},
+    "other_financial_institutions": {"name": "Other Financial Institutions", "archetype": "diversified_financial", "primary_model": "residual_income_or_business_specific", "supporting_models": ["price_to_book", "price_earnings", "dividend_discount"], "templates": ["common_equity"]},
+    "electricity_energy_power_water": {"name": "Electricity, Energy, Power & Water", "archetype": "utility_power", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "ev_mw", "sotp"], "templates": ["utility_power"]},
+    "food_beverage_tobacco": {"name": "Food, Beverage & Tobacco", "archetype": "consumer_products", "primary_model": "fcff_dcf", "supporting_models": ["price_earnings", "ev_ebitda", "ev_sales"], "templates": ["consumer_products"]},
+    "construction_infrastructure_allied": {"name": "Construction, Infrastructure & Allied Services", "archetype": "construction_infrastructure", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings", "asset_value"], "templates": ["standard_opco"], "recommended": ["order_backlog", "concession_assets", "concession_life"]},
+    "chemicals": {"name": "Chemicals", "archetype": "specialty_manufacturing", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings", "ev_sales"], "templates": ["specialty_manufacturing"]},
+    "other_industrials": {"name": "Other Industrials", "archetype": "industrial", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings", "asset_value"], "templates": ["standard_opco"], "recommended": ["capacity_utilization", "order_backlog"]},
+    "holding_firms": {"name": "Holding Firms", "archetype": "holding_company", "primary_model": "sotp", "supporting_models": ["price_nav", "look_through_earnings"], "templates": ["holdco"]},
+    "property": {"name": "Property", "archetype": "property_developer", "primary_model": "rnav", "supporting_models": ["fcff_dcf", "price_nav", "ev_ebitda"], "templates": ["property"]},
+    "media": {"name": "Media", "archetype": "media", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings", "ev_sales"], "templates": ["media"]},
+    "telecommunications": {"name": "Telecommunications", "archetype": "telecom", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "ev_subscriber", "ev_sales"], "templates": ["telecom"]},
+    "information_technology": {"name": "Information Technology", "archetype": "technology", "primary_model": "fcff_dcf_or_ev_sales", "supporting_models": ["ev_sales", "ev_ebitda", "price_earnings"], "templates": ["technology"]},
+    "transportation_services": {"name": "Transportation Services", "archetype": "transportation", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "asset_value", "operating_unit_multiples"], "templates": ["standard_opco"], "recommended": ["passengers", "throughput_teu", "load_factor", "right_of_use_assets", "lease_liabilities"]},
+    "hotel_leisure": {"name": "Hotel & Leisure", "archetype": "hotel_leisure", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "ev_room", "asset_value"], "templates": ["hotel"]},
+    "education": {"name": "Education", "archetype": "education", "primary_model": "fcff_dcf", "supporting_models": ["price_earnings", "ev_ebitda", "ev_student"], "templates": ["education"]},
+    "other_services": {"name": "Other Services", "archetype": "business_specific_service", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings"], "templates": ["standard_opco"]},
+    "mining": {"name": "Mining", "archetype": "mine", "primary_model": "finite_life_nav", "supporting_models": ["ev_reserve", "ev_ebitda", "commodity_scenarios"], "templates": ["mine"]},
+    "oil": {"name": "Oil", "archetype": "downstream_oil", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "ev_sales", "asset_or_reserve_value"], "templates": ["downstream_oil"]},
+    "small_medium_emerging_board": {"name": "Small, Medium & Emerging Board", "archetype": "business_specific_sme", "primary_model": "business_specific_manual_review", "supporting_models": ["fcff_dcf", "price_earnings", "asset_value"], "templates": ["common_equity"]},
+    "electrical_components_equipment": {"name": "Electrical Components & Equipment", "archetype": "electronics_manufacturing", "primary_model": "cycle_adjusted_fcff_dcf", "supporting_models": ["ev_ebitda", "price_earnings", "ev_sales"], "templates": ["specialty_manufacturing"]},
+    "casinos_gaming": {"name": "Casinos & Gaming", "archetype": "gaming", "primary_model": "fcff_dcf", "supporting_models": ["ev_ebitda", "ev_room", "gaming_unit_multiples"], "templates": ["gaming"]},
+    "retail": {"name": "Retail", "archetype": "retail", "primary_model": "fcff_dcf", "supporting_models": ["price_earnings", "ev_ebitda", "ev_sales"], "templates": ["retail"]},
+    "etf_equity": {"name": "ETF – Equity", "archetype": "etf", "primary_model": "nav_per_unit", "supporting_models": ["price_nav", "tracking_error"], "templates": ["etf"]}
+  },
+  "default_profile": {
+    "name": "Unclassified PSE issuer",
+    "archetype": "unclassified",
+    "primary_model": "manual_review",
+    "templates": ["common_equity"]
+  },
+  "issuer_directory": {
+    "BPI": {"name": "Bank of the Philippine Islands", "aliases": ["BPI"], "subsector": "banks"},
+    "MBT": {"name": "Metropolitan Bank & Trust Company", "aliases": ["Metrobank"], "subsector": "banks"},
+    "SECB": {"name": "Security Bank Corporation", "aliases": ["Security Bank"], "subsector": "banks"},
+    "EW": {"name": "East West Banking Corporation", "aliases": ["EastWest Bank"], "subsector": "banks"},
+    "UBP": {"name": "Union Bank of the Philippines", "aliases": ["UnionBank"], "subsector": "banks"},
+    "PNB": {"name": "Philippine National Bank", "subsector": "banks"},
+    "CHIB": {"name": "China Banking Corporation", "aliases": ["China Bank"], "subsector": "banks"},
+    "AUB": {"name": "Asia United Bank Corporation", "aliases": ["Asia United Bank"], "subsector": "banks"},
+    "BCOM": {"name": "Bank of Commerce", "subsector": "banks"},
+    "PBB": {"name": "Philippine Business Bank", "subsector": "banks"},
+    "PSB": {"name": "Philippine Savings Bank", "aliases": ["PSBank"], "subsector": "banks"},
+    "PSE": {"name": "The Philippine Stock Exchange, Inc.", "aliases": ["Philippine Stock Exchange"], "subsector": "other_financial_institutions", "auto_detect": false},
+    "COL": {"name": "COL Financial Group, Inc.", "aliases": ["COL Financial"], "subsector": "other_financial_institutions"},
+    "NRCP": {"name": "National Reinsurance Corporation of the Philippines", "aliases": ["National Reinsurance"], "subsector": "other_financial_institutions"},
+    "FAF": {"name": "First Abacus Financial Holdings Corporation", "aliases": ["First Abacus"], "subsector": "other_financial_institutions"},
+    "ACEN": {"name": "ACEN Corporation", "subsector": "electricity_energy_power_water"},
+    "FGEN": {"name": "First Gen Corporation", "subsector": "electricity_energy_power_water"},
+    "EDC": {"name": "Energy Development Corporation", "subsector": "electricity_energy_power_water"},
+    "SPC": {"name": "SPC Power Corporation", "subsector": "electricity_energy_power_water"},
+    "JFC": {"name": "Jollibee Foods Corporation", "subsector": "food_beverage_tobacco"},
+    "URC": {"name": "Universal Robina Corporation", "subsector": "food_beverage_tobacco"},
+    "MONDE": {"name": "Monde Nissin Corporation", "subsector": "food_beverage_tobacco"},
+    "RFM": {"name": "RFM Corporation", "subsector": "food_beverage_tobacco"},
+    "FB": {"name": "San Miguel Food and Beverage, Inc.", "subsector": "food_beverage_tobacco"},
+    "DMCI": {"name": "DMCI Holdings, Inc.", "subsector": "construction_infrastructure_allied"},
+    "MWIDE": {"name": "Megawide Construction Corporation", "subsector": "construction_infrastructure_allied"},
+    "EEI": {"name": "EEI Corporation", "subsector": "construction_infrastructure_allied"},
+    "DMW": {"name": "D.M. Wenceslao & Associates, Incorporated", "aliases": ["D.M. Wenceslao"], "subsector": "construction_infrastructure_allied"},
+    "SBS": {"name": "SBS Philippines Corporation", "subsector": "chemicals"},
+    "COAT": {"name": "Chemrez Technologies, Inc.", "subsector": "chemicals"},
+    "FPH": {"name": "First Philippine Holdings Corporation", "subsector": "other_industrials"},
+    "SM": {"name": "SM Investments Corporation", "subsector": "holding_firms"},
+    "AGI": {"name": "Alliance Global Group, Inc.", "subsector": "holding_firms"},
+    "GTCAP": {"name": "GT Capital Holdings, Inc.", "subsector": "holding_firms"},
+    "JGS": {"name": "JG Summit Holdings, Inc.", "subsector": "holding_firms"},
+    "LTG": {"name": "LT Group, Inc.", "subsector": "holding_firms"},
+    "COSCO": {"name": "Cosco Capital, Inc.", "subsector": "holding_firms"},
+    "SMPH": {"name": "SM Prime Holdings, Inc.", "subsector": "property"},
+    "RLC": {"name": "Robinsons Land Corporation", "subsector": "property"},
+    "MEG": {"name": "Megaworld Corporation", "subsector": "property"},
+    "FLI": {"name": "Filinvest Land, Inc.", "subsector": "property"},
+    "CLI": {"name": "Cebu Landmasters, Inc.", "subsector": "property"},
+    "VLL": {"name": "Vista Land & Lifescapes, Inc.", "subsector": "property"},
+    "ABS": {"name": "ABS-CBN Corporation", "subsector": "media"},
+    "GMA7": {"name": "GMA Network, Inc.", "subsector": "media"},
+    "GLO": {"name": "Globe Telecom, Inc.", "subsector": "telecommunications"},
+    "CNVRG": {"name": "Converge ICT Solutions, Inc.", "subsector": "telecommunications"},
+    "DITO": {"name": "DITO CME Holdings Corp.", "subsector": "telecommunications"},
+    "X": {"name": "Xurpas Inc.", "subsector": "information_technology"},
+    "TECH": {"name": "Cirtek Holdings Philippines Corporation", "subsector": "electrical_components_equipment"},
+    "ION": {"name": "Ionics, Inc.", "subsector": "electrical_components_equipment"},
+    "IMI": {"name": "Integrated Micro-Electronics, Inc.", "subsector": "electrical_components_equipment"},
+    "PAL": {"name": "PAL Holdings, Inc.", "subsector": "transportation_services"},
+    "ATI": {"name": "Asian Terminals, Inc.", "subsector": "transportation_services"},
+    "C": {"name": "Chelsea Logistics and Infrastructure Holdings Corp.", "aliases": ["Chelsea Logistics"], "subsector": "transportation_services"},
+    "STI": {"name": "STI Education Systems Holdings, Inc.", "subsector": "education"},
+    "CEU": {"name": "Centro Escolar University", "subsector": "education"},
+    "NIKL": {"name": "Nickel Asia Corporation", "subsector": "mining"},
+    "PX": {"name": "Philex Mining Corporation", "subsector": "mining"},
+    "FNI": {"name": "Global Ferronickel Holdings, Inc.", "subsector": "mining"},
+    "LC": {"name": "Lepanto Consolidated Mining Company", "subsector": "mining"},
+    "MARC": {"name": "Marcventures Holdings, Inc.", "subsector": "mining"},
+    "AR": {"name": "Abra Mining and Industrial Corporation", "subsector": "mining"},
+    "PCOR": {"name": "Petron Corporation", "subsector": "oil"},
+    "SHLPH": {"name": "Shell Pilipinas Corporation", "aliases": ["Pilipinas Shell Petroleum Corporation"], "subsector": "oil"},
+    "PNX": {"name": "Phoenix Petroleum Philippines, Inc.", "subsector": "oil"},
+    "PERC": {"name": "PetroEnergy Resources Corporation", "subsector": "oil", "templates": ["upstream_oil"], "archetype": "upstream_oil", "primary_model": "risked_reserve_nav"},
+    "OPM": {"name": "Oriental Petroleum and Minerals Corporation", "subsector": "oil", "templates": ["upstream_oil"], "archetype": "upstream_oil", "primary_model": "risked_reserve_nav"},
+    "BLOOM": {"name": "Bloomberry Resorts Corporation", "subsector": "casinos_gaming"},
+    "PHR": {"name": "PH Resorts Group Holdings, Inc.", "subsector": "casinos_gaming"},
+    "PLC": {"name": "Premium Leisure Corp.", "aliases": ["Premium Leisure and Amusement, Inc."], "subsector": "casinos_gaming"},
+    "DFNN": {"name": "DFNN, Inc.", "subsector": "casinos_gaming"},
+    "RRHI": {"name": "Robinsons Retail Holdings, Inc.", "subsector": "retail"},
+    "SSI": {"name": "SSI Group, Inc.", "subsector": "retail"},
+    "MRSGI": {"name": "Metro Retail Stores Group, Inc.", "subsector": "retail"},
+    "WLCON": {"name": "Wilcon Depot, Inc.", "subsector": "retail"},
+    "ALLDY": {"name": "AllDay Marts, Inc.", "subsector": "retail"}
+  },
+  "companies": {
+    "BDO": {"name": "BDO Unibank, Inc.", "aliases": ["BDO Unibank"], "subsector": "banks", "archetype": "bank", "primary_model": "residual_income", "templates": ["bank"]},
+    "AC": {"name": "Ayala Corporation", "subsector": "holding_firms", "archetype": "holding_company", "primary_model": "sotp", "templates": ["holdco"]},
+    "ALI": {"name": "Ayala Land, Inc.", "subsector": "property", "archetype": "property_developer", "primary_model": "rnav", "templates": ["property"]},
+    "AREIT": {"name": "AREIT, Inc.", "subsector": "property", "archetype": "reit", "primary_model": "nav_ddm_affo", "templates": ["reit"]},
+    "CNPF": {"name": "Century Pacific Food, Inc.", "subsector": "food_beverage_tobacco", "archetype": "consumer_products", "primary_model": "fcff_dcf", "templates": ["consumer_products"]},
+    "DNL": {"name": "D&L Industries, Inc.", "aliases": ["D and L Industries"], "subsector": "chemicals", "archetype": "specialty_manufacturing", "primary_model": "fcff_dcf", "templates": ["specialty_manufacturing"]},
+    "PGOLD": {"name": "Puregold Price Club, Inc.", "aliases": ["Puregold Price Club"], "subsector": "retail", "archetype": "retail", "primary_model": "fcff_dcf", "templates": ["retail"]},
+    "MER": {"name": "Manila Electric Company", "aliases": ["Meralco"], "subsector": "electricity_energy_power_water", "archetype": "regulated_utility", "primary_model": "regulated_dcf", "templates": ["regulated_distribution"]},
+    "AP": {"name": "Aboitiz Power Corporation", "aliases": ["AboitizPower Corporation"], "subsector": "electricity_energy_power_water", "archetype": "integrated_power", "primary_model": "asset_segment_dcf_sotp", "templates": ["utility_power"], "required": ["segment_revenue", "segment_ebitda", "segment_capex"], "recommended": ["segment_assets", "investments_associates_jv", "nci"]},
+    "TEL": {"name": "PLDT Inc.", "aliases": ["Philippine Long Distance Telephone Company"], "subsector": "telecommunications", "archetype": "telecom", "primary_model": "fcff_dcf", "templates": ["telecom"]},
+    "ICT": {"name": "International Container Terminal Services, Inc.", "aliases": ["ICTSI"], "subsector": "other_industrials", "archetype": "port_concession", "primary_model": "concession_dcf", "templates": ["port_concession"]},
+    "CEB": {"name": "Cebu Air, Inc.", "aliases": ["Cebu Pacific"], "subsector": "transportation_services", "archetype": "airline", "primary_model": "lease_adjusted_dcf", "templates": ["airline"]},
+    "OGP": {"name": "OceanaGold (Philippines), Inc.", "aliases": ["OceanaGold Philippines"], "subsector": "mining", "archetype": "single_mine", "primary_model": "finite_life_nav", "templates": ["mine"], "recommended": ["royalties"]},
+    "SCC": {"name": "Semirara Mining and Power Corporation", "subsector": "mining", "archetype": "mine_power_hybrid", "primary_model": "mine_nav_plus_power_dcf", "templates": ["mine_power_hybrid"]},
+    "FMETF": {"name": "First Metro Philippine Equity Exchange Traded Fund, Inc.", "aliases": ["First Metro Philippine Equity ETF"], "subsector": "etf_equity", "archetype": "etf", "primary_model": "nav_per_unit", "templates": ["etf"]}
+  }
+}

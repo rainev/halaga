@@ -10,6 +10,7 @@ from fastapi import APIRouter, status
 from ..deps import CurrentUser
 from ..errors import AppError
 from ..models.valuation import (
+    BankResidualIncomeInput,
     DcfInput,
     DdmInput,
     GrahamInput,
@@ -17,20 +18,37 @@ from ..models.valuation import (
     SavedValuation,
 )
 from ..services import market_service, valuation_service
-from ..valuation import dcf, ddm, graham, multiples
+from ..valuation import bank, dcf, ddm, graham, multiples
 from ..valuation.assumptions import MarketAssumptions, cost_of_equity, wacc
 from ..valuation.common import average_growth
 
 router = APIRouter(prefix="/valuations", tags=["valuations"])
 
 
+def _market_assumption_snapshot(a: MarketAssumptions) -> dict:
+    """Persist enough provenance to reproduce a dated discount-rate build."""
+    return {
+        "local_government_yield": a.local_government_yield,
+        "sovereign_default_spread": a.sovereign_default_spread,
+        "risk_free_rate": a.risk_free_rate,
+        "mature_market_erp": a.equity_risk_premium,
+        "country_risk_premium": a.country_risk_premium,
+        "assumptions_as_of": a.assumptions_as_of,
+        "assumptions_source": a.assumptions_source,
+        "assumptions_source_url": a.assumptions_source_url,
+    }
+
+
 def _resolve_discount_rate(
-    discount_rate: float | None, beta: float | None, assumptions: MarketAssumptions
+    discount_rate: float | None,
+    beta: float | None,
+    assumptions: MarketAssumptions,
+    country_risk_exposure: float = 1.0,
 ) -> float:
     if discount_rate is not None:
         return discount_rate
     if beta is not None:
-        return cost_of_equity(beta, assumptions)
+        return cost_of_equity(beta, assumptions, country_risk_exposure)
     raise AppError("Provide either discount_rate or beta", 400)
 
 
@@ -71,7 +89,7 @@ def run_dcf(body: DcfInput, user: CurrentUser) -> dict:
             if body.discount_rate is not None:
                 coe = body.discount_rate
             elif body.beta is not None:
-                coe = cost_of_equity(body.beta, a)
+                coe = cost_of_equity(body.beta, a, body.country_risk_exposure)
             else:
                 raise AppError("FCFE needs a cost of equity — provide discount_rate or beta", 400)
             result = dcf.fcfe_valuation(
@@ -81,7 +99,11 @@ def run_dcf(body: DcfInput, user: CurrentUser) -> dict:
                 shares_outstanding=body.shares_outstanding,
                 current_price=body.current_price,
             )
-            used = {"cost_of_equity": coe}
+            used = {
+                "cost_of_equity": coe,
+                "country_risk_exposure": body.country_risk_exposure,
+                "market_assumptions": _market_assumption_snapshot(a),
+            }
         else:
             # Firm-level (simple/fcff): discount FCFF, then EV -> equity bridge.
             rate = _resolve_dcf_rate(body, a)
@@ -92,21 +114,29 @@ def run_dcf(body: DcfInput, user: CurrentUser) -> dict:
                 shares_outstanding=body.shares_outstanding,
                 cash=body.cash,
                 total_debt=body.total_debt,
+                preferred_stock=body.preferred_stock,
+                non_controlling_interest=body.non_controlling_interest,
                 current_price=body.current_price,
                 method=body.method,
             )
-            used = {"discount_rate": rate}
+            used = {
+                "discount_rate": rate,
+                "rate_type": "wacc",
+                "market_assumptions": _market_assumption_snapshot(a),
+            }
     except ValueError as exc:
         raise AppError(str(exc), 400) from exc
     return _persist_if_requested(user["sub"], body, "dcf", result, used)
 
 
 def _resolve_dcf_rate(body: DcfInput, a: MarketAssumptions) -> float:
-    """Discount rate for the enterprise (FCFF) DCF: an explicit rate, a WACC built
-    from beta + cost of debt (method='fcff'), or CAPM cost of equity from beta."""
+    """Resolve a firm-level discount rate without substituting cost of equity.
+
+    `simple` and `fcff` both value enterprise cash flow, so both require WACC.
+    """
     if body.discount_rate is not None:
         return body.discount_rate
-    if body.method == "fcff" and body.beta is not None and body.cost_of_debt is not None:
+    if body.beta is not None and body.cost_of_debt is not None:
         equity_value = (body.current_price or 0) * body.shares_outstanding
         if equity_value <= 0:
             raise AppError(
@@ -115,15 +145,19 @@ def _resolve_dcf_rate(body: DcfInput, a: MarketAssumptions) -> float:
                 400,
             )
         return wacc(
-            cost_of_equity=cost_of_equity(body.beta, a),
+            cost_of_equity=cost_of_equity(
+                body.beta, a, body.country_risk_exposure
+            ),
             cost_of_debt=body.cost_of_debt,
             equity_value=equity_value,
             debt_value=body.total_debt,
             tax_rate=body.tax_rate,
         )
-    if body.beta is not None:
-        return cost_of_equity(body.beta, a)
-    raise AppError("Provide discount_rate or beta (FCFF can also build WACC from beta + cost_of_debt)", 400)
+    raise AppError(
+        "Firm-level DCF needs an explicit WACC (discount_rate), or beta + "
+        "cost_of_debt + current_price + total_debt to build WACC",
+        400,
+    )
 
 
 @router.post("/ddm")
@@ -143,7 +177,12 @@ def run_ddm(body: DdmInput, user: CurrentUser) -> dict:
     if last_dividend is None:
         raise AppError("Provide last_dividend, or a dividend_history to derive it", 400)
 
-    discount_rate = _resolve_discount_rate(body.discount_rate, body.beta, a)
+    discount_rate = _resolve_discount_rate(
+        body.discount_rate,
+        body.beta,
+        a,
+        body.country_risk_exposure,
+    )
     try:
         if body.method == "two_stage":
             if body.high_growth is None or body.high_growth_years is None or body.terminal_growth is None:
@@ -171,7 +210,18 @@ def run_ddm(body: DdmInput, user: CurrentUser) -> dict:
             )
     except ValueError as exc:
         raise AppError(str(exc), 400) from exc
-    return _persist_if_requested(user["sub"], body, "ddm", result, {"discount_rate": discount_rate})
+    return _persist_if_requested(
+        user["sub"],
+        body,
+        "ddm",
+        result,
+        {
+            "discount_rate": discount_rate,
+            "rate_type": "cost_of_equity",
+            "country_risk_exposure": body.country_risk_exposure,
+            "market_assumptions": _market_assumption_snapshot(a),
+        },
+    )
 
 
 @router.post("/graham")
@@ -198,6 +248,7 @@ def run_graham(body: GrahamInput, user: CurrentUser) -> dict:
         "current_yield": current_yield,
         "base_pe": base_pe,
         "normalizing_yield": normalizing_yield,
+        "market_assumptions": _market_assumption_snapshot(a),
     }
     return _persist_if_requested(user["sub"], body, "graham", result, assumptions)
 
@@ -236,6 +287,55 @@ def run_multiples(body: MultiplesInput, user: CurrentUser) -> dict:
     except ValueError as exc:
         raise AppError(str(exc), 400) from exc
     return _persist_if_requested(user["sub"], body, "multiples", result, {})
+
+
+@router.post("/residual-income")
+def run_bank_residual_income(
+    body: BankResidualIncomeInput,
+    user: CurrentUser,
+) -> dict:
+    assumptions = market_service.get_assumptions()
+    if body.cost_of_equity is not None:
+        resolved_cost_of_equity = body.cost_of_equity
+        rate_source = "explicit"
+    elif body.beta is not None:
+        resolved_cost_of_equity = cost_of_equity(
+            body.beta,
+            assumptions,
+            body.country_risk_exposure,
+        )
+        rate_source = "capm"
+    else:
+        raise AppError(
+            "Residual income needs cost_of_equity or beta",
+            400,
+        )
+    try:
+        result = bank.residual_income_valuation(
+            book_value_per_share=body.book_value_per_share,
+            current_roe=body.current_roe,
+            cost_of_equity=resolved_cost_of_equity,
+            current_payout_ratio=body.current_payout_ratio,
+            terminal_roe=body.terminal_roe,
+            terminal_growth=body.terminal_growth,
+            years=body.years,
+            current_price=body.current_price,
+        )
+    except ValueError as exc:
+        raise AppError(str(exc), 400) from exc
+    return _persist_if_requested(
+        user["sub"],
+        body,
+        "residual_income",
+        result,
+        {
+            "cost_of_equity": resolved_cost_of_equity,
+            "rate_type": "cost_of_equity",
+            "rate_source": rate_source,
+            "country_risk_exposure": body.country_risk_exposure,
+            "market_assumptions": _market_assumption_snapshot(assumptions),
+        },
+    )
 
 
 @router.get("", response_model=list[SavedValuation])

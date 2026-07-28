@@ -1,13 +1,15 @@
+import BDO_COMPANY from "./generated/bdo-valuation.js";
+
 export const PHILIPPINE_ASSUMPTIONS = {
   valuationDate: "17 Jul 2026",
-  riskFreeRate: 0.07052,
+  localGovernmentYield: 0.07052,
   grahamBaselineYield: 0.06,
   corporateTaxReference: 0.25,
   sourceLabel: "Bureau of the Treasury - 10-year T-bond auction, 23 Jun 2026",
   sourceUrl:
     "https://www.treasury.gov.ph/wp-content/uploads/2026/06/Treasury-Bonds-Auction-Result-on-23-June-2026-.pdf",
   note:
-    "The workbook's U.S. AAA-bond input is replaced with a Philippine 10-year government-bond proxy. The 6.0% normalizer is a transparent through-cycle assumption; 7.052% is the latest accepted 9.7-year average auction yield reviewed.",
+    "The 7.052% figure is a local government-bond yield, not a default-free CAPM rate. Production cost of equity must separately identify the sovereign default adjustment, mature-market ERP, Philippine country-risk premium, beta, and source dates.",
 };
 
 export const SOURCE_LINKS = {
@@ -59,6 +61,9 @@ export const INDUSTRIAL_COMPANIES = [
       shares: 7_203_750_741,
       operatingCashFlow: 51_722_480_000,
     },
+    // Optional earlier annual periods and standalone quarters can be added here.
+    // The current `financials` snapshot is included automatically as FY 2025.
+    financialHistory: { annual: [], quarterly: [] },
     valuation: {
       normalizedFcf: 38_000_000_000,
       fcfGrowth: 0.035,
@@ -69,7 +74,16 @@ export const INDUSTRIAL_COMPANIES = [
       dividendPerShare: 1.9,
       dividendGrowth: 0.03,
       dividendDiscountRate: 0.105,
-      weights: { dcf: 0.4, graham: 0.2, multiples: 0.25, ddm: 0.15 },
+      cashFlowType: "fcff",
+      cashFlowSource: "internal_estimate",
+      bridgeComplete: false,
+      modelPolicy: {
+        primary: "dcf",
+        crossChecks: ["multiples", "ddm"],
+        publishable: true,
+        reason: "Consolidated FCFF DCF is the primary screen; multiples and DDM are separate cross-checks.",
+        warnings: ["Preliminary only until the FCFF schedule and full equity bridge tie to filings."],
+      },
       note: "Normalized FCF smooths project timing; use reported cash flow and debt schedules in production.",
     },
   },
@@ -110,6 +124,7 @@ export const INDUSTRIAL_COMPANIES = [
       shares: 4_254_133_244,
       operatingCashFlow: 16_434_115_891,
     },
+    financialHistory: { annual: [], quarterly: [] },
     valuation: {
       normalizedFcf: 11_000_000_000,
       fcfGrowth: 0.02,
@@ -120,7 +135,16 @@ export const INDUSTRIAL_COMPANIES = [
       dividendPerShare: 3.24,
       dividendGrowth: 0.01,
       dividendDiscountRate: 0.11,
-      weights: { dcf: 0.35, graham: 0.2, multiples: 0.2, ddm: 0.25 },
+      cashFlowType: "fcff",
+      cashFlowSource: "internal_estimate",
+      bridgeComplete: false,
+      modelPolicy: {
+        primary: "finite_life_nav",
+        crossChecks: ["dcf", "multiples"],
+        publishable: false,
+        reason: "Coal reserves are finite and commodity-linked; a reserve-life NAV is required.",
+        blockReason: "the required finite-life mining NAV is not yet implemented",
+      },
       note: "Normalized FCF tempers the commodity cycle and excludes a one-year peak assumption.",
     },
   },
@@ -161,6 +185,7 @@ export const INDUSTRIAL_COMPANIES = [
       shares: 6_347_703_325,
       operatingCashFlow: 4_792_812_561,
     },
+    financialHistory: { annual: [], quarterly: [] },
     valuation: {
       normalizedFcf: 3_359_294_057,
       fcfGrowth: 0.035,
@@ -171,7 +196,16 @@ export const INDUSTRIAL_COMPANIES = [
       dividendPerShare: 0.0205,
       dividendGrowth: 0.03,
       dividendDiscountRate: 0.12,
-      weights: { dcf: 0.45, graham: 0.2, multiples: 0.25, ddm: 0.1 },
+      cashFlowType: "fcff",
+      cashFlowSource: "internal_estimate",
+      bridgeComplete: false,
+      modelPolicy: {
+        primary: "dcf",
+        crossChecks: ["multiples"],
+        publishable: true,
+        reason: "FCFF DCF is the primary screen; peer P/E is a separate reasonableness check.",
+        warnings: ["Preliminary only until capex, debt, tax, and minority-interest schedules are tied out."],
+      },
       note: "Base FCF is 2025 operating cash flow less reported additions to property and equipment.",
     },
   },
@@ -212,6 +246,7 @@ export const INDUSTRIAL_COMPANIES = [
       shares: 568_356_724,
       operatingCashFlow: null,
     },
+    financialHistory: { annual: [], quarterly: [] },
     valuation: {
       normalizedFcf: 1_050_000_000,
       fcfGrowth: 0.05,
@@ -222,11 +257,22 @@ export const INDUSTRIAL_COMPANIES = [
       dividendPerShare: null,
       dividendGrowth: 0.02,
       dividendDiscountRate: 0.12,
-      weights: { dcf: 0.45, graham: 0.25, multiples: 0.3, ddm: 0 },
+      cashFlowType: "fcff",
+      cashFlowSource: "internal_estimate",
+      bridgeComplete: false,
+      modelPolicy: {
+        primary: "sotp",
+        crossChecks: ["dcf", "multiples"],
+        publishable: false,
+        reason: "Renewables and upstream assets require asset-level cash flows and different risk assumptions.",
+        blockReason: "the required sum-of-the-parts valuation is not yet implemented",
+      },
       note: "Normalized FCF is illustrative while new renewable projects are in a heavy build-out phase.",
     },
   },
 ];
+
+export const VALUATION_COMPANIES = [...INDUSTRIAL_COMPANIES, BDO_COMPANY];
 
 export const FILING_NEWS = [
   {

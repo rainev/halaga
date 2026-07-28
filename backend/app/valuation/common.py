@@ -1,22 +1,45 @@
 """Shared helpers for the valuation models."""
 
+MIN_TERMINAL_SPREAD = 0.03
+MAX_TERMINAL_GROWTH = 0.04
+
+
+def validate_terminal_spread(
+    discount_rate: float,
+    growth_rate: float,
+    *,
+    minimum_spread: float = MIN_TERMINAL_SPREAD,
+) -> None:
+    """Reject mathematically invalid or governance-fragile perpetuities."""
+    if discount_rate <= growth_rate:
+        raise ValueError("discount_rate must exceed growth_rate")
+    if discount_rate - growth_rate + 1e-12 < minimum_spread:
+        raise ValueError(
+            "discount_rate must exceed growth_rate by at least "
+            f"{minimum_spread:.0%}"
+        )
+    if growth_rate > MAX_TERMINAL_GROWTH:
+        raise ValueError(
+            f"growth_rate must not exceed {MAX_TERMINAL_GROWTH:.0%} "
+            "without a separately approved scenario"
+        )
+
 
 def summarize(intrinsic_value: float, current_price: float | None, band: float = 0.05):
-    """Compute upside and a plain-language verdict.
+    """Compute price/model variance and a descriptive, non-recommendation label.
 
-    `band` is a tolerance around fair value: within +/- band the stock is
-    "Fairly valued", above it "Undervalued" (intrinsic > price), below
-    "Overvalued". Returns (upside_pct, verdict) with None when no price is given.
+    `band` is only a display tolerance. The label describes where the observed
+    price sits relative to this model run; it does not claim market mispricing.
     """
     if current_price is None or current_price == 0:
         return None, None
     upside = intrinsic_value / current_price - 1
     if upside > band:
-        verdict = "Undervalued"
+        verdict = "Below model estimate"
     elif upside < -band:
-        verdict = "Overvalued"
+        verdict = "Above model estimate"
     else:
-        verdict = "Fairly valued"
+        verdict = "Near model estimate"
     return upside, verdict
 
 

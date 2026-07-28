@@ -1,10 +1,9 @@
 """Market-wide assumptions, defaulted for the Philippines (PSE / PHP).
 
-These replace the US-centric constants baked into the original spreadsheet:
-- Graham's `4.4` / `Y` were US AAA corporate-bond yields; for PH we normalize
-  against a PHP government benchmark (BVAL 10Y ~6%).
-- Discount rates / cost of equity should be built from a PHP risk-free rate and
-  a PH equity risk premium, not a flat US-style 9.5%.
+The CAPM inputs explicitly separate a local government yield, sovereign default
+spread, mature-market ERP, and Philippine country-risk premium. This prevents a
+PHP government yield (which contains default risk) from being mislabeled as a
+default-free rate and prevents country risk from being beta-scaled by accident.
 
 Values are editable at runtime via the `market_assumptions` DB table (the 'PH'
 row); these dataclass defaults are the fallback when nothing is seeded.
@@ -15,9 +14,18 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class MarketAssumptions:
-    # CAPM building blocks (decimals).
-    risk_free_rate: float = 0.06  # PHP 10Y govt / BVAL benchmark
-    equity_risk_premium: float = 0.075  # PH equity risk premium
+    # CAPM building blocks (decimals). Fallbacks are a dated working set and
+    # should be refreshed through the assumptions table before live reliance.
+    local_government_yield: float = 0.0600
+    sovereign_default_spread: float = 0.0162
+    risk_free_rate: float = 0.0438
+    equity_risk_premium: float = 0.0423  # mature-market ERP; beta-scaled
+    country_risk_premium: float = 0.0246  # PH CRP; exposure-scaled separately
+    assumptions_as_of: str = "2026-01"
+    assumptions_source: str = "Damodaran country risk dataset (January 2026)"
+    assumptions_source_url: str = (
+        "https://pages.stern.nyu.edu/adamodar/New_Home_Page/datafile/ctryprem.html"
+    )
 
     # Graham formula inputs.
     graham_current_yield: float = 6.0  # PERCENT — current PHP benchmark yield ("Y")
@@ -31,9 +39,24 @@ class MarketAssumptions:
 PH = MarketAssumptions()
 
 
-def cost_of_equity(beta: float, a: MarketAssumptions = PH) -> float:
-    """CAPM: r_e = risk_free + beta * equity_risk_premium."""
-    return a.risk_free_rate + beta * a.equity_risk_premium
+def cost_of_equity(
+    beta: float,
+    a: MarketAssumptions = PH,
+    country_risk_exposure: float = 1.0,
+) -> float:
+    """PH cost of equity with country risk separated from beta.
+
+    r_e = default-free PHP rate + beta * mature ERP + lambda * PH CRP
+    """
+    if beta < 0:
+        raise ValueError("beta must be non-negative")
+    if country_risk_exposure < 0:
+        raise ValueError("country_risk_exposure must be non-negative")
+    return (
+        a.risk_free_rate
+        + beta * a.equity_risk_premium
+        + country_risk_exposure * a.country_risk_premium
+    )
 
 
 def wacc(

@@ -50,6 +50,14 @@ cp .env.example .env
 
 The derived demo dataset in `frontend/src/research/` was transcribed from the supplied FY2025 Industrial-company filings. User-supplied PDFs and workbooks remain local and are intentionally excluded from Git.
 
+Each company can also carry optional `financialHistory.annual` and
+`financialHistory.quarterly` records. The current one-period snapshot remains
+valid; missing history never blocks a valuation. When filing-tied data is later
+added, the engine can automatically use a median of three consecutive annual
+cash-flow observations or a trailing-four-quarter total. Quarterly records must
+represent standalone quarters, and annual and quarterly values are never added
+together.
+
 The Graham-style model replaces the original U.S. AAA-yield term with a Philippine long-government-bond proxy. It uses the 7.052% accepted average yield from the Bureau of the Treasury's 23 June 2026 auction and an explicit 6.0% through-cycle normalizer.
 
 Health thresholds start from the supplied `Financial Health Metrics.pdf` and become stricter or more permissive according to the user's risk profile. They are investor screens, not universal accounting rules.

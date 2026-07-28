@@ -1,4 +1,16 @@
 import { PHILIPPINE_ASSUMPTIONS } from "./data.js";
+import {
+  getFinancialHistorySummary,
+  getFinancialSnapshot,
+  selectCashFlowBasis,
+  validateFinancialHistory,
+} from "./history.js";
+
+export {
+  getFinancialHistorySummary,
+  getFinancialSnapshot,
+  validateFinancialHistory,
+};
 
 export const RISK_PROFILES = {
   1: { label: "Capital Keeper", short: "Very cautious", tone: "Protect first" },
@@ -36,6 +48,12 @@ export const SENTIMENTS = {
     epsGrowthPoints: 1,
     dividendGrowth: 0.005,
   },
+};
+
+export const VALUATION_CONTROLS = {
+  minimumRateGrowthSpread: 0.03,
+  maximumTerminalGrowth: 0.04,
+  terminalValueWarningShare: 0.75,
 };
 
 const THRESHOLDS = {
@@ -102,7 +120,7 @@ export function getThresholds(risk) {
 }
 
 export function getDerivedMetrics(company) {
-  const f = company.financials;
+  const f = getFinancialSnapshot(company);
   const safeDivide = (numerator, denominator) =>
     Number.isFinite(numerator) && Number.isFinite(denominator) && denominator !== 0
       ? numerator / denominator
@@ -152,7 +170,7 @@ function compareMetric(value, target, direction, tolerance = 0) {
 export function getHealthMetrics(company, risk = 3) {
   const thresholds = getThresholds(risk);
   const d = getDerivedMetrics(company);
-  const f = company.financials;
+  const f = getFinancialSnapshot(company);
 
   const pnl = [
     {
@@ -204,7 +222,10 @@ export function getHealthMetrics(company, risk = 3) {
     {
       key: "epsGrowth",
       label: "EPS direction",
-      description: `PHP${f.eps.toFixed(f.eps < 1 ? 3 : 2)} in 2025 vs PHP${f.epsPrevious.toFixed(f.epsPrevious < 1 ? 3 : 2)} in 2024`,
+      description:
+        Number.isFinite(f.eps) && Number.isFinite(f.epsPrevious)
+          ? `PHP${f.eps.toFixed(f.eps < 1 ? 3 : 2)} in ${f.period} vs PHP${f.epsPrevious.toFixed(f.epsPrevious < 1 ? 3 : 2)} in ${f.previousPeriod}`
+          : "Current EPS compared with the previous comparable period",
       value: d.epsGrowth,
       target: thresholds.epsGrowth,
       direction: "min",
@@ -296,89 +317,307 @@ export function scoreCompany(company, risk = 3) {
 
 export function calculateDCF(company, sentiment = "base") {
   const v = company.valuation;
+  const f = getFinancialSnapshot(company);
+  const cashFlowBasis = selectCashFlowBasis(company);
+  const normalizedFcf = cashFlowBasis.value;
   const adjustment = SENTIMENTS[sentiment] || SENTIMENTS.base;
-  const growth = Math.max(-0.05, Math.min(0.15, v.fcfGrowth + adjustment.fcfGrowth));
-  const terminalGrowth = Math.max(0, v.terminalGrowth + adjustment.terminalGrowth);
-  const discountRate = Math.max(
-    terminalGrowth + 0.025,
-    v.discountRate + adjustment.discountRate,
+  const growth = v.fcfGrowth + adjustment.fcfGrowth;
+  const terminalGrowth = v.terminalGrowth + adjustment.terminalGrowth;
+  const discountRate = v.discountRate + adjustment.discountRate;
+  const cashFlowType = v.cashFlowType || "unknown";
+  const errors = [];
+  const warnings = [];
+
+  if (!Number.isFinite(normalizedFcf) || normalizedFcf <= 0) {
+    errors.push("Normalized cash flow must be a positive, documented amount.");
+  }
+  if (!["fcff", "fcfe"].includes(cashFlowType)) {
+    errors.push("Cash flow must be identified as FCFF or FCFE before valuation.");
+  }
+  if (!Number.isFinite(discountRate) || !Number.isFinite(terminalGrowth)) {
+    errors.push("Discount rate and terminal growth must be finite numbers.");
+  } else {
+    if (discountRate <= terminalGrowth) {
+      errors.push("Discount rate must exceed terminal growth.");
+    } else if (
+      discountRate - terminalGrowth + 1e-12 <
+      VALUATION_CONTROLS.minimumRateGrowthSpread
+    ) {
+      errors.push("Discount rate must exceed terminal growth by at least 3 percentage points.");
+    }
+    if (terminalGrowth > VALUATION_CONTROLS.maximumTerminalGrowth) {
+      errors.push("Terminal growth above 4% requires a separately approved scenario.");
+    }
+  }
+  if (!Number.isFinite(growth) || growth <= -1) {
+    errors.push("Forecast growth must be finite and greater than -100%.");
+  }
+  if (cashFlowBasis.source !== "primary_source_fact") {
+    warnings.push("Normalized cash flow is an internal estimate, not a filing-tied FCFF schedule.");
+  }
+  warnings.push(
+    ...cashFlowBasis.history.errors.map((issue) => `Optional history ignored: ${issue}`),
+    ...cashFlowBasis.history.warnings,
   );
+  if (cashFlowType === "fcff" && v.bridgeComplete !== true) {
+    warnings.push("The enterprise-to-equity bridge has not been confirmed for all material claims.");
+  }
+
+  if (errors.length) {
+    return {
+      perShare: null,
+      enterpriseValue: null,
+      equityValue: null,
+      growth,
+      terminalGrowth,
+      discountRate,
+      normalizedFcf,
+      cashFlowBasis,
+      cashFlowType,
+      terminalValueShare: null,
+      status: "blocked",
+      errors,
+      warnings,
+    };
+  }
+
   let presentValue = 0;
-  let futureFcf = v.normalizedFcf;
+  let futureFcf = normalizedFcf;
   for (let year = 1; year <= 5; year += 1) {
     futureFcf *= 1 + growth;
     presentValue += futureFcf / (1 + discountRate) ** year;
   }
   const terminalValue =
     (futureFcf * (1 + terminalGrowth)) / (discountRate - terminalGrowth);
-  const enterpriseValue = presentValue + terminalValue / (1 + discountRate) ** 5;
-  const netDebt = company.financials.debt - company.financials.cash;
-  const equityValue = enterpriseValue - netDebt;
+  const presentValueOfTerminal =
+    terminalValue / (1 + discountRate) ** 5;
+  const enterpriseValue = presentValue + presentValueOfTerminal;
+  const netDebt = f.debt - f.cash;
+  const preferredStock = f.preferredStock || 0;
+  const nonControllingInterest = f.nonControllingInterest || 0;
+  const equityValue =
+    cashFlowType === "fcfe"
+      ? presentValue + presentValueOfTerminal
+      : enterpriseValue - netDebt - preferredStock - nonControllingInterest;
+  const terminalValueShare =
+    enterpriseValue !== 0 ? presentValueOfTerminal / enterpriseValue : null;
+  if (
+    terminalValueShare !== null &&
+    terminalValueShare > VALUATION_CONTROLS.terminalValueWarningShare
+  ) {
+    warnings.push("Terminal value exceeds 75% of enterprise value.");
+  }
   return {
-    perShare: Math.max(0, equityValue / company.financials.shares),
+    perShare: equityValue / f.shares,
     enterpriseValue,
     equityValue,
     growth,
     terminalGrowth,
     discountRate,
-    normalizedFcf: v.normalizedFcf,
+    normalizedFcf,
+    cashFlowBasis,
+    cashFlowType,
+    terminalValue,
+    presentValueOfTerminal,
+    terminalValueShare,
+    status: warnings.length ? "review" : "pass",
+    errors,
+    warnings,
   };
 }
 
 export function calculateGraham(company, sentiment = "base") {
+  const f = getFinancialSnapshot(company);
   const adjustment = SENTIMENTS[sentiment] || SENTIMENTS.base;
   const growthPercent = Math.max(
     0,
     company.valuation.epsGrowthPercent + adjustment.epsGrowthPoints,
   );
   const value =
-    company.financials.eps *
+    f.eps *
     (8.5 + 2 * growthPercent) *
-    (PHILIPPINE_ASSUMPTIONS.grahamBaselineYield / PHILIPPINE_ASSUMPTIONS.riskFreeRate);
-  return { perShare: Math.max(0, value), growthPercent };
+    (PHILIPPINE_ASSUMPTIONS.grahamBaselineYield /
+      PHILIPPINE_ASSUMPTIONS.localGovernmentYield);
+  return {
+    perShare: value,
+    growthPercent,
+    status: "diagnostic",
+    errors: [],
+    warnings: ["Graham is an educational diagnostic, not a headline valuation method."],
+  };
 }
 
 export function calculateMultiples(company, sentiment = "base") {
+  const f = getFinancialSnapshot(company);
   const adjustment = SENTIMENTS[sentiment] || SENTIMENTS.base;
   const peerPe = company.valuation.peerPe * adjustment.multipleFactor;
-  return { perShare: company.financials.eps * peerPe, peerPe };
+  if (!Number.isFinite(f.eps) || f.eps <= 0) {
+    return {
+      perShare: null,
+      peerPe,
+      status: "blocked",
+      errors: ["P/E cannot be applied when target EPS is zero or negative."],
+      warnings: [],
+    };
+  }
+  return {
+    perShare: f.eps * peerPe,
+    peerPe,
+    status: "review",
+    errors: [],
+    warnings: ["The current app stores one benchmark P/E, not a validated four-peer set."],
+  };
 }
 
 export function calculateDDM(company, sentiment = "base") {
   if (!Number.isFinite(company.valuation.dividendPerShare)) return null;
   const adjustment = SENTIMENTS[sentiment] || SENTIMENTS.base;
-  const growth = Math.max(0, company.valuation.dividendGrowth + adjustment.dividendGrowth);
-  const discountRate = Math.max(
-    growth + 0.02,
-    company.valuation.dividendDiscountRate + adjustment.discountRate,
-  );
+  const growth = company.valuation.dividendGrowth + adjustment.dividendGrowth;
+  const discountRate =
+    company.valuation.dividendDiscountRate + adjustment.discountRate;
+  const errors = [];
+  if (discountRate <= growth) {
+    errors.push("Dividend discount rate must exceed dividend growth.");
+  } else if (
+    discountRate - growth + 1e-12 <
+    VALUATION_CONTROLS.minimumRateGrowthSpread
+  ) {
+    errors.push("Dividend discount rate must exceed growth by at least 3 percentage points.");
+  }
+  if (growth > VALUATION_CONTROLS.maximumTerminalGrowth) {
+    errors.push("Perpetual dividend growth above 4% is not approved.");
+  }
+  if (errors.length) {
+    return {
+      perShare: null,
+      growth,
+      discountRate,
+      status: "blocked",
+      errors,
+      warnings: [],
+    };
+  }
   const nextDividend = company.valuation.dividendPerShare * (1 + growth);
-  return { perShare: nextDividend / (discountRate - growth), growth, discountRate };
+  return {
+    perShare: nextDividend / (discountRate - growth),
+    growth,
+    discountRate,
+    status: "review",
+    errors: [],
+    warnings: ["Use DDM only when dividends are supported by a stable payout policy."],
+  };
+}
+
+export function calculateResidualIncome(company, sentiment = "base") {
+  const scenario = company?.valuation?.bank?.scenarios?.[sentiment];
+  if (!scenario || !Number.isFinite(scenario.intrinsic_value)) {
+    return {
+      perShare: null,
+      status: "blocked",
+      errors: ["A source-traceable bank residual-income scenario is unavailable."],
+      warnings: [],
+    };
+  }
+  return {
+    perShare: scenario.intrinsic_value,
+    costOfEquity: scenario.detail.cost_of_equity,
+    currentRoe: scenario.detail.current_roe,
+    terminalRoe: scenario.detail.terminal_roe,
+    terminalGrowth: scenario.detail.terminal_growth,
+    payoutRatio: scenario.detail.current_payout_ratio,
+    bookValuePerShare: scenario.detail.book_value_per_share,
+    schedule: scenario.detail.schedule,
+    status: scenario.validation?.status || "review",
+    errors: [],
+    warnings: scenario.validation?.warnings || [],
+  };
+}
+
+export function calculateBankDdm(company, sentiment = "base") {
+  const scenario = company?.valuation?.bank?.scenarios?.[sentiment];
+  const value = scenario?.detail?.ddm_cross_check;
+  if (!Number.isFinite(value)) return null;
+  return {
+    perShare: value,
+    costOfEquity: scenario.detail.cost_of_equity,
+    terminalGrowth: scenario.detail.terminal_growth,
+    status: "review",
+    errors: [],
+    warnings: [
+      "This DDM uses the same clean-surplus earnings and payout path as residual income.",
+    ],
+  };
+}
+
+export function calculateJustifiedPb(company, sentiment = "base") {
+  const scenario = company?.valuation?.bank?.scenarios?.[sentiment];
+  const value = scenario?.detail?.justified_pb_value;
+  if (!Number.isFinite(value)) return null;
+  return {
+    perShare: value,
+    multiple: scenario.detail.justified_pb_multiple,
+    status: "review",
+    errors: [],
+    warnings: ["Stable-state justified P/B is not a live peer-market multiple."],
+  };
 }
 
 export function calculateValuation(company, sentiment = "base") {
-  const models = {
-    dcf: calculateDCF(company, sentiment),
-    graham: calculateGraham(company, sentiment),
-    multiples: calculateMultiples(company, sentiment),
-    ddm: calculateDDM(company, sentiment),
+  const policy = company.valuation.modelPolicy || {
+    primary: "dcf",
+    crossChecks: ["multiples"],
+    publishable: true,
   };
-  let weightedValue = 0;
-  let activeWeight = 0;
-  for (const [key, result] of Object.entries(models)) {
-    const weight = company.valuation.weights[key] || 0;
-    if (result && Number.isFinite(result.perShare) && weight > 0) {
-      weightedValue += result.perShare * weight;
-      activeWeight += weight;
-    }
-  }
-  const values = Object.values(models)
-    .filter(Boolean)
-    .map((model) => model.perShare);
+  const isBank = policy.primary === "residual_income";
+  const models = isBank
+    ? {
+        residual_income: calculateResidualIncome(company, sentiment),
+        ddm: calculateBankDdm(company, sentiment),
+        justified_pb: calculateJustifiedPb(company, sentiment),
+      }
+    : {
+        dcf: calculateDCF(company, sentiment),
+        graham: calculateGraham(company, sentiment),
+        multiples: calculateMultiples(company, sentiment),
+        ddm: calculateDDM(company, sentiment),
+      };
+  const primary = models[policy.primary] || null;
+  const policyWarnings = [...(policy.warnings || [])];
+  const blockedByPolicy = policy.publishable === false;
+  const blockedByModel =
+    !primary || primary.status === "blocked" || !Number.isFinite(primary.perShare);
+  const status = blockedByPolicy || blockedByModel
+    ? "blocked"
+    : primary.status === "review" || policyWarnings.length
+      ? "review"
+      : "pass";
+
+  const scenarioValues = blockedByPolicy
+    ? []
+    : ["bear", "base", "bull"]
+        .map((caseName) => {
+          const result = policy.primary === "dcf"
+            ? calculateDCF(company, caseName)
+            : policy.primary === "residual_income"
+              ? calculateResidualIncome(company, caseName)
+              : models[policy.primary];
+          return result && Number.isFinite(result.perShare) ? result.perShare : null;
+        })
+        .filter((value) => value !== null);
+
   return {
-    blended: activeWeight ? weightedValue / activeWeight : 0,
-    low: Math.min(...values),
-    high: Math.max(...values),
+    primaryModel: policy.primary,
+    primaryValue: status === "blocked" ? null : primary.perShare,
+    scenarioLow: scenarioValues.length ? Math.min(...scenarioValues) : null,
+    scenarioHigh: scenarioValues.length ? Math.max(...scenarioValues) : null,
+    crossChecks: policy.crossChecks || [],
+    status,
+    policyReason: policy.reason || "",
+    warnings: [...policyWarnings, ...(primary?.warnings || [])],
+    errors: [
+      ...(blockedByPolicy ? [policy.blockReason || "Required primary method is not implemented."] : []),
+      ...(primary?.errors || []),
+    ],
     models,
   };
 }
@@ -430,9 +669,14 @@ export function buildSmartBrief(company, risk = 3, sentiment = "base", lots = []
   if (score >= 78) stance = "Stronger fundamentals in this test group";
   else if (score >= 65) stance = "Mixed, with investable strengths";
 
+  const valuationSentence =
+    valuation.primaryValue === null
+      ? `The ${SENTIMENTS[sentiment].label.toLowerCase()} valuation is withheld because ${valuation.errors[0] || "the primary method did not pass validation"}. Diagnostic model outputs remain available for review, but they are not blended.`
+      : `Under the ${SENTIMENTS[sentiment].label.toLowerCase()} case, the primary ${valuation.primaryModel.toUpperCase()} estimate is PHP${valuation.primaryValue.toFixed(2)} per share, with a PHP${valuation.scenarioLow.toFixed(2)}-PHP${valuation.scenarioHigh.toFixed(2)} scenario range. Cross-checks are shown separately and are never averaged into the headline.`;
+
   const paragraphs = [
     `${company.shortName} clears ${passes.length} of ${metrics.length} available checks for a ${profile.short.toLowerCase()} investor. ${topPass ? `${topPass.label} is a relative strength.` : "No single metric leads the case."} ${topWatch ? `${topWatch.label} is the first item to investigate.` : "No major threshold miss appears in the available set."}`,
-    `Under the ${SENTIMENTS[sentiment].label.toLowerCase()} case, the filing-based models center on PHP${valuation.blended.toFixed(2)} per share, with a PHP${valuation.low.toFixed(2)}-PHP${valuation.high.toFixed(2)} range. This is an intrinsic-value estimate, not a market quote.`,
+    `${valuationSentence} This is a model estimate, not a market quote or recommendation.`,
     invested > 0
       ? `Your organizer contains ${openCompanyLots.length} open ${company.symbol} lot${openCompanyLots.length === 1 ? "" : "s"} with PHP${Math.round(invested).toLocaleString("en-PH")} invested at cost. Current value stays blank because the app does not publish live prices.`
       : `You have no ${company.symbol} lot in the organizer yet. If you add one, this brief will include your quantity and cost basis without estimating a current market value.`,

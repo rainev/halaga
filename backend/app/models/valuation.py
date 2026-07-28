@@ -29,9 +29,11 @@ class DcfInput(SaveOptions):
     base_fcf: float | None = None
     growth_rate: float | None = None  # decimal, e.g. 0.09
     years: int | None = Field(default=None, ge=1, le=30)
-    # Provide a discount rate directly, OR a beta to derive it via CAPM.
+    # FCFE may derive cost of equity from beta. Firm-level FCFF must use an
+    # explicit WACC or provide the complete WACC builder inputs below.
     discount_rate: float | None = None
     beta: float | None = None
+    country_risk_exposure: float = Field(default=1.0, ge=0, le=2)
     # FCFF WACC builder (used when method='fcff' and discount_rate is blank):
     # WACC weights equity (market cap = price * shares) vs debt (total_debt).
     cost_of_debt: float | None = None
@@ -39,6 +41,8 @@ class DcfInput(SaveOptions):
     perpetual_growth_rate: float | None = None  # defaults to PH long-run growth
     cash: float = 0.0
     total_debt: float = 0.0
+    preferred_stock: float = 0.0
+    non_controlling_interest: float = 0.0
     shares_outstanding: float = Field(gt=0)
     current_price: float | None = None
 
@@ -50,6 +54,7 @@ class DdmInput(SaveOptions):
     growth_rate: float | None = None
     discount_rate: float | None = None
     beta: float | None = None
+    country_risk_exposure: float = Field(default=1.0, ge=0, le=2)
     # Two-stage only:
     high_growth: float | None = None
     high_growth_years: int | None = Field(default=None, ge=1, le=30)
@@ -79,7 +84,7 @@ class PeerInput(BaseModel):
 
 class MultiplesInput(SaveOptions):
     metric: Literal["pe", "pb", "ev_ebitda"] = "pe"
-    peers: list[PeerInput] = Field(min_length=1)
+    peers: list[PeerInput] = Field(min_length=4)
     # Target figure matching the metric:
     target_eps: float | None = None
     target_book_value_per_share: float | None = None
@@ -91,10 +96,23 @@ class MultiplesInput(SaveOptions):
     current_price: float | None = None
 
 
+class BankResidualIncomeInput(SaveOptions):
+    book_value_per_share: float = Field(gt=0)
+    current_roe: float = Field(gt=0)
+    cost_of_equity: float | None = None
+    beta: float | None = Field(default=None, ge=0)
+    country_risk_exposure: float = Field(default=1.0, ge=0, le=2)
+    current_payout_ratio: float = Field(ge=0, le=1)
+    terminal_roe: float = Field(gt=0)
+    terminal_growth: float = Field(ge=0, le=0.04)
+    years: int = Field(default=5, ge=1, le=30)
+    current_price: float | None = None
+
+
 class SavedValuation(BaseModel):
     id: int
     company_id: int | None
-    model: Literal["dcf", "ddm", "graham", "multiples"]
+    model: Literal["dcf", "ddm", "graham", "multiples", "residual_income"]
     inputs: dict
     assumptions: dict
     result: dict

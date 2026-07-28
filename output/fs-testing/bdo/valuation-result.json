@@ -1,0 +1,602 @@
+{
+  "schema_version": "1.0",
+  "ticker": "BDO",
+  "company_name": "BDO Unibank, Inc.",
+  "pse_sector": "Financials",
+  "pse_subsector": "Banks",
+  "classification_method": "explicit_symbol",
+  "financial_period": "TTM through Q2 2026",
+  "valuation_date": "2026-06-30",
+  "models_executed": [
+    "residual_income",
+    "clean_surplus_ddm",
+    "justified_price_to_book"
+  ],
+  "models_not_executed": {
+    "peer_price_to_book": "No contemporaneous public peer-price dataset was supplied to this filing-only test.",
+    "regulatory_capital_fcfe": "Risk-weighted assets and a forecast regulatory-capital schedule were not sufficiently extracted."
+  },
+  "parser_requirement_summary": {
+    "required_found": 15,
+    "required_validated": 11,
+    "required_total": 15,
+    "required_completeness": 0.7333333333333333,
+    "recommended_found": 18,
+    "recommended_validated": 11,
+    "recommended_total": 33,
+    "missing_required": [],
+    "review_required": [
+      "shares_outstanding",
+      "gross_loans",
+      "allowance_credit_losses",
+      "book_value_per_share"
+    ]
+  },
+  "transformation_validation": {
+    "required_total": 15,
+    "required_transformed": 15,
+    "missing_after_transformation": [],
+    "reviewed_or_derived": [
+      "shares_outstanding",
+      "gross_loans",
+      "allowance_credit_losses",
+      "book_value_per_share"
+    ]
+  },
+  "normalized_inputs": {
+    "as_of": "2026-06-30",
+    "parent_equity": 655914000000.0,
+    "preferred_par_capital": 6180000000.0,
+    "common_equity": 649734000000.0,
+    "book_value_per_share": 121.78484165705865,
+    "shares_outstanding": 5335097465.0,
+    "net_income": 87308000000.0,
+    "ttm_parent_net_income": 87308000000.0,
+    "ttm_eps": 16.364836926179755,
+    "ttm_roe": 0.13947789246329256,
+    "net_interest_income": 213477000000.0,
+    "ttm_dividend_per_share": 4.4,
+    "dividends_paid": -12145000000.0,
+    "current_payout_ratio": 0.2688691625738764,
+    "total_assets": 5904542000000.0,
+    "total_liabilities": 5248640000000.0,
+    "total_equity": 655902000000.0,
+    "customer_deposits": 4566089000000.0,
+    "net_loans": 3953170000000.0,
+    "gross_loans": 3966622000000.0,
+    "allowance_credit_losses": 13452000000.0,
+    "cash": 84230000000.0,
+    "cet1_ratio": 0.138,
+    "capital_adequacy_ratio": 0.149
+  },
+  "assumptions": {
+    "beta_proxy": 1.0,
+    "country_risk_exposure": 1.0,
+    "risk_free_rate": 0.0438,
+    "mature_market_erp": 0.0423,
+    "country_risk_premium": 0.0246,
+    "base_cost_of_equity": 0.11069999999999999,
+    "assumptions_as_of": "2026-01",
+    "assumptions_source": "Damodaran country risk dataset (January 2026)",
+    "terminal_roe": 0.125,
+    "terminal_growth": 0.035,
+    "forecast_years": 5
+  },
+  "scenarios": {
+    "bear": {
+      "model": "residual_income",
+      "intrinsic_value": 109.72773827399915,
+      "current_price": null,
+      "upside_pct": null,
+      "verdict": null,
+      "validation": {
+        "status": "review",
+        "warnings": [
+          "The DDM cross-check uses the same clean-surplus forecast as residual income and is not independent evidence.",
+          "Justified P/B is a stable-state cross-check, not a peer-market multiple."
+        ],
+        "clean_surplus_reconciliation_difference": -2.842170943040401e-14
+      },
+      "detail": {
+        "book_value_per_share": 121.78484165705865,
+        "current_roe": 0.12947789246329255,
+        "cost_of_equity": 0.12569999999999998,
+        "current_payout_ratio": 0.2688691625738764,
+        "terminal_roe": 0.115,
+        "terminal_growth": 0.03,
+        "terminal_payout_ratio": 0.7391304347826086,
+        "forecast_years": 5,
+        "pv_forecast_residual_income": -2.2296359576785316,
+        "pv_continuing_residual_income": -9.827467425380968,
+        "ddm_cross_check": 109.72773827399918,
+        "justified_pb_multiple": 0.8881922675026126,
+        "justified_pb_value": 108.16835465882956,
+        "schedule": [
+          {
+            "year": 1,
+            "opening_book_value_per_share": 121.78484165705865,
+            "roe": 0.12658231397063405,
+            "payout_ratio": 0.36292141701562286,
+            "earnings_per_share": 15.41580706349775,
+            "dividends_per_share": 5.594726543924051,
+            "residual_income_per_share": 0.10745246720547996,
+            "closing_book_value_per_share": 131.60592217663233
+          },
+          {
+            "year": 2,
+            "opening_book_value_per_share": 131.60592217663233,
+            "roe": 0.12368673547797554,
+            "payout_ratio": 0.45697367145736933,
+            "earnings_per_share": 16.27790688359616,
+            "dividends_per_share": 7.438574872238122,
+            "residual_income_per_share": -0.26495753400652333,
+            "closing_book_value_per_share": 140.44525418799037
+          },
+          {
+            "year": 3,
+            "opening_book_value_per_share": 140.44525418799037,
+            "roe": 0.12079115698531702,
+            "payout_ratio": 0.5510259258991157,
+            "earnings_per_share": 16.9645447464643,
+            "dividends_per_share": 9.347903976377468,
+            "residual_income_per_share": -0.6894237049660887,
+            "closing_book_value_per_share": 148.0618949580772
+          },
+          {
+            "year": 4,
+            "opening_book_value_per_share": 148.0618949580772,
+            "roe": 0.11789557849265851,
+            "payout_ratio": 0.6450781803408623,
+            "earnings_per_share": 17.45584275880175,
+            "dividends_per_share": 11.260383283164051,
+            "residual_income_per_share": -1.1555374374285492,
+            "closing_book_value_per_share": 154.2573544337149
+          },
+          {
+            "year": 5,
+            "opening_book_value_per_share": 154.2573544337149,
+            "roe": 0.115,
+            "payout_ratio": 0.7391304347826086,
+            "earnings_per_share": 17.739595759877215,
+            "dividends_per_share": 13.111875126865767,
+            "residual_income_per_share": -1.6505536924407451,
+            "closing_book_value_per_share": 158.88507506672636
+          }
+        ]
+      }
+    },
+    "base": {
+      "model": "residual_income",
+      "intrinsic_value": 150.47777451365093,
+      "current_price": null,
+      "upside_pct": null,
+      "verdict": null,
+      "validation": {
+        "status": "review",
+        "warnings": [
+          "The DDM cross-check uses the same clean-surplus forecast as residual income and is not independent evidence.",
+          "Justified P/B is a stable-state cross-check, not a peer-market multiple."
+        ],
+        "clean_surplus_reconciliation_difference": 2.842170943040401e-14
+      },
+      "detail": {
+        "book_value_per_share": 121.78484165705865,
+        "current_roe": 0.13947789246329256,
+        "cost_of_equity": 0.11069999999999999,
+        "current_payout_ratio": 0.2688691625738764,
+        "terminal_roe": 0.125,
+        "terminal_growth": 0.035,
+        "terminal_payout_ratio": 0.72,
+        "forecast_years": 5,
+        "pv_forecast_residual_income": 10.429904613573875,
+        "pv_continuing_residual_income": 18.263028243018407,
+        "ddm_cross_check": 150.4777745136509,
+        "justified_pb_multiple": 1.1889035667107002,
+        "justified_pb_value": 144.79043261737488,
+        "schedule": [
+          {
+            "year": 1,
+            "opening_book_value_per_share": 121.78484165705865,
+            "roe": 0.13658231397063406,
+            "payout_ratio": 0.3590953300591011,
+            "earnings_per_share": 16.633655480068338,
+            "dividends_per_share": 5.9730680047045155,
+            "residual_income_per_share": 3.152073508631947,
+            "closing_book_value_per_share": 132.44542913242248
+          },
+          {
+            "year": 2,
+            "opening_book_value_per_share": 132.44542913242248,
+            "roe": 0.13368673547797555,
+            "payout_ratio": 0.4493214975443258,
+            "earnings_per_share": 17.70619704969312,
+            "dividends_per_share": 7.955774974183036,
+            "residual_income_per_share": 3.044488044733953,
+            "closing_book_value_per_share": 142.19585120793255
+          },
+          {
+            "year": 3,
+            "opening_book_value_per_share": 142.19585120793255,
+            "roe": 0.13079115698531701,
+            "payout_ratio": 0.5395476650295505,
+            "earnings_per_share": 18.597959897997487,
+            "dividends_per_share": 10.034485837277762,
+            "residual_income_per_share": 2.856879169279356,
+            "closing_book_value_per_share": 150.75932526865228
+          },
+          {
+            "year": 4,
+            "opening_book_value_per_share": 150.75932526865228,
+            "roe": 0.1278955784926585,
+            "payout_ratio": 0.6297738325147753,
+            "earnings_per_share": 19.281451118397154,
+            "dividends_per_share": 12.142953367279276,
+            "residual_income_per_share": 2.592393811157347,
+            "closing_book_value_per_share": 157.89782301977016
+          },
+          {
+            "year": 5,
+            "opening_book_value_per_share": 157.89782301977016,
+            "roe": 0.125,
+            "payout_ratio": 0.72,
+            "earnings_per_share": 19.73722787747127,
+            "dividends_per_share": 14.210804071779314,
+            "residual_income_per_share": 2.2579388691827127,
+            "closing_book_value_per_share": 163.42424682546212
+          }
+        ]
+      }
+    },
+    "bull": {
+      "model": "residual_income",
+      "intrinsic_value": 200.56092110515976,
+      "current_price": null,
+      "upside_pct": null,
+      "verdict": null,
+      "validation": {
+        "status": "review",
+        "warnings": [
+          "The DDM cross-check uses the same clean-surplus forecast as residual income and is not independent evidence.",
+          "Justified P/B is a stable-state cross-check, not a peer-market multiple."
+        ],
+        "clean_surplus_reconciliation_difference": -5.684341886080802e-14
+      },
+      "detail": {
+        "book_value_per_share": 121.78484165705865,
+        "current_roe": 0.14447789246329257,
+        "cost_of_equity": 0.1007,
+        "current_payout_ratio": 0.2688691625738764,
+        "terminal_roe": 0.135,
+        "terminal_growth": 0.04,
+        "terminal_payout_ratio": 0.7037037037037037,
+        "forecast_years": 5,
+        "pv_forecast_residual_income": 20.298374351748336,
+        "pv_continuing_residual_income": 58.47770509635278,
+        "ddm_cross_check": 200.56092110515982,
+        "justified_pb_multiple": 1.5650741350906097,
+        "justified_pb_value": 190.60230572356792,
+        "schedule": [
+          {
+            "year": 1,
+            "opening_book_value_per_share": 121.78484165705865,
+            "roe": 0.14258231397063406,
+            "payout_ratio": 0.35583607079984186,
+            "earnings_per_share": 17.36436453001069,
+            "dividends_per_share": 6.178867246295146,
+            "residual_income_per_share": 5.100630975144885,
+            "closing_book_value_per_share": 132.9703389407742
+          },
+          {
+            "year": 2,
+            "opening_book_value_per_share": 132.9703389407742,
+            "roe": 0.14068673547797556,
+            "payout_ratio": 0.44280297902580734,
+            "earnings_per_share": 18.707162900977455,
+            "dividends_per_share": 8.28358746167388,
+            "residual_income_per_share": 5.317049769641493,
+            "closing_book_value_per_share": 143.3939143800778
+          },
+          {
+            "year": 3,
+            "opening_book_value_per_share": 143.3939143800778,
+            "roe": 0.13879115698531702,
+            "payout_ratio": 0.5297698872517728,
+            "earnings_per_share": 19.901807281464485,
+            "dividends_per_share": 10.54337819960795,
+            "residual_income_per_share": 5.462040103390651,
+            "closing_book_value_per_share": 152.75234346193434
+          },
+          {
+            "year": 4,
+            "opening_book_value_per_share": 152.75234346193434,
+            "roe": 0.13689557849265852,
+            "payout_ratio": 0.6167367954777383,
+            "earnings_per_share": 20.911120424330765,
+            "dividends_per_share": 12.896657400350838,
+            "residual_income_per_share": 5.528959437713976,
+            "closing_book_value_per_share": 160.76680648591426
+          },
+          {
+            "year": 5,
+            "opening_book_value_per_share": 160.76680648591426,
+            "roe": 0.135,
+            "payout_ratio": 0.7037037037037037,
+            "earnings_per_share": 21.703518875598427,
+            "dividends_per_share": 15.272846616161855,
+            "residual_income_per_share": 5.514301462466861,
+            "closing_book_value_per_share": 167.19747874535085
+          }
+        ]
+      }
+    }
+  },
+  "source_map": {
+    "parent_equity": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 47,
+      "raw_label": "Shareholders of the Parent Bank",
+      "raw_text": "  Shareholders of the Parent Bank                                                   655,914                      641,074",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "total_equity": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 49,
+      "raw_label": "Total Equity",
+      "raw_text": "  Total Equity                                                                      655,902                      644,146",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "total_assets": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 27,
+      "raw_label": "TOTAL RESOURCES",
+      "raw_text": "TOTAL RESOURCES                                                      P            5,904,542        P           5,431,556",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "total_liabilities": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 42,
+      "raw_label": "Total Liabilities",
+      "raw_text": "  Total Liabilities                                                               5,248,640                    4,787,410",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "customer_deposits": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 37,
+      "raw_label": "Total Deposit Liabilities",
+      "raw_text": "   Total Deposit Liabilities                                                      4,566,089                    4,189,791",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "net_loans": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 19,
+      "raw_label": "LOANS AND OTHER RECEIVABLES",
+      "raw_text": "LOANS AND OTHER RECEIVABLES – Net                                                 3,953,170                    3,694,508",
+      "confidence": 0.96,
+      "candidate_kind": "table_row"
+    },
+    "gross_loans": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 21,
+      "line": 21,
+      "raw_label": "B. LOANS AND RECEIVABLES",
+      "raw_text": "B. LOANS AND RECEIVABLES                        P 3,874,470     P         28,880   P          5,564    P           8,836    P           48,872    P   3,966,622",
+      "confidence": 0.96,
+      "candidate_kind": "table_row"
+    },
+    "allowance_credit_losses": {
+      "method": "derived",
+      "formula": "gross loans and receivables less net loans and receivables",
+      "sources": [
+        {
+          "filing_period": "Q2 2026",
+          "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+          "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+          "page": 21,
+          "line": 21,
+          "raw_label": "B. LOANS AND RECEIVABLES",
+          "raw_text": "B. LOANS AND RECEIVABLES                        P 3,874,470     P         28,880   P          5,564    P           8,836    P           48,872    P   3,966,622",
+          "confidence": 0.96,
+          "candidate_kind": "table_row"
+        },
+        {
+          "filing_period": "Q2 2026",
+          "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+          "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+          "page": 5,
+          "line": 19,
+          "raw_label": "LOANS AND OTHER RECEIVABLES",
+          "raw_text": "LOANS AND OTHER RECEIVABLES – Net                                                 3,953,170                    3,694,508",
+          "confidence": 0.96,
+          "candidate_kind": "table_row"
+        }
+      ]
+    },
+    "cash": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 5,
+      "line": 12,
+      "raw_label": "CASH AND OTHER CASH ITEMS",
+      "raw_text": "CASH AND OTHER CASH ITEMS                                            P               84,230       P              119,359",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "shares_outstanding": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 2,
+      "line": 37,
+      "raw_label": "Common Stock",
+      "raw_text": "   Common Stock ₱10.00 par value                                      5,335,097,465\n11. Are any or all of the securities listed on a Stock Exchange?",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "preferred_shares": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 2,
+      "line": 39,
+      "raw_label": "Preferred Stock,",
+      "raw_text": " Preferred Stock, P10.00 par value                           618,000,000\n11. Are any or all of these securities listed on a Stock Exchange.",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "beginning_parent_equity": {
+      "filing_period": "Q2 2025",
+      "filename": "BDO Unibank, Inc. - quarterly_17q_June 30, 2025_Final.pdf",
+      "document_sha256": "8fc27730ccb54513cc755cffa75dcfdf0d54cd08120988f0b96492c9b13a186e",
+      "page": 5,
+      "line": 47,
+      "raw_label": "Shareholders of the Parent Bank",
+      "raw_text": "  Shareholders of the Parent Bank                                                     608,372                         574,671",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "fy2025_parent_income": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 82,
+      "line": 42,
+      "raw_label": "Parent Company of",
+      "raw_text": "Parent Company of P87.2 billion in 2025, a 6% increase from the previous",
+      "confidence": 0.9,
+      "candidate_kind": "narrative_currency"
+    },
+    "h1_2026_parent_income": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 6,
+      "line": 64,
+      "raw_label": "Shareholders of the Parent Bank",
+      "raw_text": "    Shareholders of the Parent Bank                                   P              40,723      P            40,615    P            20,611     P              20,911",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "h1_2025_parent_income": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 6,
+      "line": 64,
+      "raw_label": "Shareholders of the Parent Bank",
+      "raw_text": "    Shareholders of the Parent Bank                                   P              40,723      P            40,615    P            20,611     P              20,911",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "fy2025_net_interest_income": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 82,
+      "line": 43,
+      "raw_label": "net interest income",
+      "raw_text": "of P87.2 billion in 2025, a 6% increase from the previous year’s P82.0 billion. Net Interest Income rose 9% to P203.1 billion following earning assets growth. The Bank retained its conservative provisioning stance with Provision for Impairment Losses, 7% higher year-",
+      "confidence": 0.92,
+      "candidate_kind": "prose_window"
+    },
+    "h1_2026_net_interest_income": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 6,
+      "line": 25,
+      "raw_label": "NET INTEREST INCOME",
+      "raw_text": "NET INTEREST INCOME                                                                108,511                    98,134                 55,482                    50,378",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "h1_2025_net_interest_income": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 6,
+      "line": 25,
+      "raw_label": "NET INTEREST INCOME",
+      "raw_text": "NET INTEREST INCOME                                                                108,511                    98,134                 55,482                    50,378",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "dividends_paid": {
+      "filing_period": "Q2 2026",
+      "filename": "BDO Unibank, Inc. - Quarterly_17Q_June 30, 2026.pdf",
+      "document_sha256": "72c47fd9fbbe25b3dd45a8a8cc68e6cdee3130bfd3addcce1bcd1e1afa0aaecc",
+      "page": 9,
+      "line": 63,
+      "raw_label": "Dividends paid",
+      "raw_text": "  Dividends paid                                                                                     (12,145)        (11,542)",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    },
+    "ttm_dividend_per_share": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 79,
+      "line": 25,
+      "raw_label": "quarterly cash dividends",
+      "raw_text": "21 February 2025. The Board of Directors approved the declaration of quarterly cash dividends in the amount of P1.00 per common share for the first quarter of 2025 and P1.10 per common share for the second, third and fourth quarters of 2025 on 22 February 2025, 31 May 2025, 30 Aug",
+      "confidence": 0.84,
+      "candidate_kind": "prose_window"
+    },
+    "cet1_ratio": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 88,
+      "line": 2,
+      "raw_label": "cet1 ratio",
+      "raw_text": "ofitable operations, with Book Value Per Share up by 11% to P119.03. The Bank’s CET1 ratio was recorded at 13.8%. In 2025, BDO advanced its sustainability initiatives with the successful issuance of its fourth Peso‑denominated ASEAN Sustainability Bond in July. The issuance raised a recor",
+      "confidence": 0.9,
+      "candidate_kind": "prose_window"
+    },
+    "capital_adequacy_ratio": {
+      "filing_period": "FY2025",
+      "filename": "BDO 17-A Annual Report (31 December 2025).pdf",
+      "document_sha256": "6d68f44c66aacbc37e36fec4635adca485bf00d2e4b96b9d12c4d0641d6bfa1a",
+      "page": 84,
+      "line": 1,
+      "raw_label": "Capital to Risk Assets",
+      "raw_text": "   Capital to Risk Assets                   14.9%        15.2%       -0.3%",
+      "confidence": 1.0,
+      "candidate_kind": "table_row"
+    }
+  },
+  "warnings": [
+    "Beta 1.0 is a disclosed bank-sector fallback, not a measured BDO regression beta.",
+    "Preferred equity is proxied at disclosed PHP10 par value times 618m preferred shares.",
+    "Credit-loss allowance is derived as gross loans from the loan note less net loans on the statement of financial position.",
+    "The latest TTM dividend of PHP4.40 is reconstructed from declared common dividends and H1 cash dividends.",
+    "The DDM reconciliation is mathematically linked to residual income through clean-surplus accounting.",
+    "No current PSE market price is published or used in the intrinsic-value calculation."
+  ]
+}
