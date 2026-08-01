@@ -38,6 +38,19 @@ class USMarketAssumptions:
 US_BASE = USMarketAssumptions()
 
 
+class ForecastEvidenceUnavailable(ValueError):
+    """Raised when governed segment evidence has no matching normalized period."""
+
+    def __init__(self, *, period_end: str, available_periods: list[str]) -> None:
+        self.period_end = period_end
+        self.available_periods = available_periods
+        super().__init__(
+            "No governed segment forecast evidence is available for normalized "
+            f"period {period_end}; configured periods: "
+            f"{', '.join(available_periods) or 'none'}"
+        )
+
+
 def load_issuer_forecast_evidence(cik: str) -> dict[str, Any] | None:
     path = files(__package__).joinpath("config/issuer_forecasts.json")
     config = json.loads(path.read_text(encoding="utf-8"))
@@ -129,6 +142,20 @@ def derive_forecast_assumptions(
     market: USMarketAssumptions = US_BASE,
     issuer_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if (
+        issuer_evidence
+        and issuer_evidence.get("forecast_mode") == "segment_operating_income"
+    ):
+        period_end = financials["ttm"]["period_end"]
+        available_periods = sorted(issuer_evidence.get("periods", {}))
+        period_evidence = issuer_evidence.get("periods", {}).get(period_end)
+        if period_evidence is None:
+            raise ForecastEvidenceUnavailable(
+                period_end=period_end,
+                available_periods=available_periods,
+            )
+        issuer_evidence = {**issuer_evidence, **period_evidence}
+
     annual = financials["annual"]
     latest_three = annual[-3:]
     revenues = [float(row["values"]["revenue"]) for row in latest_three]
@@ -415,11 +442,26 @@ def derive_forecast_assumptions(
         consolidated_operating_income = float(
             financials["ttm"]["values"]["operating_income"]
         )
-        if abs(total_segment_revenue - latest_ttm) / latest_ttm > 0.001:
+        consolidated_ttm = issuer_evidence["consolidated_ttm"]
+        evidence_revenue = float(consolidated_ttm["revenue"])
+        evidence_operating_income = float(consolidated_ttm["operating_income"])
+        if abs(evidence_revenue - latest_ttm) / latest_ttm > 0.001:
+            raise ValueError(
+                "Governed consolidated TTM revenue does not reconcile to normalized TTM revenue"
+            )
+        if (
+            abs(evidence_operating_income - consolidated_operating_income)
+            / abs(consolidated_operating_income)
+            > 0.001
+        ):
+            raise ValueError(
+                "Governed consolidated TTM operating income does not reconcile to normalized TTM operating income"
+            )
+        if abs(total_segment_revenue - evidence_revenue) / evidence_revenue > 0.001:
             raise ValueError("Segment revenue does not reconcile to consolidated TTM revenue")
         if (
-            abs(total_segment_operating_income - consolidated_operating_income)
-            / abs(consolidated_operating_income)
+            abs(total_segment_operating_income - evidence_operating_income)
+            / abs(evidence_operating_income)
             > 0.001
         ):
             raise ValueError(
@@ -528,13 +570,17 @@ def derive_forecast_assumptions(
                 else "initial_revenue_growth"
             ),
             (
-                "segment_target_gross_margin"
+                "segment_target_operating_margin"
+                if segment_forecast
+                and segment_forecast["mode"] == "segment_operating_income"
+                else "segment_target_gross_margin"
                 if segment_forecast
                 else "target_operating_margin"
             ),
             *(
                 ["target_operating_expense_ratio"]
                 if segment_forecast
+                and segment_forecast["mode"] == "segment_gross_profit"
                 else []
             ),
             "sales_to_capital",

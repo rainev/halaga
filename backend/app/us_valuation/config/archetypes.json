@@ -46,13 +46,6 @@
     "0000789019": {
       "requires_segment_forecast": true,
       "verified_zero_bridge_fields": {
-        "marketable_securities_noncurrent": {
-          "rationale": "The controlling Microsoft Form 10-Q reports investments in current assets and does not present a noncurrent marketable-securities balance.",
-          "source_accession": "0000950170-25-061046",
-          "reviewer": "FinSight U.S. valuation policy review",
-          "reviewed_on": "2025-04-30",
-          "verification_version": "US-BRIDGE-ZERO-1.0"
-        },
         "preferred_equity": {
           "rationale": "The controlling Microsoft Form 10-Q does not present preferred equity or a preferred-stock ownership claim.",
           "source_accession": "0000950170-25-061046",

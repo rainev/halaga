@@ -9,8 +9,14 @@ from pathlib import Path
 import pytest
 
 from app.routers.us_valuations import load_generated_result
-from app.us_valuation.assumptions import US_BASE
+from app.us_valuation.assumptions import (
+    US_BASE,
+    build_discount_rate,
+    derive_forecast_assumptions,
+    load_issuer_forecast_evidence,
+)
 from app.us_valuation.classification import classify_issuer
+import app.us_valuation.pipeline as valuation_pipeline
 from app.us_valuation.pipeline import build_us_valuation
 from app.us_valuation.sec_client import SecClient
 from app.us_valuation.xbrl import CompanyFactsNormalizer
@@ -21,6 +27,33 @@ FIXTURES = Path(__file__).parent / "fixtures" / "us"
 
 def load_fixture(name: str) -> dict:
     return json.loads((FIXTURES / name).read_text())
+
+
+def microsoft_source_manifest() -> dict:
+    return {
+        "status": "fixture_capture",
+        "fixtures": {
+            name: load_fixture(name)["capture_metadata"]
+            for name in ("msft-submissions.json", "msft-companyfacts.json")
+        },
+    }
+
+
+def microsoft_financials_and_policy() -> tuple[dict, dict, dict]:
+    submission = load_fixture("msft-submissions.json")
+    classification = classify_issuer(submission)
+    financials = CompanyFactsNormalizer(
+        load_fixture("msft-companyfacts.json"),
+        fiscal_year_end=submission["fiscalYearEnd"],
+    ).normalize(
+        annual_count=5,
+        verified_zero_bridge_fields=classification["verified_zero_bridge_fields"],
+    )
+    discount_rate = build_discount_rate(
+        policy=classification["valuation_policy"],
+        tax_rate=financials["normalized"]["tax_rate"],
+    )
+    return financials, classification["valuation_policy"], discount_rate
 
 
 @pytest.fixture(scope="module")
@@ -71,6 +104,7 @@ def test_segment_operating_income_evidence_reconciles_to_consolidated_ttm() -> N
         submissions=load_fixture("msft-submissions.json"),
         companyfacts=load_fixture("msft-companyfacts.json"),
         valuation_date="2026-08-01",
+        source_manifest=microsoft_source_manifest(),
     )
     segment = result["forecast_assumptions"]["segment_forecast"]
     assert segment["mode"] == "segment_operating_income"
@@ -79,6 +113,10 @@ def test_segment_operating_income_evidence_reconciles_to_consolidated_ttm() -> N
         segment["reconciliation"]["segment_operating_income_to_consolidated"]
         == "pass"
     )
+    assert result["forecast_quality"]["status"] == "review_required"
+    assert result["source_manifest"]["fixtures"]["msft-companyfacts.json"][
+        "sha256"
+    ]
 
 
 def test_segment_operating_income_dcf_schedule_contains_segment_ebit() -> None:
@@ -86,12 +124,89 @@ def test_segment_operating_income_dcf_schedule_contains_segment_ebit() -> None:
         submissions=load_fixture("msft-submissions.json"),
         companyfacts=load_fixture("msft-companyfacts.json"),
         valuation_date="2026-08-01",
+        source_manifest=microsoft_source_manifest(),
     )
     first_year = result["models"]["fcff_dcf"]["detail"]["forecast_schedule"][0]
     assert first_year["segments"]["intelligent_cloud"]["operating_income"] > 0
     assert first_year["ebit"] == pytest.approx(
         sum(row["operating_income"] for row in first_year["segments"].values())
     )
+
+
+def test_segment_operating_income_governance_rejects_invalid_evidence() -> None:
+    financials, policy, discount_rate = microsoft_financials_and_policy()
+    original = load_issuer_forecast_evidence("0000789019")
+    assert original is not None
+    period = financials["ttm"]["period_end"]
+
+    invalid_cases = [
+        ("growth_weights", {"recent_ytd": 0.5, "company_history": 0.4, "archetype_anchor": 0.2}, "sum to 1.0"),
+        ("growth_weights", {"recent_ytd": 0.4, "company_history": 0.3, "archetype_anchor": 0.3}, "25% policy limit"),
+        ("consolidated_ttm", {"revenue": 1, "operating_income": 122_130_000_000}, "revenue"),
+        ("consolidated_ttm", {"revenue": 270_010_000_000, "operating_income": 1}, "operating income"),
+    ]
+    for field, value, error in invalid_cases:
+        evidence = deepcopy(original)
+        evidence["periods"][period][field] = value
+        with pytest.raises(ValueError, match=error):
+            derive_forecast_assumptions(
+                financials,
+                policy=policy,
+                discount_rate=discount_rate,
+                issuer_evidence=evidence,
+            )
+
+
+def test_segment_operating_income_without_contemporaneous_evidence_is_withheld(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    evidence = load_issuer_forecast_evidence("0000789019")
+    assert evidence is not None
+    evidence = deepcopy(evidence)
+    evidence["periods"] = {}
+    monkeypatch.setattr(
+        valuation_pipeline,
+        "load_issuer_forecast_evidence",
+        lambda _cik: evidence,
+    )
+
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        source_manifest=microsoft_source_manifest(),
+    )
+
+    assert result["review"]["publication_state"] == "withheld"
+    assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert result["forecast_quality"]["checks"]["segment_evidence_as_of"]["status"] == "fail"
+
+
+def test_segment_operating_income_outputs_only_derived_values() -> None:
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        source_manifest=microsoft_source_manifest(),
+    )
+    assumptions = result["forecast_assumptions"]
+    segment = assumptions["segment_forecast"]
+    assert "segment_target_operating_margin" in assumptions["maintained_assumptions"]
+    assert all(
+        key not in assumptions["maintained_assumptions"]
+        for key in (
+            "segment_target_gross_margin",
+            "segment_operating_expense_ratio",
+        )
+    )
+    for row in segment["segments"].values():
+        assert not any(key.startswith("annual_") or "ytd" in key for key in row)
+    for row in result["models"]["fcff_dcf"]["detail"]["forecast_schedule"]:
+        for segment_row in row["segments"].values():
+            assert set(segment_row) == {
+                "revenue_growth",
+                "revenue",
+                "operating_margin",
+                "operating_income",
+            }
 
 
 def test_complete_override_routes_without_matching_sic() -> None:

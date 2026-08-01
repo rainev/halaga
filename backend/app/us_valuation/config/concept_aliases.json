@@ -95,7 +95,8 @@
       "kind": "instant",
       "concepts": [
         "MarketableSecuritiesCurrent",
-        "AvailableForSaleSecuritiesCurrent"
+        "AvailableForSaleSecuritiesCurrent",
+        "ShortTermInvestments"
       ]
     },
     "marketable_securities_noncurrent": {
@@ -103,7 +104,8 @@
       "kind": "instant",
       "concepts": [
         "MarketableSecuritiesNoncurrent",
-        "AvailableForSaleSecuritiesNoncurrent"
+        "AvailableForSaleSecuritiesNoncurrent",
+        "LongTermInvestments"
       ]
     },
     "commercial_paper": {

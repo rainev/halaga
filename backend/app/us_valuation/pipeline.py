@@ -6,6 +6,7 @@ from datetime import date
 from typing import Any
 
 from .assumptions import (
+    ForecastEvidenceUnavailable,
     US_BASE,
     USMarketAssumptions,
     build_discount_rate,
@@ -213,6 +214,116 @@ def _publication_review(
     }
 
 
+def _withheld_segment_evidence_result(
+    *,
+    classification: dict[str, Any],
+    financials: dict[str, Any],
+    discount_rate: dict[str, Any],
+    valuation_date: str | None,
+    source_manifest: dict[str, Any] | None,
+    error: ForecastEvidenceUnavailable,
+) -> dict[str, Any]:
+    message = str(error)
+    withheld_model = {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": None,
+        "publication_state": "withheld",
+        "errors": [message],
+        "warnings": [],
+    }
+    return {
+        "schema_version": "US-VALUATION-RESULT-1.0",
+        "valuation_date": valuation_date or date.today().isoformat(),
+        "market": "US",
+        "currency": "USD",
+        "issuer": {
+            key: classification[key]
+            for key in (
+                "cik",
+                "ticker",
+                "issuer_name",
+                "filing_regime",
+                "accounting_standard",
+                "sec_sic_code",
+                "sec_sic_label",
+                "finsight_sector",
+                "primary_archetype",
+                "secondary_archetypes",
+                "classification_confidence",
+                "mapping_version",
+                "override_applied",
+                "classification_reason",
+                "source_accessions",
+            )
+        },
+        "financial_period_end": financials["ttm"]["period_end"],
+        "source_manifest": source_manifest or {
+            "status": "not_supplied",
+            "note": "The caller did not attach SEC cache hashes to this run.",
+        },
+        "model_policy": {
+            "primary": classification["valuation_policy"]["primary_model"],
+            "supporting": classification["valuation_policy"]["supporting_models"],
+            "blend_models": False,
+            "reason": "FCFF is the primary model for a mature non-financial hardware/services ecosystem; EPV is a separate no-growth support value.",
+        },
+        "financials": financials,
+        "forecast_assumptions": {
+            "forecast_evidence_status": "unavailable_for_normalized_period",
+            "segment_forecast": None,
+        },
+        "discount_rate": discount_rate,
+        "models": {
+            "fcff_dcf": withheld_model,
+            "epv": {
+                **withheld_model,
+                "model": "epv",
+            },
+        },
+        "scenarios": {},
+        "scenario_range": {
+            "low": None,
+            "base": None,
+            "high": None,
+            "label": "assumption range, not a statistical confidence interval",
+        },
+        "sensitivities": [],
+        "forecast_quality": {
+            "policy_version": "US-FORECAST-QUALITY-1.0",
+            "status": "withheld",
+            "errors": [message],
+            "warnings": [],
+            "checks": {
+                "segment_evidence_as_of": {
+                    "status": "fail",
+                    "normalized_period_end": error.period_end,
+                    "available_periods": error.available_periods,
+                }
+            },
+        },
+        "review": {
+            "publication_state": "withheld",
+            "confidence_grade": "insufficient",
+            "errors": [message],
+            "warnings": [],
+            "price_dependent_inputs_used": False,
+            "prohibited_output_check": {
+                "current_price": False,
+                "upside_downside": False,
+                "buy_hold_sell": False,
+                "trading_multiples": False,
+            },
+        },
+        "methodology": {
+            "forecast_policy": "FINSIGHT_US_FORECAST_DISCOUNT_VALIDATION_POLICY.md",
+            "sector_framework": "US_EQUITY_VALUATION_ENGINE_FRAMEWORK.md",
+            "source_policy": "SEC Companyfacts, submissions and governed filing-specific Products/Services tables; no exchange prices",
+        },
+    }
+
+
 def build_us_valuation(
     *,
     submissions: dict[str, Any],
@@ -239,15 +350,25 @@ def build_us_valuation(
         tax_rate=financials["normalized"]["tax_rate"],
         market=market_assumptions,
     )
-    forecast_assumptions = derive_forecast_assumptions(
-        financials,
-        policy=policy,
-        discount_rate=discount_rate,
-        market=market_assumptions,
-        issuer_evidence=load_issuer_forecast_evidence(
-            classification["cik"]
-        ),
-    )
+    try:
+        forecast_assumptions = derive_forecast_assumptions(
+            financials,
+            policy=policy,
+            discount_rate=discount_rate,
+            market=market_assumptions,
+            issuer_evidence=load_issuer_forecast_evidence(
+                classification["cik"]
+            ),
+        )
+    except ForecastEvidenceUnavailable as error:
+        return _withheld_segment_evidence_result(
+            classification=classification,
+            financials=financials,
+            discount_rate=discount_rate,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+            error=error,
+        )
     base = fcff_dcf(
         assumptions=forecast_assumptions,
         discount_rate=discount_rate,
