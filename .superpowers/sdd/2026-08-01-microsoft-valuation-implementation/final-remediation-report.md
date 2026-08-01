@@ -4,7 +4,7 @@
 
 | Review finding | Exact remediation | Regression evidence |
 | --- | --- | --- |
-| Withheld results could expose post-model values | `public_result` now centrally scrubs model, scenario, range, and future sensitivity outputs whenever the overall review is `withheld`; segment-required issuers without a registry entry return withheld before model execution. | `test_withheld_public_artifact_scrubs_post_model_values`; `test_segment_required_issuer_without_registry_evidence_fails_before_models` |
+| Withheld results could expose post-model values | `public_result` now centrally scrubs model, scenario, range, and future sensitivity outputs whenever the overall review is `withheld`; segment-required issuers without a registry entry return withheld before model execution. | `test_withheld_public_artifact_scrubs_post_model_values`; `test_segment_required_issuer_without_registry_evidence_fails_before_models`; `test_low_confidence_post_model_withholding_scrubs_public_values`; `test_model_validation_failure_uses_withheld_vocabulary` |
 | Unsupported publication states | U.S. model, scenario, review, artifact, generated frontend record, adapter, type, and documentation use only `pass`, `review_required`, and `withheld`. Invalid model inputs map to `withheld`; warnings map to `review_required`. | `test_us_publication_state_uses_only_binding_vocabulary`; frontend publication-presentation test |
 | MSFT segment provenance incomplete | The private MSFT registry now contains a governed field-source map with accession, SEC URL, filing date, period, FY/FP, duration, unit, table line, status, and derivation. The documented operating-income design intentionally uses reported segment operating income directly rather than separately forecasting cost and opex. | `test_microsoft_governed_segment_fields_have_complete_private_provenance` |
 | Stale bridge zeroes / silent finance leases | Policy zeroes require both a matching normalized period and a source accession in the controlling TTM filing. Finance leases are explicit bridge fields and require a current governed-zero record or reported fact. An incomplete bridge returns a withheld result before model execution. | `test_stale_verified_zero_cannot_clear_current_bridge` |
@@ -14,7 +14,7 @@
 
 ## Commands and results
 
-- `PYTHONPATH=backend pytest -q backend/tests` — passed (77 tests; one unrelated Python deprecation warning).
+- `PYTHONPATH=backend pytest -q backend/tests` — passed (79 tests; one unrelated Python deprecation warning).
 - `cd frontend && npm test` — passed (19 tests).
 - `cd frontend && npm run build` — passed.
 - `PYTHONPATH=backend python3 -m compileall -q backend` — passed.

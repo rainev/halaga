@@ -368,6 +368,50 @@ def test_segment_required_issuer_without_registry_evidence_fails_before_models(
     assert result["scenarios"] == {}
 
 
+def test_low_confidence_post_model_withholding_scrubs_public_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A classification gate reached after modeling cannot leak through the DTO."""
+    original = valuation_pipeline.classify_issuer
+
+    def low_confidence(submissions: dict) -> dict:
+        return {**original(submissions), "classification_confidence": 0.1}
+
+    monkeypatch.setattr(valuation_pipeline, "classify_issuer", low_confidence)
+    result = build_us_valuation(
+        submissions=load_fixture("aapl-submissions.json"),
+        companyfacts=load_fixture("aapl-companyfacts.json"),
+        valuation_date="2026-07-31",
+    )
+    public = public_result(result, load_fixture("aapl-submissions.json"))
+
+    assert result["review"]["publication_state"] == "withheld"
+    assert all(
+        model["intrinsic_value_per_share"] is None
+        for model in public["models"].values()
+    )
+
+
+def test_model_validation_failure_uses_withheld_vocabulary() -> None:
+    result = build_us_valuation(
+        submissions=load_fixture("aapl-submissions.json"),
+        companyfacts=load_fixture("aapl-companyfacts.json"),
+        valuation_date="2026-07-31",
+    )
+    assumptions = deepcopy(result["forecast_assumptions"])
+    discount_rate = deepcopy(result["discount_rate"])
+    discount_rate["wacc"] = assumptions["terminal_growth"]
+
+    from app.us_valuation.models import fcff_dcf
+
+    invalid = fcff_dcf(
+        assumptions=assumptions,
+        discount_rate=discount_rate,
+        financials=result["financials"],
+    )
+    assert invalid["publication_state"] == "withheld"
+
+
 def test_us_publication_state_uses_only_binding_vocabulary(result: dict) -> None:
     public = public_result(result, load_fixture("aapl-submissions.json"))
     allowed = {"pass", "review_required", "withheld"}
