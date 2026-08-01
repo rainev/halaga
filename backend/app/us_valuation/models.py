@@ -68,6 +68,7 @@ def fcff_dcf(
     growth_persistence = float(assumptions["growth_persistence"])
     margin_persistence = float(assumptions["margin_persistence"])
     segment_forecast = assumptions.get("segment_forecast")
+    segment_mode = segment_forecast.get("mode") if segment_forecast else None
     segment_states = (
         {
             key: {
@@ -81,12 +82,12 @@ def fcff_dcf(
     )
     starting_opex_ratio = (
         float(segment_forecast["starting_operating_expense_ratio"])
-        if segment_forecast
+        if segment_mode == "segment_gross_profit"
         else None
     )
     target_opex_ratio = (
         float(segment_forecast["target_operating_expense_ratio"])
-        if segment_forecast
+        if segment_mode == "segment_gross_profit"
         else None
     )
 
@@ -101,30 +102,54 @@ def fcff_dcf(
             segment_detail = {}
             revenue = 0.0
             gross_profit = 0.0
+            segment_operating_income = 0.0
             for key, segment in segment_states.items():
                 segment_growth = terminal_growth + (
                     float(segment["initial_revenue_growth"])
                     - terminal_growth
                 ) * growth_weight
-                segment_margin = float(segment["target_gross_margin"]) + (
-                    float(segment["starting_gross_margin"])
-                    - float(segment["target_gross_margin"])
-                ) * margin_weight
+                if segment_mode == "segment_operating_income":
+                    segment_margin = float(
+                        segment["target_operating_margin"]
+                    ) + (
+                        float(segment["starting_operating_margin"])
+                        - float(segment["target_operating_margin"])
+                    ) * margin_weight
+                else:
+                    segment_margin = float(segment["target_gross_margin"]) + (
+                        float(segment["starting_gross_margin"])
+                        - float(segment["target_gross_margin"])
+                    ) * margin_weight
                 segment["revenue"] *= 1 + segment_growth
-                segment_gross_profit = segment["revenue"] * segment_margin
                 revenue += segment["revenue"]
-                gross_profit += segment_gross_profit
-                segment_detail[key] = {
-                    "revenue_growth": segment_growth,
-                    "revenue": segment["revenue"],
-                    "gross_margin": segment_margin,
-                    "gross_profit": segment_gross_profit,
-                }
-            opex_ratio = target_opex_ratio + (
-                starting_opex_ratio - target_opex_ratio
-            ) * margin_weight
-            operating_expense = revenue * opex_ratio
-            ebit = gross_profit - operating_expense
+                if segment_mode == "segment_operating_income":
+                    operating_income = segment["revenue"] * segment_margin
+                    segment_operating_income += operating_income
+                    segment_detail[key] = {
+                        "revenue_growth": segment_growth,
+                        "revenue": segment["revenue"],
+                        "operating_margin": segment_margin,
+                        "operating_income": operating_income,
+                    }
+                else:
+                    segment_gross_profit = segment["revenue"] * segment_margin
+                    gross_profit += segment_gross_profit
+                    segment_detail[key] = {
+                        "revenue_growth": segment_growth,
+                        "revenue": segment["revenue"],
+                        "gross_margin": segment_margin,
+                        "gross_profit": segment_gross_profit,
+                    }
+            if segment_mode == "segment_operating_income":
+                opex_ratio = None
+                operating_expense = None
+                ebit = segment_operating_income
+            else:
+                opex_ratio = target_opex_ratio + (
+                    starting_opex_ratio - target_opex_ratio
+                ) * margin_weight
+                operating_expense = revenue * opex_ratio
+                ebit = gross_profit - operating_expense
             margin = ebit / revenue
             year_growth = revenue / prior_revenue - 1
         else:
@@ -177,14 +202,21 @@ def fcff_dcf(
             for key, segment in segment_states.items()
         }
         terminal_revenue = sum(terminal_segment_revenue.values())
-        terminal_gross_profit = sum(
-            terminal_segment_revenue[key]
-            * float(segment["target_gross_margin"])
-            for key, segment in segment_states.items()
-        )
-        terminal_ebit = (
-            terminal_gross_profit - terminal_revenue * target_opex_ratio
-        )
+        if segment_mode == "segment_operating_income":
+            terminal_ebit = sum(
+                terminal_segment_revenue[key]
+                * float(segment["target_operating_margin"])
+                for key, segment in segment_states.items()
+            )
+        else:
+            terminal_gross_profit = sum(
+                terminal_segment_revenue[key]
+                * float(segment["target_gross_margin"])
+                for key, segment in segment_states.items()
+            )
+            terminal_ebit = (
+                terminal_gross_profit - terminal_revenue * target_opex_ratio
+            )
         terminal_nopat = terminal_ebit * (1 - tax_rate)
     else:
         terminal_nopat = (
@@ -315,7 +347,10 @@ def _apply_forecast_delta(
         return
     for segment in segment_forecast["segments"].values():
         segment["initial_revenue_growth"] += growth_delta
-        segment["target_gross_margin"] += margin_delta
+        if segment_forecast["mode"] == "segment_operating_income":
+            segment["target_operating_margin"] += margin_delta
+        else:
+            segment["target_gross_margin"] += margin_delta
 
 
 def scenario_set(

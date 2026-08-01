@@ -81,6 +81,80 @@
           "evidence": "Current and comparative YTD Products and Services revenue, cost of sales and consolidated operating expenses"
         }
       ]
+    },
+    "0000789019": {
+      "forecast_mode": "segment_operating_income",
+      "forecast_policy_version": "MSFT-ENTERPRISE-CLOUD-1.0",
+      "forecast_years": 8,
+      "growth_persistence": 0.8,
+      "margin_persistence": 0.8,
+      "terminal_roic_premium": 0.05,
+      "evidence_status": "governed_filing_table_transcription",
+      "evidence_note": "Microsoft reportable-segment revenue, cost of revenue, and operating income are transcribed from the controlling SEC filing tables because SEC Companyfacts does not include the required segment dimensions. The TTM bridge reconciles to standardized consolidated Companyfacts and remains review-required until filing-specific inline-XBRL extraction is automated.",
+      "growth_weights": {
+        "recent_ytd": 0.4,
+        "company_history": 0.4,
+        "archetype_anchor": 0.2
+      },
+      "segments": {
+        "productivity_and_business_processes": {
+          "label": "Productivity and Business Processes",
+          "annual_revenue": [94151000000, 106820000000, 120810000000],
+          "annual_cost_of_revenue": [17202000000, 19611000000, 22422000000],
+          "annual_operating_income": [50074000000, 59661000000, 69773000000],
+          "latest_ytd_revenue": 87698000000,
+          "prior_ytd_revenue": 78193000000,
+          "latest_ytd_operating_income": 50780000000,
+          "prior_ytd_operating_income": 43955000000,
+          "ttm_revenue": 116325000000,
+          "ttm_operating_income": 66486000000,
+          "archetype_growth_anchor": 0.07
+        },
+        "intelligent_cloud": {
+          "label": "Intelligent Cloud",
+          "annual_revenue": [72944000000, 87464000000, 106265000000],
+          "annual_cost_of_revenue": [24109000000, 29611000000, 40171000000],
+          "annual_operating_income": [28411000000, 37813000000, 44589000000],
+          "latest_ytd_revenue": 76387000000,
+          "prior_ytd_revenue": 63679000000,
+          "latest_ytd_operating_income": 32449000000,
+          "prior_ytd_operating_income": 27978000000,
+          "ttm_revenue": 100172000000,
+          "ttm_operating_income": 42284000000,
+          "archetype_growth_anchor": 0.1
+        },
+        "more_personal_computing": {
+          "label": "More Personal Computing",
+          "annual_revenue": [44820000000, 50838000000, 54649000000],
+          "annual_cost_of_revenue": [24552000000, 24892000000, 25238000000],
+          "annual_operating_income": [10038000000, 11959000000, 14166000000],
+          "latest_ytd_revenue": 41198000000,
+          "prior_ytd_revenue": 38523000000,
+          "latest_ytd_operating_income": 10976000000,
+          "prior_ytd_operating_income": 9575000000,
+          "ttm_revenue": 53513000000,
+          "ttm_operating_income": 13360000000,
+          "archetype_growth_anchor": 0.03
+        }
+      },
+      "sources": [
+        {
+          "form": "10-K",
+          "accession": "0000950170-25-100235",
+          "filing_date": "2025-07-30",
+          "period_end": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+          "evidence": "Three fiscal years of reportable-segment revenue, cost of revenue, and operating income."
+        },
+        {
+          "form": "10-Q",
+          "accession": "0000950170-25-061046",
+          "filing_date": "2025-04-30",
+          "period_end": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+          "evidence": "Current and comparable prior-year nine-month reportable-segment revenue and operating income used in the TTM bridge."
+        }
+      ]
     }
   }
 }

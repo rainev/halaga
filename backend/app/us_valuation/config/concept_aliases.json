@@ -40,7 +40,9 @@
         "DepreciationDepletionAndAmortization",
         "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment",
         "DepreciationAndAmortization",
-        "DepreciationAmortizationAndAccretionNet"
+        "DepreciationAmortizationAndAccretionNet",
+        "Depreciation",
+        "msft:DepreciationAmortizationAndOther"
       ]
     },
     "capital_expenditures": {

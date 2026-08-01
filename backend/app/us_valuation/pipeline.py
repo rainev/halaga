@@ -35,7 +35,7 @@ def _forecast_quality_review(
     segment_forecast = assumptions.get("segment_forecast")
     schedule = base.get("detail", {}).get("forecast_schedule", [])
 
-    segment_required = bool(classification.get("secondary_archetypes"))
+    segment_required = bool(classification["requires_segment_forecast"])
     if segment_required and not segment_forecast:
         errors.append(
             "A material secondary business is classified but no segment forecast is available."
@@ -137,7 +137,7 @@ def _forecast_quality_review(
 
     if assumptions.get("forecast_evidence_status") != "automated_filing_extraction":
         warnings.append(
-            "Products and Services evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
+            "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
         )
         checks["segment_evidence_automation"] = {
             "status": "review",

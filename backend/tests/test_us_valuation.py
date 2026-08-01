@@ -19,6 +19,10 @@ from app.us_valuation.xbrl import CompanyFactsNormalizer
 FIXTURES = Path(__file__).parent / "fixtures" / "us"
 
 
+def load_fixture(name: str) -> dict:
+    return json.loads((FIXTURES / name).read_text())
+
+
 @pytest.fixture(scope="module")
 def submissions() -> dict:
     return json.loads((FIXTURES / "aapl-submissions.json").read_text())
@@ -60,6 +64,34 @@ def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
     assert result["primary_archetype"] == "enterprise_software_cloud"
     assert result["requires_segment_forecast"] is True
     assert result["valuation_policy"]["primary_model"] == "fcff_dcf"
+
+
+def test_segment_operating_income_evidence_reconciles_to_consolidated_ttm() -> None:
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    segment = result["forecast_assumptions"]["segment_forecast"]
+    assert segment["mode"] == "segment_operating_income"
+    assert segment["reconciliation"]["segment_revenue_to_consolidated"] == "pass"
+    assert (
+        segment["reconciliation"]["segment_operating_income_to_consolidated"]
+        == "pass"
+    )
+
+
+def test_segment_operating_income_dcf_schedule_contains_segment_ebit() -> None:
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    first_year = result["models"]["fcff_dcf"]["detail"]["forecast_schedule"][0]
+    assert first_year["segments"]["intelligent_cloud"]["operating_income"] > 0
+    assert first_year["ebit"] == pytest.approx(
+        sum(row["operating_income"] for row in first_year["segments"].values())
+    )
 
 
 def test_complete_override_routes_without_matching_sic() -> None:

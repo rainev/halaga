@@ -344,6 +344,142 @@ def derive_forecast_assumptions(
             "forecast_policy_version"
         ]
 
+    if issuer_evidence and issuer_evidence.get("forecast_mode") == "segment_operating_income":
+        weights = issuer_evidence["growth_weights"]
+        if abs(sum(float(value) for value in weights.values()) - 1.0) > 1e-9:
+            raise ValueError("Issuer growth weights must sum to 1.0")
+        if float(weights["archetype_anchor"]) > 0.25:
+            raise ValueError("Archetype growth weight exceeds the 25% policy limit")
+
+        segments = {}
+        total_segment_revenue = 0.0
+        total_segment_operating_income = 0.0
+        for key, segment in issuer_evidence["segments"].items():
+            annual_segment_revenue = [
+                float(value) for value in segment["annual_revenue"]
+            ]
+            annual_segment_operating_income = [
+                float(value) for value in segment["annual_operating_income"]
+            ]
+            segment_cagr = _cagr(annual_segment_revenue)
+            recent_ytd_growth = (
+                float(segment["latest_ytd_revenue"])
+                / float(segment["prior_ytd_revenue"])
+                - 1
+            )
+            segment_growth = (
+                float(weights["recent_ytd"]) * recent_ytd_growth
+                + float(weights["company_history"]) * segment_cagr
+                + float(weights["archetype_anchor"])
+                * float(segment["archetype_growth_anchor"])
+            )
+            segment_growth = min(max(segment_growth, -0.10), 0.20)
+            ttm_segment_revenue = float(segment["ttm_revenue"])
+            ttm_segment_operating_income = float(
+                segment["ttm_operating_income"]
+            )
+            operating_margins = [
+                operating_income / revenue
+                for operating_income, revenue in zip(
+                    annual_segment_operating_income,
+                    annual_segment_revenue,
+                )
+                if revenue > 0
+            ]
+            starting_operating_margin = (
+                ttm_segment_operating_income / ttm_segment_revenue
+            )
+            target_operating_margin = median(
+                [*operating_margins, starting_operating_margin]
+            )
+            segments[key] = {
+                "label": segment["label"],
+                "starting_revenue": ttm_segment_revenue,
+                "initial_revenue_growth": segment_growth,
+                "starting_operating_margin": starting_operating_margin,
+                "target_operating_margin": target_operating_margin,
+                "evidence": {
+                    "recent_ytd_growth": recent_ytd_growth,
+                    "company_history_cagr": segment_cagr,
+                    "archetype_growth_anchor": float(
+                        segment["archetype_growth_anchor"]
+                    ),
+                    "growth_weights": {
+                        name: float(value) for name, value in weights.items()
+                    },
+                },
+            }
+            total_segment_revenue += ttm_segment_revenue
+            total_segment_operating_income += ttm_segment_operating_income
+
+        consolidated_operating_income = float(
+            financials["ttm"]["values"]["operating_income"]
+        )
+        if abs(total_segment_revenue - latest_ttm) / latest_ttm > 0.001:
+            raise ValueError("Segment revenue does not reconcile to consolidated TTM revenue")
+        if (
+            abs(total_segment_operating_income - consolidated_operating_income)
+            / abs(consolidated_operating_income)
+            > 0.001
+        ):
+            raise ValueError(
+                "Segment operating income does not reconcile to consolidated TTM operating income"
+            )
+
+        segment_forecast_years = int(issuer_evidence["forecast_years"])
+        segment_growth_persistence = float(
+            issuer_evidence["growth_persistence"]
+        )
+        projected_segment_revenues = {
+            key: segment["starting_revenue"]
+            for key, segment in segments.items()
+        }
+        for year in range(1, segment_forecast_years + 1):
+            weight = _fade_weight(
+                segment_growth_persistence,
+                year,
+                segment_forecast_years,
+            )
+            for key, segment in segments.items():
+                projected_growth = market.terminal_growth + (
+                    segment["initial_revenue_growth"] - market.terminal_growth
+                ) * weight
+                projected_segment_revenues[key] *= 1 + projected_growth
+        projected_total_revenue = sum(projected_segment_revenues.values())
+        target_margin = sum(
+            projected_segment_revenues[key]
+            / projected_total_revenue
+            * segment["target_operating_margin"]
+            for key, segment in segments.items()
+        )
+        initial_growth = sum(
+            segment["starting_revenue"]
+            / latest_ttm
+            * segment["initial_revenue_growth"]
+            for segment in segments.values()
+        )
+        segment_forecast = {
+            "mode": "segment_operating_income",
+            "segments": segments,
+            "starting_operating_margin": ttm_margin,
+            "target_operating_margin": target_margin,
+            "reconciliation": {
+                "segment_revenue_to_consolidated": "pass",
+                "segment_operating_income_to_consolidated": "pass",
+            },
+        }
+        forecast_years = segment_forecast_years
+        growth_persistence = segment_growth_persistence
+        margin_persistence = float(issuer_evidence["margin_persistence"])
+        terminal_roic_premium = float(
+            issuer_evidence["terminal_roic_premium"]
+        )
+        evidence_status = issuer_evidence["evidence_status"]
+        evidence_sources = list(issuer_evidence["sources"])
+        forecast_policy_version = issuer_evidence[
+            "forecast_policy_version"
+        ]
+
     return {
         "forecast_policy_version": forecast_policy_version,
         "forecast_registry_version": (
