@@ -13,6 +13,24 @@ import {
   validateFinancialHistory,
 } from './engine.js'
 
+test('Microsoft is available as a U.S. filing-only valuation company', () => {
+  const microsoft = VALUATION_COMPANIES.find((company) => company.symbol === 'MSFT')
+
+  assert.ok(microsoft, 'Microsoft should be registered in the valuation company list')
+  assert.equal(microsoft.valuation.us.ticker, 'MSFT')
+  assert.equal(microsoft.valuation.us.data_boundary.stock_prices_used, false)
+  assert.equal(microsoft.valuation.us.review.publication_state, 'withheld')
+  assert.equal(microsoft.valuation.us.models.fcff_dcf.intrinsic_value_per_share, null)
+  assert.equal(microsoft.valuation.us.models.epv.intrinsic_value_per_share, null)
+  const segmentEntries = Object.entries(
+    microsoft.valuation.us.public_assumptions.segment_assumptions ?? {},
+  )
+  assert.ok(
+    microsoft.valuation.us.public_assumptions.forecast_mode === 'unavailable' || segmentEntries.length > 0,
+    'a U.S. artifact must declare unavailable forecasting or supply data-driven segment assumptions',
+  )
+})
+
 test('sentiment cases are ordered for every Industrial company', () => {
   for (const company of INDUSTRIAL_COMPANIES) {
     const policy = company.valuation.modelPolicy
