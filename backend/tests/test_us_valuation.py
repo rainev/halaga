@@ -258,6 +258,14 @@ def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
 
     public = public_result(result, load_fixture("msft-submissions.json"))
     assert public["ticker"] == "MSFT"
+    assert public["source_financial_statement"] == {
+        "form": "10-Q",
+        "period_end": "2025-03-31",
+        "filed_date": "2025-04-30",
+        "accession": "0000950170-25-061046",
+        "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+        "note": "Latest financial statement used; this does not claim to be the issuer's latest disclosure of every type.",
+    }
     assert public["data_boundary"]["stock_prices_used"] is False
     assert set(public) == {
         "schema_version",
@@ -340,24 +348,24 @@ def test_public_artifact_allows_governed_rates_and_derived_value_paths() -> None
 
 
 def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> None:
-    """Keep both public MSFT JSON artifacts free of prices, labels, and raw data."""
-    result = build_us_valuation(
-        submissions=load_fixture("msft-submissions.json"),
-        companyfacts=load_fixture("msft-companyfacts.json"),
-        valuation_date="2026-08-01",
-    )
-    raw_statement_amounts = reported_statement_amounts(result["financials"])
+    """Scan 2026 artifacts against the same-period minimized private source map."""
+    source_map = load_fixture("msft-2026-public-safety-source-map.json")
+    raw_statement_amounts = set(source_map["reported_statement_amounts"])
+    assert 331_839_000_000.0 in raw_statement_amounts
 
     for path in MICROSOFT_PUBLIC_ARTIFACTS:
         artifact = json.loads(path.read_text(encoding="utf-8"))
+        assert artifact["source_financial_statement"] == source_map[
+            "source_financial_statement"
+        ]
         assert artifact["data_boundary"]["stock_prices_used"] is False
         assert artifact["data_boundary"]["raw_financial_statement_values_included"] is False
         assert_public_artifact_is_safe(artifact, raw_statement_amounts)
 
         leaked = deepcopy(artifact)
-        leaked["forecast_quality"]["unapproved_statement_amount"] = result[
-            "financials"
-        ]["annual"][-1]["sources"]["revenue"]["value"]
+        leaked["forecast_quality"]["checks"]["segment_evidence_as_of"][
+            "available_periods"
+        ][0] = 331_839_000_000.0
         with pytest.raises(AssertionError, match="raw financial-statement numeric"):
             assert_public_artifact_is_safe(leaked, raw_statement_amounts)
 
