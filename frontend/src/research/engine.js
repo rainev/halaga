@@ -562,7 +562,72 @@ export function calculateJustifiedPb(company, sentiment = "base") {
   };
 }
 
+export function calculateUsFilingValuation(company, sentiment = "base") {
+  const result = company?.valuation?.us;
+  const scenario = result?.scenarios?.[sentiment]?.fcff_dcf;
+  if (!result || !scenario) {
+    return {
+      primaryModel: "fcff_dcf",
+      primaryValue: null,
+      scenarioLow: null,
+      scenarioHigh: null,
+      crossChecks: ["epv"],
+      status: "blocked",
+      policyReason: "The U.S. filing-only result is unavailable.",
+      warnings: [],
+      errors: ["The generated U.S. valuation artifact is missing."],
+      models: {},
+    };
+  }
+  const primary = {
+    perShare: scenario.intrinsic_value_per_share,
+    status: scenario.publication_state === "blocked" ? "blocked" : "review",
+    errors: scenario.errors || [],
+    warnings: scenario.warnings || [],
+    detail: scenario.detail || {},
+  };
+  const epv = result.models?.epv
+    ? {
+        perShare: result.models.epv.intrinsic_value_per_share,
+        status: result.models.epv.publication_state || "review",
+        errors: result.models.epv.errors || [],
+        warnings: result.models.epv.warnings || [],
+        detail: result.models.epv.detail || {},
+      }
+    : null;
+  const values = ["bear", "base", "bull"]
+    .map((caseName) =>
+      result.scenarios?.[caseName]?.fcff_dcf?.intrinsic_value_per_share,
+    )
+    .filter((value) => Number.isFinite(value));
+  const withheld = result.review?.publication_state === "withheld";
+  return {
+    primaryModel: "fcff_dcf",
+    primaryValue: withheld ? null : primary.perShare,
+    scenarioLow: values.length ? Math.min(...values) : null,
+    scenarioHigh: values.length ? Math.max(...values) : null,
+    crossChecks: ["epv"],
+    status: withheld ? "blocked" : "review",
+    policyReason: result.model_policy?.reason || "",
+    warnings: [
+      ...(result.review?.warnings || []),
+      ...(primary.warnings || []),
+    ],
+    errors: [
+      ...(result.review?.errors || []),
+      ...(primary.errors || []),
+    ],
+    models: {
+      fcff_dcf: primary,
+      epv,
+    },
+  };
+}
+
 export function calculateValuation(company, sentiment = "base") {
+  if (company?.valuation?.us) {
+    return calculateUsFilingValuation(company, sentiment);
+  }
   const policy = company.valuation.modelPolicy || {
     primary: "dcf",
     crossChecks: ["multiples"],

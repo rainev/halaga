@@ -1,0 +1,59 @@
+{
+  "version": "US-ARCHETYPE-1.0",
+  "sic_ranges": [
+    {
+      "start": 3570,
+      "end": 3579,
+      "sector": "Technology",
+      "archetype": "hardware_electronic_equipment",
+      "confidence": 0.8
+    }
+  ],
+  "issuer_overrides": {
+    "0000320193": {
+      "ticker": "AAPL",
+      "sector": "Technology",
+      "archetype": "hardware_electronic_equipment",
+      "secondary_archetypes": [
+        "digital_services_ecosystem"
+      ],
+      "confidence": 0.98,
+      "reason": "Apple combines mature hardware with a material services ecosystem; consolidated FCFF remains appropriate for the initial filing-only route.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "No preferred-equity balance or preferred-stock ownership claim is presented in the latest controlling Apple financial statements used by this pilot.",
+          "source_accession": "0000320193-26-000013",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-07-31",
+          "verification_version": "US-BRIDGE-ZERO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "No noncontrolling-interest balance or allocation is presented in the latest controlling Apple financial statements used by this pilot.",
+          "source_accession": "0000320193-26-000013",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-07-31",
+          "verification_version": "US-BRIDGE-ZERO-1.0"
+        }
+      }
+    }
+  },
+  "valuation_policies": {
+    "hardware_electronic_equipment": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 5,
+      "archetype_median_growth": 0.05,
+      "archetype_target_operating_margin": 0.25,
+      "growth_persistence": 0.7,
+      "margin_persistence": 0.7,
+      "sales_to_capital": 2.5,
+      "unlevered_policy_beta": 1.0,
+      "target_debt_weight": 0.1,
+      "default_debt_spread": 0.01,
+      "terminal_roic_premium": 0.03,
+      "normal_company_overlay": 0.0
+    }
+  }
+}

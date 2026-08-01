@@ -1,6 +1,9 @@
 # FinSight
 
-FinSight is a beginner-focused Philippine company research app built on [rainev/halaga](https://github.com/rainev/halaga). It retains the React/TypeScript + FastAPI architecture and Philippine-adjusted valuation foundation.
+FinSight is a beginner-focused company research app built on
+[rainev/halaga](https://github.com/rainev/halaga). It retains the
+React/TypeScript + FastAPI architecture, the Philippine-adjusted valuation
+foundation, and an Apple-first U.S. filing valuation pilot.
 
 The default experience is a no-cost, browser-local mockup for four Industrial-sector companies. It requires no account, API key, database, live quote feed, or generative-AI call.
 
@@ -15,6 +18,7 @@ The default experience is a no-cost, browser-local mockup for four Industrial-se
 - Browser-local portfolio cost organizer
 - Transparent rules-based Smart Brief
 - Responsive desktop and mobile navigation
+- Apple SEC filing ingestion with a public-safe FCFF/EPV valuation range
 
 Current and historical market prices are intentionally excluded. Portfolio current value and P/L are therefore not calculated.
 
@@ -35,6 +39,25 @@ cd frontend
 npm test
 npm run build
 ```
+
+## Replay the Apple U.S. pilot
+
+The checked-in SEC cache supports a deterministic, network-free replay:
+
+```sh
+python3 scripts/build_apple_us_valuation_pipeline.py
+```
+
+A monitored server-side refresh requires `SEC_USER_AGENT`:
+
+```sh
+SEC_USER_AGENT="FinSight monitored-contact@example.com" \
+python3 scripts/build_apple_us_valuation_pipeline.py --refresh
+```
+
+The full audit result stays under `output/us-testing/aapl/`. The frontend and
+`GET /api/us-valuations/AAPL` use reduced artifacts that exclude raw financial
+statement amounts and all stock-price fields.
 
 ## Optional full stack
 

@@ -1,0 +1,86 @@
+{
+  "version": "US-ISSUER-FORECAST-1.0",
+  "issuers": {
+    "0000320193": {
+      "forecast_mode": "segment_gross_profit",
+      "forecast_policy_version": "AAPL-HARDWARE-SERVICES-1.0",
+      "forecast_years": 10,
+      "growth_persistence": 0.82,
+      "margin_persistence": 0.82,
+      "terminal_roic_premium": 0.05,
+      "evidence_status": "governed_filing_table_transcription",
+      "evidence_note": "Products and Services values are transcribed from the controlling Apple SEC filing tables because SEC Companyfacts excludes issuer-extension dimensions. They reconcile to the standardized consolidated facts and remain review-required until filing-specific inline-XBRL extraction is automated.",
+      "segments": {
+        "products": {
+          "label": "Products",
+          "annual_revenue": [
+            298085000000,
+            294866000000,
+            307003000000
+          ],
+          "annual_gross_profit": [
+            108803000000,
+            109633000000,
+            112887000000
+          ],
+          "latest_ytd_revenue": 193951000000,
+          "prior_ytd_revenue": 166674000000,
+          "ttm_revenue": 334280000000,
+          "ttm_gross_profit": 126984000000,
+          "archetype_growth_anchor": 0.03
+        },
+        "services": {
+          "label": "Services",
+          "annual_revenue": [
+            85200000000,
+            96169000000,
+            109158000000
+          ],
+          "annual_gross_profit": [
+            60345000000,
+            71050000000,
+            82314000000
+          ],
+          "latest_ytd_revenue": 60989000000,
+          "prior_ytd_revenue": 52985000000,
+          "ttm_revenue": 117162000000,
+          "ttm_gross_profit": 89087000000,
+          "archetype_growth_anchor": 0.08
+        }
+      },
+      "annual_operating_expense": [
+        54847000000,
+        57467000000,
+        62151000000
+      ],
+      "annual_total_revenue": [
+        383285000000,
+        391035000000,
+        416161000000
+      ],
+      "ttm_operating_expense": 68705000000,
+      "ttm_total_revenue": 451442000000,
+      "growth_weights": {
+        "recent_ytd": 0.4,
+        "company_history": 0.4,
+        "archetype_anchor": 0.2
+      },
+      "sources": [
+        {
+          "form": "10-K",
+          "accession": "0000320193-25-000079",
+          "period_end": "2025-09-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+          "evidence": "Products and Services revenue, gross margin and operating-expense history"
+        },
+        {
+          "form": "10-Q",
+          "accession": "0000320193-26-000013",
+          "period_end": "2026-03-28",
+          "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm",
+          "evidence": "Current and comparative YTD Products and Services revenue, cost of sales and consolidated operating expenses"
+        }
+      ]
+    }
+  }
+}

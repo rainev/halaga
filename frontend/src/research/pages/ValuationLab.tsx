@@ -1,7 +1,7 @@
 import { AlertTriangle, ExternalLink } from 'lucide-react'
 import { PHILIPPINE_ASSUMPTIONS, VALUATION_COMPANIES } from '../data.js'
 import { calculateValuation, getFinancialHistorySummary, SENTIMENTS } from '../engine.js'
-import { compactPeso, PageHeading, panel, percent, peso } from '../format'
+import { compactPeso, money, PageHeading, panel, percent, peso } from '../format'
 import { useResearch, type Sentiment } from '../ResearchContext'
 import { cn } from '@/lib/utils'
 
@@ -18,6 +18,11 @@ const BANK_MODEL_META: Array<[string, string, string, string]> = [
   ['justified_pb', 'Justified P/B', 'Stable ROE, growth, and risk cross-check', '(ROE − growth) / (cost of equity − growth) × BVPS'],
 ]
 
+const US_MODEL_META: Array<[string, string, string, string]> = [
+  ['fcff_dcf', 'FCFF DCF', 'Values filing-derived operating cash flow before the financing bridge', 'Forecast FCFF + terminal value, discounted at policy WACC'],
+  ['epv', 'Earnings power', 'Shows a no-growth support value from normalized operating profit', 'Normalized NOPAT / policy WACC'],
+]
+
 const MODEL_GUIDE = [
   ['DCF', 'Estimates today’s value of future business cash flow.'],
   ['Graham', 'A legacy diagnostic only; it is not used as a headline valuation.'],
@@ -31,13 +36,21 @@ const BANK_MODEL_GUIDE = [
   ['Justified P/B', 'Checks the value implied by sustainable ROE, growth, and cost of equity without using a live market price.'],
 ]
 
+const US_MODEL_GUIDE = [
+  ['FCFF DCF', 'The primary estimate: forecasts Apple’s operating earnings and required reinvestment, then adds cash and investments and subtracts debt.'],
+  ['Earnings power', 'A conservative support value that assumes no future growth and stable normalized operations.'],
+]
+
 export default function ValuationLab() {
   const { selectedSymbol, setSelectedSymbol, sentiment, setSentiment } = useResearch()
   const company = VALUATION_COMPANIES.find((item) => item.symbol === selectedSymbol) ?? VALUATION_COMPANIES[0]
   const valuation = calculateValuation(company, sentiment)
   const isBank = company.subsector === 'Banks'
-  const modelMeta = isBank ? BANK_MODEL_META : MODEL_META
-  const modelGuide = isBank ? BANK_MODEL_GUIDE : MODEL_GUIDE
+  const isUS = company.market === 'US'
+  const modelMeta = isUS ? US_MODEL_META : isBank ? BANK_MODEL_META : MODEL_META
+  const modelGuide = isUS ? US_MODEL_GUIDE : isBank ? BANK_MODEL_GUIDE : MODEL_GUIDE
+  const currency = company.currency ?? 'PHP'
+  const formatValue = (value: number) => money(value, currency)
   const dcf = valuation.models.dcf
   const bank = company.valuation.bank
   const history = getFinancialHistorySummary(company)
@@ -58,21 +71,26 @@ export default function ValuationLab() {
         <div className="p-6 sm:p-10">
           <div className="inline-grid grid-cols-3 rounded-xl border border-[var(--app-border)] bg-[var(--app-subtle)] p-1">{Object.entries(SENTIMENTS).map(([key, item]) => <button key={key} onClick={() => setSentiment(key as Sentiment)} className={cn('min-w-20 rounded-lg px-4 py-2 text-xs font-bold text-[var(--app-muted)]', sentiment === key && 'bg-[var(--app-surface)] text-[var(--app-text)] shadow-sm')}>{item.label}</button>)}</div>
           <p className="mt-8 text-[10px] font-bold uppercase tracking-[.15em] text-[var(--app-text)]">{hasPrimaryValue ? `${valuation.primaryModel.toUpperCase()} primary estimate` : 'Headline estimate withheld'}</p>
-          <strong className="mt-2 block font-serif text-6xl font-normal tracking-[-.05em] sm:text-7xl">{hasPrimaryValue ? peso(valuation.primaryValue as number) : '—'}</strong>
+          <strong className="mt-2 block font-serif text-6xl font-normal tracking-[-.05em] sm:text-7xl">{hasPrimaryValue ? formatValue(valuation.primaryValue as number) : '—'}</strong>
           <p className="mt-1 text-xs text-[var(--app-muted)]">per share · {SENTIMENTS[sentiment].label} case · {valuation.status === 'pass' ? 'validation passed' : valuation.status === 'review' ? 'preliminary — review required' : 'blocked by validation'}</p>
           {hasPrimaryValue && valuation.scenarioLow !== null && valuation.scenarioHigh !== null ? <>
             <div className="mt-9 h-1.5 rounded-full bg-gradient-to-r from-[#d4d4d4] to-[#121212]" />
-            <div className="mt-3 flex justify-between font-serif"><span><small className="block font-sans text-[8px] font-bold tracking-[.1em] text-[var(--app-muted)]">BEAR / BULL RANGE LOW</small>{peso(valuation.scenarioLow)}</span><span className="text-right"><small className="block font-sans text-[8px] font-bold tracking-[.1em] text-[var(--app-muted)]">BEAR / BULL RANGE HIGH</small>{peso(valuation.scenarioHigh)}</span></div>
+            <div className="mt-3 flex justify-between font-serif"><span><small className="block font-sans text-[8px] font-bold tracking-[.1em] text-[var(--app-muted)]">BEAR / BULL RANGE LOW</small>{formatValue(valuation.scenarioLow)}</span><span className="text-right"><small className="block font-sans text-[8px] font-bold tracking-[.1em] text-[var(--app-muted)]">BEAR / BULL RANGE HIGH</small>{formatValue(valuation.scenarioHigh)}</span></div>
           </> : <p className="mt-8 max-w-xl text-sm leading-relaxed text-[var(--app-muted)]">{valuation.errors[0]}.</p>}
         </div>
         <aside className="flex gap-3 border-t border-[var(--app-border)] bg-[var(--app-subtle)] p-7 lg:border-l lg:border-t-0"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--app-subtle)] text-[var(--app-muted-strong)]"><AlertTriangle className="h-4 w-4" /></span><div><strong className="text-sm">{valuation.status === 'blocked' ? 'Method gate stopped publication' : 'Review controls'}</strong><p className="mt-2 text-xs leading-relaxed text-[var(--app-muted)]">{valuation.policyReason} The app does not average incompatible methods or turn the estimate into a buy/sell signal.</p>{valuation.warnings.length > 0 && <ul className="mt-3 list-disc space-y-1 pl-4 text-[10px] leading-relaxed text-[var(--app-muted)]">{valuation.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>}</div></aside>
       </section>
 
       <section className="mt-11"><div className="mb-4"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-[var(--app-muted)]">Model roles</p><h2 className="mt-1 text-xl font-bold">One primary method; cross-checks stay separate</h2></div>
-        <div className={cn('grid gap-3 sm:grid-cols-2', isBank ? 'xl:grid-cols-3' : 'xl:grid-cols-4')}>{modelMeta.map(([key, label, explanation, formula]) => { const result = valuation.models[key]; const valueAvailable = result && Number.isFinite(result.perShare); return <article key={key} className={cn(panel, 'p-5', !result && 'opacity-50')}><div className="flex justify-between gap-3 text-xs font-extrabold text-[var(--app-text)]"><span>{label}</span><small className="text-right text-[9px] uppercase tracking-[.08em] text-[var(--app-muted)]">{modelRole(key)}</small></div><strong className="mt-7 block font-serif text-3xl font-normal">{valueAvailable ? peso(result.perShare) : 'Not available'}</strong><p className="mt-3 text-xs text-[var(--app-muted)]">{explanation}</p><small className="mt-4 block text-[9px] leading-relaxed text-[var(--app-muted)]">{formula}</small>{result?.errors?.[0] && <small className="mt-3 block text-[9px] leading-relaxed text-red-700">{result.errors[0]}</small>}</article>})}</div>
+        <div className={cn('grid gap-3 sm:grid-cols-2', isBank ? 'xl:grid-cols-3' : isUS ? 'xl:grid-cols-2' : 'xl:grid-cols-4')}>{modelMeta.map(([key, label, explanation, formula]) => { const result = valuation.models[key]; const valueAvailable = result && Number.isFinite(result.perShare); return <article key={key} className={cn(panel, 'p-5', !result && 'opacity-50')}><div className="flex justify-between gap-3 text-xs font-extrabold text-[var(--app-text)]"><span>{label}</span><small className="text-right text-[9px] uppercase tracking-[.08em] text-[var(--app-muted)]">{modelRole(key)}</small></div><strong className="mt-7 block font-serif text-3xl font-normal">{valueAvailable ? formatValue(result.perShare) : 'Not available'}</strong><p className="mt-3 text-xs text-[var(--app-muted)]">{explanation}</p><small className="mt-4 block text-[9px] leading-relaxed text-[var(--app-muted)]">{formula}</small>{result?.errors?.[0] && <small className="mt-3 block text-[9px] leading-relaxed text-red-700">{result.errors[0]}</small>}</article>})}</div>
       </section>
 
-      {isBank ? (
+      {isUS ? (
+        <section className="mt-11 grid gap-9 rounded-[21px] border border-[var(--app-border)] bg-[var(--app-feature)] p-7 text-[var(--app-text)] lg:grid-cols-[.85fr_1.15fr] lg:p-9">
+          <div><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[var(--app-muted)]">U.S. filing-only controls</p><h2 className="mt-2 text-2xl font-bold">Public filings in; no market price required.</h2><p className="mt-3 text-xs leading-relaxed text-[var(--app-muted)]">The model forecasts Apple’s Products and Services separately, uses a ten-year automated fade, and discounts consolidated FCFF at a policy-calibrated rate. “Policy-calibrated” means the rate uses governed public assumptions rather than a price-derived Apple beta. Raw filing amounts stay outside the public app.</p><a className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold text-[var(--app-text)]" href={company.valuation.us.public_assumptions.risk_free_source_url} target="_blank" rel="noreferrer">Official U.S. Treasury rate source <ExternalLink className="h-3 w-3" /></a></div>
+          <dl className="grid grid-cols-2 gap-2"><Assumption label="10-year Treasury" value={percent(company.valuation.us.public_assumptions.risk_free_rate)} /><Assumption label="Policy ERP" value={percent(company.valuation.us.public_assumptions.equity_risk_premium)} /><Assumption label="Policy WACC" value={percent(company.valuation.us.public_assumptions.policy_wacc)} /><Assumption label="Terminal growth" value={percent(company.valuation.us.public_assumptions.terminal_growth)} /><Assumption label="Products initial growth" value={percent(company.valuation.us.public_assumptions.segment_assumptions.products.initial_revenue_growth)} /><Assumption label="Services initial growth" value={percent(company.valuation.us.public_assumptions.segment_assumptions.services.initial_revenue_growth)} /><Assumption label="Forecast horizon" value={`${company.valuation.us.public_assumptions.forecast_years} years`} /><Assumption label="Target operating margin" value={percent(company.valuation.us.public_assumptions.target_operating_margin)} /><Assumption label="Statement period" value={company.valuation.us.source_financial_statement.period_end} /><Assumption label="Confidence" value={company.valuation.us.review.confidence_grade} /></dl>
+        </section>
+      ) : isBank ? (
         <section className="mt-11 grid gap-9 rounded-[21px] border border-[var(--app-border)] bg-[var(--app-feature)] p-7 text-[var(--app-text)] lg:grid-cols-[.85fr_1.15fr] lg:p-9">
           <div><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[var(--app-muted)]">Bank valuation controls</p><h2 className="mt-2 text-2xl font-bold">Equity returns replace enterprise cash flow.</h2><p className="mt-3 text-xs leading-relaxed text-[var(--app-muted)]">Deposits are operating funding for a bank, so BDO is valued from common book equity, sustainable ROE, payout, and cost of equity. The beta is a disclosed 1.0 sector fallback.</p></div>
           <dl className="grid grid-cols-2 gap-2"><Assumption label="Common BVPS" value={peso(bank.book_value_per_share)} /><Assumption label="TTM ROE" value={percent(bank.ttm_roe)} /><Assumption label="Cost of equity" value={percent(bank.assumptions.base_cost_of_equity)} /><Assumption label="TTM payout" value={percent(bank.current_payout_ratio)} /><Assumption label="Terminal ROE" value={percent(bank.assumptions.terminal_roe)} /><Assumption label="Terminal growth" value={percent(bank.assumptions.terminal_growth)} /><Assumption label="CET1 ratio" value={percent(bank.cet1_ratio)} /><Assumption label="Capital ratio" value={percent(bank.capital_adequacy_ratio)} /></dl>

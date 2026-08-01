@@ -1,4 +1,5 @@
 import BDO_COMPANY from "./generated/bdo-valuation.js";
+import APPLE_COMPANY from "./generated/apple-valuation.js";
 
 export const PHILIPPINE_ASSUMPTIONS = {
   valuationDate: "17 Jul 2026",
@@ -272,7 +273,11 @@ export const INDUSTRIAL_COMPANIES = [
   },
 ];
 
-export const VALUATION_COMPANIES = [...INDUSTRIAL_COMPANIES, BDO_COMPANY];
+export const VALUATION_COMPANIES = [
+  ...INDUSTRIAL_COMPANIES,
+  BDO_COMPANY,
+  APPLE_COMPANY,
+];
 
 export const FILING_NEWS = [
   {

@@ -16,6 +16,9 @@ export const INDUSTRIAL_COMPANIES: Array<{
   shortName: string
   sector: string
   subsector: string
+  market?: string
+  currency?: string
+  archetype?: string
   color: string
   dataConfidence: number
   insight: string

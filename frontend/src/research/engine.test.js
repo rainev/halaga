@@ -39,6 +39,23 @@ test('BDO routes to bank valuation models with filing-derived inputs', () => {
   assert.ok(Math.abs(result.scenarioHigh - 200.5609) < 0.001)
 })
 
+test('Apple routes to the U.S. filing-only FCFF lane without exposing raw facts', () => {
+  const apple = VALUATION_COMPANIES.find((company) => company.symbol === 'AAPL')
+  const bear = calculateValuation(apple, 'bear')
+  const base = calculateValuation(apple, 'base')
+  const bull = calculateValuation(apple, 'bull')
+
+  assert.equal(apple.market, 'US')
+  assert.equal(base.primaryModel, 'fcff_dcf')
+  assert.deepEqual(base.crossChecks, ['epv'])
+  assert.ok(Math.abs(base.primaryValue - 137.8839487) < 0.001)
+  assert.ok(Math.abs(base.models.epv.perShare - 91.3648524) < 0.001)
+  assert.ok(bear.primaryValue < base.primaryValue)
+  assert.ok(base.primaryValue < bull.primaryValue)
+  assert.equal(apple.valuation.us.data_boundary.stock_prices_used, false)
+  assert.equal('financials' in apple.valuation.us, false)
+})
+
 test('incompatible valuation methods are never blended', () => {
   const valuation = calculateValuation(INDUSTRIAL_COMPANIES[0], 'base')
   assert.equal('blended' in valuation, false)
