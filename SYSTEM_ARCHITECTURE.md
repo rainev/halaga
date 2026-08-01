@@ -667,10 +667,6 @@ Every automated valuation must end in one of three states:
 - `withheld`: required evidence is missing, contradictory or unsuitable for the
   selected model.
 
-The current Apple pilot serializes `review`; this is the transitional equivalent
-of `review_required` and should be normalized when the shared result contract is
-versioned.
-
 Only `pass` may be automatically published. `review_required` may be shown only
 in an explicitly labeled internal or controlled-review experience. `withheld`
 must not expose a headline intrinsic value.

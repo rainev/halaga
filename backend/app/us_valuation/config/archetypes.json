@@ -30,6 +30,7 @@
         "preferred_equity": {
           "rationale": "No preferred-equity balance or preferred-stock ownership claim is presented in the latest controlling Apple financial statements used by this pilot.",
           "source_accession": "0000320193-26-000013",
+          "controlled_period_end": "2026-03-28",
           "reviewer": "FinSight U.S. valuation policy review",
           "reviewed_on": "2026-07-31",
           "verification_version": "US-BRIDGE-ZERO-1.0"
@@ -37,6 +38,7 @@
         "noncontrolling_interests": {
           "rationale": "No noncontrolling-interest balance or allocation is presented in the latest controlling Apple financial statements used by this pilot.",
           "source_accession": "0000320193-26-000013",
+          "controlled_period_end": "2026-03-28",
           "reviewer": "FinSight U.S. valuation policy review",
           "reviewed_on": "2026-07-31",
           "verification_version": "US-BRIDGE-ZERO-1.0"
@@ -49,6 +51,7 @@
         "preferred_equity": {
           "rationale": "The controlling Microsoft Form 10-Q does not present preferred equity or a preferred-stock ownership claim.",
           "source_accession": "0000950170-25-061046",
+          "controlled_period_end": "2025-03-31",
           "reviewer": "FinSight U.S. valuation policy review",
           "reviewed_on": "2025-04-30",
           "verification_version": "US-BRIDGE-ZERO-1.0"
@@ -56,6 +59,23 @@
         "noncontrolling_interests": {
           "rationale": "The controlling Microsoft Form 10-Q does not present a noncontrolling-interest balance or allocation.",
           "source_accession": "0000950170-25-061046",
+          "controlled_period_end": "2025-03-31",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2025-04-30",
+          "verification_version": "US-BRIDGE-ZERO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "The controlling Microsoft Form 10-Q has no separately reported current finance-lease liability. This governed zero is limited to the controlling period and requires review on each new filing.",
+          "source_accession": "0000950170-25-061046",
+          "controlled_period_end": "2025-03-31",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2025-04-30",
+          "verification_version": "US-BRIDGE-ZERO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "The controlling Microsoft Form 10-Q has no separately reported noncurrent finance-lease liability. This governed zero is limited to the controlling period and requires review on each new filing.",
+          "source_accession": "0000950170-25-061046",
+          "controlled_period_end": "2025-03-31",
           "reviewer": "FinSight U.S. valuation policy review",
           "reviewed_on": "2025-04-30",
           "verification_version": "US-BRIDGE-ZERO-1.0"
@@ -79,7 +99,8 @@
       "target_debt_weight": 0.1,
       "default_debt_spread": 0.01,
       "terminal_roic_premium": 0.03,
-      "normal_company_overlay": 0.0
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "FCFF is the primary governed model for the hardware and services archetype; EPV is a separate no-growth support value."
     },
     "enterprise_software_cloud": {
       "primary_model": "fcff_dcf",
@@ -96,7 +117,8 @@
       "target_debt_weight": 0.05,
       "default_debt_spread": 0.01,
       "terminal_roic_premium": 0.05,
-      "normal_company_overlay": 0.0
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "FCFF is the primary governed model for the enterprise software and cloud archetype; EPV is a separate no-growth support value."
     }
   }
 }

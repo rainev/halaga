@@ -71,11 +71,17 @@ Microsoft maps from SEC SIC 7372 to FinSight's Technology sector and
 SEC_USER_AGENT='FinSight contact@example.com' PYTHONPATH=backend python3 scripts/build_us_valuation_pipeline.py --cik 0000789019 --ticker MSFT --short-name Microsoft --subsector 'Enterprise software & cloud' --valuation-date 2026-08-01
 ```
 
-The command reuses the frozen SEC cache when it is present and otherwise needs
-the supplied SEC contact identity to retrieve public SEC responses. Its private
-audit output remains local under `output/us-testing/msft/`; checked-in frontend
-and API artifacts contain only filing attribution, governed public assumptions,
-derived outputs, and review metadata.
+The command replays the tracked, minimized private SEC capture under
+`backend/tests/fixtures/us/private_captures/msft-2026-08-01/` by default.
+It contains only the SEC identity and normalized-concept fields required to
+reproduce this controlled release; it is intentionally outside
+`frontend/public`. `valuation_date` is a strict filing/fact cutoff, so
+later-filed SEC data is excluded even if present in a cache. Use `--refresh
+--capture-private-fixture` only for a deliberately reviewed replacement capture
+with the supplied SEC contact identity. Its private audit output remains under
+`output/us-testing/msft/`; checked-in frontend and API artifacts contain only
+filing attribution, governed public assumptions, derived outputs, and review
+metadata.
 
 The checked-in 2026-08-01 Microsoft artifact is intentionally `withheld`. Its
 controlling Form 10-K is for 2026-06-30, while the currently governed segment

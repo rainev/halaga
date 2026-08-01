@@ -57,6 +57,9 @@ export const VALUATION_CONTROLS = {
 };
 
 export function getUsPublicationPresentation(publicationState) {
+  if (!["pass", "review_required", "withheld"].includes(publicationState)) {
+    return getUsPublicationPresentation("withheld");
+  }
   const isWithheld = publicationState === "withheld";
   const requiresDataReview = publicationState === "review_required";
   if (isWithheld) {
@@ -78,9 +81,7 @@ export function getUsPublicationPresentation(publicationState) {
     requiresDataReview,
     statusLabel: requiresDataReview
       ? "Preliminary valuation - requires data review"
-      : publicationState === "pass"
-        ? "validation passed"
-        : "preliminary — review required",
+      : "validation passed",
     pageDescription: "Compare bear, base, and bull assumptions.",
     historyTitle: "More periods can be added without blocking today’s valuation.",
     historyDescription: null,
@@ -604,7 +605,7 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
       scenarioLow: null,
       scenarioHigh: null,
       crossChecks: ["epv"],
-      status: "blocked",
+      status: "withheld",
       policyReason: "The U.S. filing-only result is unavailable.",
       warnings: [],
       errors: ["The generated U.S. valuation artifact is missing."],
@@ -613,7 +614,7 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
   }
   const primary = {
     perShare: scenario.intrinsic_value_per_share,
-    status: scenario.publication_state === "blocked" ? "blocked" : "review",
+    status: scenario.publication_state || "withheld",
     errors: scenario.errors || [],
     warnings: scenario.warnings || [],
     detail: scenario.detail || {},
@@ -621,7 +622,7 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
   const epv = result.models?.epv
     ? {
         perShare: result.models.epv.intrinsic_value_per_share,
-        status: result.models.epv.publication_state || "review",
+        status: result.models.epv.publication_state || "withheld",
         errors: result.models.epv.errors || [],
         warnings: result.models.epv.warnings || [],
         detail: result.models.epv.detail || {},
@@ -639,7 +640,7 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
     scenarioLow: withheld || !values.length ? null : Math.min(...values),
     scenarioHigh: withheld || !values.length ? null : Math.max(...values),
     crossChecks: ["epv"],
-    status: withheld ? "blocked" : "review",
+    status: result.review?.publication_state || "withheld",
     policyReason: result.model_policy?.reason || "",
     warnings: [
       ...(result.review?.warnings || []),

@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
 import sys
 from pathlib import Path
@@ -25,6 +27,25 @@ from app.us_valuation.artifacts import (  # noqa: E402
 from app.us_valuation.sec_client import SecClient, normalize_cik  # noqa: E402
 
 
+def _controlled_capture_paths(ticker: str, valuation_date: str) -> tuple[Path, Path]:
+    root = ROOT / "backend" / "tests" / "fixtures" / "us" / "private_captures"
+    capture = root / f"{ticker.lower()}-{valuation_date}"
+    return capture / "submissions.json", capture / "companyfacts.json"
+
+
+def _capture_manifest(submissions_path: Path, companyfacts_path: Path) -> dict:
+    return {
+        "status": "controlled_private_fixture",
+        "records": [
+            {
+                "fixture": path.name,
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in (submissions_path, companyfacts_path)
+        ],
+    }
+
+
 def build_issuer_artifacts(
     cik: str,
     ticker: str,
@@ -35,20 +56,36 @@ def build_issuer_artifacts(
     refresh: bool,
     *,
     issuer_metadata: dict | None = None,
+    capture_private_fixture: bool = False,
 ) -> dict[str, Path]:
     """Fetch SEC data and write private, public, frontend, and fixture artifacts."""
     normalized_cik = normalize_cik(cik)
     normalized_ticker = ticker.upper()
     artifact_name = short_name.lower().replace(" ", "-")
     cache = output_root / "sec-cache"
-    client = SecClient(user_agent=os.environ.get("SEC_USER_AGENT"), cache_dir=cache)
-    submissions = client.submissions(normalized_cik, refresh=refresh)
-    companyfacts = client.companyfacts(normalized_cik, refresh=refresh)
+    capture_submissions, capture_companyfacts = _controlled_capture_paths(
+        normalized_ticker, valuation_date
+    )
+    if capture_submissions.exists() and capture_companyfacts.exists() and not refresh:
+        submissions = json.loads(capture_submissions.read_text(encoding="utf-8"))
+        companyfacts = json.loads(capture_companyfacts.read_text(encoding="utf-8"))
+        source_manifest = _capture_manifest(capture_submissions, capture_companyfacts)
+    else:
+        client = SecClient(user_agent=os.environ.get("SEC_USER_AGENT"), cache_dir=cache)
+        submissions = client.submissions(normalized_cik, refresh=refresh)
+        companyfacts = client.companyfacts(normalized_cik, refresh=refresh)
+        source_manifest = sec_cache_manifest(cache, normalized_cik)
+        if capture_private_fixture:
+            write_json(capture_submissions, slim_submissions(submissions))
+            write_json(capture_companyfacts, slim_companyfacts(companyfacts))
+            source_manifest = _capture_manifest(
+                capture_submissions, capture_companyfacts
+            )
     result = build_us_valuation(
         submissions=submissions,
         companyfacts=companyfacts,
         valuation_date=valuation_date,
-        source_manifest=sec_cache_manifest(cache, normalized_cik),
+        source_manifest=source_manifest,
     )
     public = public_result(result, submissions)
     frontend = frontend_company(
@@ -104,6 +141,7 @@ def main() -> int:
     parser.add_argument("--output-root")
     parser.add_argument("--valuation-date", default="2026-07-31")
     parser.add_argument("--refresh", action="store_true")
+    parser.add_argument("--capture-private-fixture", action="store_true")
     args = parser.parse_args()
     output_root = Path(args.output_root) if args.output_root else ROOT / "output" / "us-testing" / args.ticker.lower()
     paths = build_issuer_artifacts(
@@ -114,6 +152,7 @@ def main() -> int:
         output_root,
         args.valuation_date,
         args.refresh,
+        capture_private_fixture=args.capture_private_fixture,
     )
     print("\n".join(str(path) for path in paths.values()))
     return 0

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import date
 from typing import Any
 
@@ -114,7 +115,7 @@ def _forecast_quality_review(
                 "Revenue and FCFF growth tell materially different forecast stories."
             )
         checks["revenue_fcff_consistency"] = {
-            "status": "review" if inconsistent_cash_flow else "pass",
+            "status": "review_required" if inconsistent_cash_flow else "pass",
             "revenue_cagr": revenue_cagr,
             "fcff_cagr": fcff_cagr,
         }
@@ -131,7 +132,7 @@ def _forecast_quality_review(
             "DCF and EPV differ by more than 40%; the growth thesis requires review."
         )
     checks["dcf_epv_dispersion"] = {
-        "status": "review" if dispersion is not None and dispersion > 0.40 else "pass",
+        "status": "review_required" if dispersion is not None and dispersion > 0.40 else "pass",
         "value": dispersion,
         "review_threshold": 0.40,
     }
@@ -141,7 +142,7 @@ def _forecast_quality_review(
             "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
         )
         checks["segment_evidence_automation"] = {
-            "status": "review",
+            "status": "review_required",
             "value": assumptions.get("forecast_evidence_status"),
         }
     else:
@@ -197,7 +198,7 @@ def _publication_review(
     else:
         # Basic-share and narrow-NWC proxies deliberately prevent a high grade
         # until filing-specific dilution and broader accrual mapping are added.
-        state = "review"
+        state = "review_required"
         grade = "medium"
     return {
         "publication_state": state,
@@ -267,7 +268,10 @@ def _withheld_segment_evidence_result(
             "primary": classification["valuation_policy"]["primary_model"],
             "supporting": classification["valuation_policy"]["supporting_models"],
             "blend_models": False,
-            "reason": "FCFF is the primary governed model; EPV is a separate no-growth support value.",
+            "reason": classification["valuation_policy"].get(
+                "model_policy_reason",
+                "FCFF is the primary governed model; EPV is a separate no-growth support value.",
+            ),
         },
         "financials": financials,
         "forecast_assumptions": {
@@ -332,12 +336,24 @@ def build_us_valuation(
     valuation_date: str | None = None,
     source_manifest: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if valuation_date:
+        cutoff_submissions = deepcopy(submissions)
+        recent = cutoff_submissions.get("filings", {}).get("recent", {})
+        filing_dates = recent.get("filingDate", [])
+        allowed_indexes = [
+            index for index, filed in enumerate(filing_dates) if filed <= valuation_date
+        ]
+        for key, values in list(recent.items()):
+            if isinstance(values, list) and len(values) == len(filing_dates):
+                recent[key] = [values[index] for index in allowed_indexes]
+        submissions = cutoff_submissions
     classification = classify_issuer(submissions)
     if str(companyfacts.get("cik", "")).zfill(10) != classification["cik"]:
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
     financials = CompanyFactsNormalizer(
         companyfacts,
         fiscal_year_end=submissions.get("fiscalYearEnd"),
+        as_of_date=valuation_date,
     ).normalize(
         annual_count=5,
         verified_zero_bridge_fields=classification[
@@ -350,15 +366,44 @@ def build_us_valuation(
         tax_rate=financials["normalized"]["tax_rate"],
         market=market_assumptions,
     )
+    if not financials["balance_sheet"]["bridge_complete"]:
+        missing = ", ".join(financials["balance_sheet"]["bridge_missing_fields"])
+        return _withheld_segment_evidence_result(
+            classification=classification,
+            financials=financials,
+            discount_rate=discount_rate,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+            error=ForecastEvidenceUnavailable(
+                period_end=financials["ttm"]["period_end"],
+                available_periods=[],
+                reason=(
+                    "Enterprise-to-equity bridge requires current filing evidence for "
+                    + missing
+                ),
+            ),
+        )
+    issuer_evidence = load_issuer_forecast_evidence(classification["cik"])
+    if classification["requires_segment_forecast"] and not issuer_evidence:
+        return _withheld_segment_evidence_result(
+            classification=classification,
+            financials=financials,
+            discount_rate=discount_rate,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+            error=ForecastEvidenceUnavailable(
+                period_end=financials["ttm"]["period_end"],
+                available_periods=[],
+                reason="A segment forecast is required but no governed issuer evidence is registered",
+            ),
+        )
     try:
         forecast_assumptions = derive_forecast_assumptions(
             financials,
             policy=policy,
             discount_rate=discount_rate,
             market=market_assumptions,
-            issuer_evidence=load_issuer_forecast_evidence(
-                classification["cik"]
-            ),
+            issuer_evidence=issuer_evidence,
         )
     except ForecastEvidenceUnavailable as error:
         return _withheld_segment_evidence_result(
@@ -441,7 +486,10 @@ def build_us_valuation(
             "primary": policy["primary_model"],
             "supporting": policy["supporting_models"],
             "blend_models": False,
-            "reason": "FCFF is the primary model for a mature non-financial hardware/services ecosystem; EPV is a separate no-growth support value.",
+            "reason": policy.get(
+                "model_policy_reason",
+                "FCFF is the primary governed model; EPV is a separate no-growth support value.",
+            ),
         },
         "financials": financials,
         "forecast_assumptions": forecast_assumptions,

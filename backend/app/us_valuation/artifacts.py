@@ -151,6 +151,33 @@ def _public_model(model: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _scrub_withheld_publication(public: dict[str, Any]) -> dict[str, Any]:
+    """Remove all intrinsic outputs at the final public/API publication boundary."""
+    if public["review"]["publication_state"] != "withheld":
+        return public
+    for model in public["models"].values():
+        model["intrinsic_value_per_share"] = None
+        model["publication_state"] = "withheld"
+    for scenario in public["scenarios"].values():
+        scenario_model = scenario["fcff_dcf"]
+        scenario_model["intrinsic_value_per_share"] = None
+        scenario_model["publication_state"] = "withheld"
+    public["scenario_range"] = {
+        "low": None,
+        "base": None,
+        "high": None,
+        "label": public["scenario_range"].get(
+            "label", "assumption range, not a statistical confidence interval"
+        ),
+    }
+    # Sensitivities are not part of the current public schema. Keep this branch
+    # defensive so a future public extension cannot bypass the fail-closed gate.
+    for row in public.get("sensitivities", []):
+        row["intrinsic_value_per_share"] = None
+        row["publication_state"] = "withheld"
+    return public
+
+
 def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[str, Any]:
     """Convert a private valuation result into a raw-statement-free artifact."""
     assumptions = result["forecast_assumptions"]
@@ -180,7 +207,7 @@ def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[s
         if segment_forecast
         else {}
     )
-    return {
+    public = {
         "schema_version": "US-PUBLIC-VALUATION-1.0",
         "valuation_date": result["valuation_date"],
         "market": "US",
@@ -238,6 +265,7 @@ def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[s
             "public_payload_contains": "derived valuation outputs, governed assumptions, methodology, warnings, and filing attribution",
         },
     }
+    return _scrub_withheld_publication(public)
 
 
 def frontend_company(

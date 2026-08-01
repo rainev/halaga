@@ -29,7 +29,7 @@
       "epv"
     ],
     "blend_models": false,
-    "reason": "FCFF is the primary governed model; EPV is a separate no-growth support value."
+    "reason": "FCFF is the primary governed model for the enterprise software and cloud archetype; EPV is a separate no-growth support value."
   },
   "public_assumptions": {
     "forecast_policy_version": null,
@@ -56,7 +56,7 @@
       "intrinsic_value_per_share": null,
       "publication_state": "withheld",
       "errors": [
-        "No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: 2025-03-31"
+        "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
       ],
       "warnings": []
     },
@@ -67,7 +67,7 @@
       "intrinsic_value_per_share": null,
       "publication_state": "withheld",
       "errors": [
-        "No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: 2025-03-31"
+        "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
       ],
       "warnings": []
     }
@@ -83,16 +83,14 @@
     "policy_version": "US-FORECAST-QUALITY-1.0",
     "status": "withheld",
     "errors": [
-      "No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: 2025-03-31"
+      "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
     ],
     "warnings": [],
     "checks": {
       "segment_evidence_as_of": {
         "status": "fail",
         "normalized_period_end": "2026-06-30",
-        "available_periods": [
-          "2025-03-31"
-        ]
+        "available_periods": []
       }
     }
   },
@@ -100,7 +98,7 @@
     "publication_state": "withheld",
     "confidence_grade": "insufficient",
     "errors": [
-      "No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: 2025-03-31"
+      "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
     ],
     "warnings": [],
     "price_dependent_inputs_used": false,

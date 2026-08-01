@@ -7,6 +7,8 @@ export type USSegmentAssumption = {
   target_gross_margin?: number | null
 }
 
+export type USPublicationState = 'pass' | 'review_required' | 'withheld'
+
 export type USValuation = {
   ticker: string
   source_financial_statement: {
@@ -24,13 +26,14 @@ export type USValuation = {
     risk_free_source_url: string
   }
   review: {
-    publication_state: string
+    publication_state: USPublicationState
     confidence_grade: string
     errors?: string[]
     warnings?: string[]
   }
   models: Record<string, {
     intrinsic_value_per_share: number | null
+    publication_state?: USPublicationState
   }>
   data_boundary: {
     stock_prices_used: boolean

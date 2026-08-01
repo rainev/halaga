@@ -320,6 +320,144 @@ def test_microsoft_artifact_preserves_provenance_and_no_price_input() -> None:
     }
 
 
+def test_withheld_public_artifact_scrubs_post_model_values() -> None:
+    """The public/API boundary must fail closed even after model execution."""
+    private = build_us_valuation(
+        submissions=load_fixture("aapl-submissions.json"),
+        companyfacts=load_fixture("aapl-companyfacts.json"),
+        valuation_date="2026-07-31",
+    )
+    assert private["models"]["fcff_dcf"]["intrinsic_value_per_share"] is not None
+    private["review"]["publication_state"] = "withheld"
+
+    public = public_result(private, load_fixture("aapl-submissions.json"))
+
+    assert all(
+        model["intrinsic_value_per_share"] is None
+        for model in public["models"].values()
+    )
+    assert all(
+        scenario["fcff_dcf"]["intrinsic_value_per_share"] is None
+        for scenario in public["scenarios"].values()
+    )
+    assert public["scenario_range"] == {
+        "low": None,
+        "base": None,
+        "high": None,
+        "label": "assumption range, not a statistical confidence interval",
+    }
+
+
+def test_segment_required_issuer_without_registry_evidence_fails_before_models(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A missing MSFT registry entry cannot fall back to a consolidated DCF."""
+    monkeypatch.setattr(
+        valuation_pipeline,
+        "load_issuer_forecast_evidence",
+        lambda _cik: None,
+    )
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+
+    assert result["review"]["publication_state"] == "withheld"
+    assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert result["scenarios"] == {}
+
+
+def test_us_publication_state_uses_only_binding_vocabulary(result: dict) -> None:
+    public = public_result(result, load_fixture("aapl-submissions.json"))
+    allowed = {"pass", "review_required", "withheld"}
+    assert public["review"]["publication_state"] in allowed
+    assert all(model["publication_state"] in allowed for model in public["models"].values())
+    assert all(
+        scenario["fcff_dcf"]["publication_state"] in allowed
+        for scenario in public["scenarios"].values()
+    )
+
+
+def test_generic_growth_anchor_is_capped_when_company_history_exists(result: dict) -> None:
+    evidence = result["forecast_assumptions"]["evidence"]
+    assert evidence["generic_growth_weights"] == {
+        "ttm_history": 0.375,
+        "annual_history": 0.375,
+        "archetype_anchor": 0.25,
+    }
+
+
+def test_microsoft_model_policy_reason_comes_from_software_archetype() -> None:
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    assert "enterprise software and cloud" in result["model_policy"]["reason"].lower()
+    assert "hardware" not in result["model_policy"]["reason"].lower()
+
+
+def test_microsoft_governed_segment_fields_have_complete_private_provenance() -> None:
+    evidence = load_issuer_forecast_evidence("0000789019")
+    assert evidence is not None
+    period = evidence["periods"]["2025-03-31"]
+    required = {
+        "accession",
+        "url",
+        "filing_date",
+        "period_end",
+        "fiscal_year",
+        "fiscal_period",
+        "duration_basis",
+        "unit",
+        "table_line",
+        "status",
+        "derivation",
+    }
+    assert all(required <= set(record) for record in period["field_source_map"].values())
+    assert period["cost_of_revenue_and_opex_scope"]["status"] == "not_model_inputs"
+
+
+def test_stale_verified_zero_cannot_clear_current_bridge() -> None:
+    submission = load_fixture("msft-submissions.json")
+    classification = classify_issuer(submission)
+    stale = deepcopy(classification["verified_zero_bridge_fields"])
+    for record in stale.values():
+        record["controlled_period_end"] = "2026-06-30"
+    financials = CompanyFactsNormalizer(
+        load_fixture("msft-companyfacts.json"),
+        fiscal_year_end=submission["fiscalYearEnd"],
+    ).normalize(annual_count=5, verified_zero_bridge_fields=stale)
+
+    assert financials["balance_sheet"]["bridge_complete"] is False
+    assert set(financials["balance_sheet"]["bridge_missing_fields"]) >= {
+        "preferred_equity",
+        "noncontrolling_interests",
+    }
+
+
+def test_valuation_date_excludes_later_filed_facts(
+    submissions: dict, companyfacts: dict
+) -> None:
+    later = deepcopy(companyfacts)
+    for namespace in later["facts"].values():
+        for concept in namespace.values():
+            for unit, facts in concept.get("units", {}).items():
+                concept["units"][unit] = [
+                    {**fact, "filed": "2026-08-02"}
+                    if fact.get("end") == "2026-03-28"
+                    else fact
+                    for fact in facts
+                ]
+    result = build_us_valuation(
+        submissions=submissions,
+        companyfacts=later,
+        valuation_date="2026-08-01",
+    )
+    assert result["financial_period_end"] == "2025-12-27"
+
+
 def test_public_artifact_allows_governed_rates_and_derived_value_paths() -> None:
     """Allow high-level public values even when their numbers occur privately."""
     result = build_us_valuation(
@@ -365,7 +503,7 @@ def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> N
         leaked = deepcopy(artifact)
         leaked["forecast_quality"]["checks"]["segment_evidence_as_of"][
             "available_periods"
-        ][0] = 331_839_000_000.0
+        ].append(331_839_000_000.0)
         with pytest.raises(AssertionError, match="raw financial-statement numeric"):
             assert_public_artifact_is_safe(leaked, raw_statement_amounts)
 

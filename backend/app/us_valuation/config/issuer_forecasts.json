@@ -90,7 +90,7 @@
       "margin_persistence": 0.8,
       "terminal_roic_premium": 0.05,
       "evidence_status": "governed_filing_table_transcription",
-      "evidence_note": "Microsoft reportable-segment revenue, cost of revenue, and operating income are transcribed from the controlling SEC filing tables because SEC Companyfacts does not include the required segment dimensions. The TTM bridge reconciles to standardized consolidated Companyfacts and remains review-required until filing-specific inline-XBRL extraction is automated.",
+      "evidence_note": "This operating-income route forecasts reported segment revenue and reported segment operating income directly. Segment cost of revenue and operating expenses are publicly disclosed table inputs but are intentionally not separate forecast drivers: their economics are already represented by the governed operating-income margin. The TTM bridge reconciles to standardized consolidated Companyfacts and remains review-required until filing-specific inline-XBRL extraction is automated.",
       "periods": {
         "2025-03-31": {
           "consolidated_ttm": {
@@ -182,6 +182,65 @@
               "evidence": "Current and comparable prior-year nine-month reportable-segment revenue and operating income used in the TTM bridge."
             }
           ],
+          "cost_of_revenue_and_opex_scope": {
+            "status": "not_model_inputs",
+            "policy": "segment_operating_income",
+            "rationale": "Reported segment operating income is the direct margin driver. Separately forecasting cost of revenue and operating expenses would double-count the same segment economics without a governed allocation policy."
+          },
+          "field_source_map": {
+            "segments.*.annual_revenue[*]": {
+              "accession": "0000950170-24-087843",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+              "filing_date": "2024-07-30",
+              "period_end": "2024-06-30",
+              "fiscal_year": "2024",
+              "fiscal_period": "FY",
+              "duration_basis": "annual comparative columns FY2022-FY2024",
+              "unit": "USD",
+              "table_line": "Reportable segment revenue",
+              "status": "governed_filing_table_transcription",
+              "derivation": "reported annual table values, ordered FY2022 through FY2024"
+            },
+            "segments.*.annual_operating_income[*]": {
+              "accession": "0000950170-24-087843",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+              "filing_date": "2024-07-30",
+              "period_end": "2024-06-30",
+              "fiscal_year": "2024",
+              "fiscal_period": "FY",
+              "duration_basis": "annual comparative columns FY2022-FY2024",
+              "unit": "USD",
+              "table_line": "Reportable segment operating income",
+              "status": "governed_filing_table_transcription",
+              "derivation": "reported annual table values, ordered FY2022 through FY2024"
+            },
+            "segments.*.latest_ytd_revenue|prior_ytd_revenue|ttm_revenue": {
+              "accession": "0000950170-25-061046",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+              "filing_date": "2025-04-30",
+              "period_end": "2025-03-31",
+              "fiscal_year": "2025",
+              "fiscal_period": "Q3",
+              "duration_basis": "nine-month current/prior comparative columns; TTM = FY2024 + current nine months - prior nine months",
+              "unit": "USD",
+              "table_line": "Reportable segment revenue",
+              "status": "governed_filing_table_transcription",
+              "derivation": "latest/prior YTD reported; TTM formula stated in duration basis"
+            },
+            "segments.*.latest_ytd_operating_income|prior_ytd_operating_income|ttm_operating_income|consolidated_ttm.*": {
+              "accession": "0000950170-25-061046",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+              "filing_date": "2025-04-30",
+              "period_end": "2025-03-31",
+              "fiscal_year": "2025",
+              "fiscal_period": "Q3",
+              "duration_basis": "nine-month current/prior comparative columns; TTM = FY2024 + current nine months - prior nine months",
+              "unit": "USD",
+              "table_line": "Reportable segment operating income; consolidated operating income reconciliation",
+              "status": "governed_filing_table_transcription",
+              "derivation": "latest/prior YTD reported; TTM formula stated in duration basis"
+            }
+          },
           "evidence_period_end": "2025-03-31",
           "as_of_filed_date": "2025-04-30"
         }

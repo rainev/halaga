@@ -65,6 +65,7 @@ class CompanyFactsNormalizer:
         concept_config: dict[str, Any] | None = None,
         *,
         fiscal_year_end: str | None = None,
+        as_of_date: str | None = None,
     ) -> None:
         self.companyfacts = companyfacts
         self.config = concept_config or load_concept_config()
@@ -77,6 +78,9 @@ class CompanyFactsNormalizer:
             and fiscal_year_end.isdigit()
             else None
         )
+        self.as_of_date = as_of_date
+        if as_of_date:
+            date.fromisoformat(as_of_date)
         if not self.us_gaap:
             raise ValueError("SEC Companyfacts payload has no us-gaap facts")
 
@@ -101,6 +105,8 @@ class CompanyFactsNormalizer:
                 candidates.extend(
                     (namespace, concept, unit, fact)
                     for fact in units[unit]
+                    if not self.as_of_date
+                    or fact.get("filed", "") <= self.as_of_date
                 )
         return candidates
 
@@ -541,7 +547,6 @@ class CompanyFactsNormalizer:
                 }
                 for field in verified_zero_bridge_fields
             }
-        verified_zero_fields = set(verified_zero_evidence)
         annual_revenue = self.annual_series("revenue", annual_count)
         if len(annual_revenue) < 3:
             raise ValueError("At least three annual revenue facts are required")
@@ -592,6 +597,18 @@ class CompanyFactsNormalizer:
                 "TTM flow inputs do not share one period end and reconstruction basis"
             )
         ttm_end = ttm_fields["revenue"]["period_end"]
+        controlling_accessions = {
+            source.get("accession")
+            for field in ttm_fields.values()
+            for source in field.get("sources", [])
+            if source.get("accession")
+        }
+        verified_zero_fields = {
+            field
+            for field, evidence in verified_zero_evidence.items()
+            if evidence.get("controlled_period_end") == ttm_end
+            and evidence.get("source_accession") in controlling_accessions
+        }
         prior_end = ttm_fields["revenue"].get("prior_ytd", {}).get("end")
         if not prior_end:
             prior_end = annual_periods[-2]["period_end"]
@@ -666,6 +683,8 @@ class CompanyFactsNormalizer:
                     if fact
                     else "policy_verified_zero"
                     if field in verified_zero_fields
+                    else "verification_stale"
+                    if field in verified_zero_evidence
                     else "missing"
                 ),
             }
@@ -691,17 +710,14 @@ class CompanyFactsNormalizer:
             "noncurrent_debt",
             "preferred_equity",
             "noncontrolling_interests",
+            "finance_lease_current",
+            "finance_lease_noncurrent",
         )
         missing_bridge = [
             field
             for field in required_bridge_fields
             if balance_fields[field]["value"] is None
         ]
-        if missing_bridge:
-            raise ValueError(
-                "Required enterprise-to-equity bridge facts are missing: "
-                + ", ".join(missing_bridge)
-            )
         cash_and_investments = (
             balance_fields["cash"]["value"]
             + balance_fields["marketable_securities_current"]["value"]
@@ -757,6 +773,8 @@ class CompanyFactsNormalizer:
                 "field_states": {
                     field: item["state"] for field, item in balance_fields.items()
                 },
+                "bridge_complete": not missing_bridge,
+                "bridge_missing_fields": missing_bridge,
                 "cash_and_nonoperating_investments": cash_and_investments,
                 "total_interest_bearing_debt": total_debt,
                 "preferred_equity": balance_fields["preferred_equity"]["value"],

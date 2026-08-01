@@ -50,7 +50,7 @@ def fcff_dcf(
         return {
             "model": "fcff_dcf",
             "output_type": "intrinsic_value_per_share",
-            "publication_state": "blocked",
+            "publication_state": "withheld",
             "errors": errors,
             "warnings": [],
         }
@@ -262,7 +262,7 @@ def fcff_dcf(
         "intrinsic_value_per_share": per_share,
         "enterprise_value": enterprise_value,
         "equity_value": equity_value,
-        "publication_state": "review" if warnings else "pass",
+        "publication_state": "review_required" if warnings else "pass",
         "errors": [],
         "warnings": warnings,
         "detail": {
@@ -319,7 +319,7 @@ def earnings_power_value(
         "intrinsic_value_per_share": equity_value / shares,
         "enterprise_value": enterprise_value,
         "equity_value": equity_value,
-        "publication_state": "review",
+        "publication_state": "review_required",
         "errors": [],
         "warnings": [
             "EPV is a no-growth support value, not an independent growth forecast.",

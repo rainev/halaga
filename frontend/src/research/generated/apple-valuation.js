@@ -175,7 +175,7 @@ export default {
           "epv"
         ],
         "blend_models": false,
-        "reason": "FCFF is the primary model for a mature non-financial hardware/services ecosystem; EPV is a separate no-growth support value."
+        "reason": "FCFF is the primary governed model for the hardware and services archetype; EPV is a separate no-growth support value."
       },
       "public_assumptions": {
         "forecast_policy_version": "AAPL-HARDWARE-SERVICES-1.0",
@@ -220,7 +220,7 @@ export default {
           "output_type": "intrinsic_value_per_share",
           "currency": "USD",
           "intrinsic_value_per_share": 91.36485244771345,
-          "publication_state": "review",
+          "publication_state": "review_required",
           "errors": [],
           "warnings": [
             "EPV is a no-growth support value, not an independent growth forecast.",
@@ -313,13 +313,13 @@ export default {
             "review_threshold": 0.4
           },
           "segment_evidence_automation": {
-            "status": "review",
+            "status": "review_required",
             "value": "governed_filing_table_transcription"
           }
         }
       },
       "review": {
-        "publication_state": "review",
+        "publication_state": "review_required",
         "confidence_grade": "medium",
         "errors": [],
         "warnings": [
@@ -353,7 +353,7 @@ export default {
         "epv"
       ],
       "publishable": true,
-      "reason": "FCFF is the primary model for a mature non-financial hardware/services ecosystem; EPV is a separate no-growth support value.",
+      "reason": "FCFF is the primary governed model for the hardware and services archetype; EPV is a separate no-growth support value.",
       "warnings": [
         "Fully diluted shares are proxied by the latest SEC cover-page/common share count plus the latest reported incremental shares from share-based awards; a complete award roll-forward is not yet modeled.",
         "Operating NWC uses a consistent four-account public-data definition and may omit issuer-specific operating accruals.",

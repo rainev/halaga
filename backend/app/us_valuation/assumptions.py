@@ -215,10 +215,18 @@ def derive_forecast_assumptions(
     if ttm_yoy_growth is None:
         ttm_yoy_growth = annual_cagr
 
+    # When issuer history exists, the generic archetype anchor is capped at
+    # 25%; the remaining weight stays with observed company history.
+    generic_growth_weights = {
+        "ttm_history": 0.375,
+        "annual_history": 0.375,
+        "archetype_anchor": 0.25,
+    }
     initial_growth = (
-        0.30 * ttm_yoy_growth
-        + 0.30 * annual_cagr
-        + 0.40 * float(policy["archetype_median_growth"])
+        generic_growth_weights["ttm_history"] * ttm_yoy_growth
+        + generic_growth_weights["annual_history"] * annual_cagr
+        + generic_growth_weights["archetype_anchor"]
+        * float(policy["archetype_median_growth"])
     )
     initial_growth = min(max(initial_growth, -0.10), 0.20)
 
@@ -594,6 +602,7 @@ def derive_forecast_assumptions(
                 policy["archetype_target_operating_margin"]
             ),
             "company_margin_weight": company_weight,
+            "generic_growth_weights": generic_growth_weights,
         },
         "maintained_assumptions": [
             (
