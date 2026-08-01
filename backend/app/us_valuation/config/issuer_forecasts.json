@@ -106,19 +106,14 @@
             "productivity_and_business_processes": {
               "label": "Productivity and Business Processes",
               "annual_revenue": [
-                94151000000,
-                106820000000,
-                120810000000
-              ],
-              "annual_cost_of_revenue": [
-                17202000000,
-                19611000000,
-                22422000000
+                63364000000,
+                69274000000,
+                77728000000
               ],
               "annual_operating_income": [
-                50074000000,
-                59661000000,
-                69773000000
+                29690000000,
+                34189000000,
+                40540000000
               ],
               "latest_ytd_revenue": 87698000000,
               "prior_ytd_revenue": 78193000000,
@@ -131,19 +126,14 @@
             "intelligent_cloud": {
               "label": "Intelligent Cloud",
               "annual_revenue": [
-                72944000000,
-                87464000000,
-                106265000000
-              ],
-              "annual_cost_of_revenue": [
-                24109000000,
-                29611000000,
-                40171000000
+                74965000000,
+                87907000000,
+                105362000000
               ],
               "annual_operating_income": [
-                28411000000,
-                37813000000,
-                44589000000
+                33203000000,
+                37884000000,
+                49584000000
               ],
               "latest_ytd_revenue": 76387000000,
               "prior_ytd_revenue": 63679000000,
@@ -156,19 +146,14 @@
             "more_personal_computing": {
               "label": "More Personal Computing",
               "annual_revenue": [
-                44820000000,
-                50838000000,
-                54649000000
-              ],
-              "annual_cost_of_revenue": [
-                24552000000,
-                24892000000,
-                25238000000
+                59941000000,
+                54734000000,
+                62032000000
               ],
               "annual_operating_income": [
-                10038000000,
-                11959000000,
-                14166000000
+                20490000000,
+                16450000000,
+                19309000000
               ],
               "latest_ytd_revenue": 41198000000,
               "prior_ytd_revenue": 38523000000,
@@ -182,11 +167,11 @@
           "sources": [
             {
               "form": "10-K",
-              "accession": "0000950170-25-100235",
-              "filing_date": "2025-07-30",
-              "period_end": "2025-06-30",
-              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
-              "evidence": "Three fiscal years of reportable-segment revenue, cost of revenue, and operating income."
+              "accession": "0000950170-24-087843",
+              "filing_date": "2024-07-30",
+              "period_end": "2024-06-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+              "evidence": "FY2022-FY2024 reportable-segment revenue and operating income."
             },
             {
               "form": "10-Q",
@@ -196,7 +181,9 @@
               "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
               "evidence": "Current and comparable prior-year nine-month reportable-segment revenue and operating income used in the TTM bridge."
             }
-          ]
+          ],
+          "evidence_period_end": "2025-03-31",
+          "as_of_filed_date": "2025-04-30"
         }
       }
     }

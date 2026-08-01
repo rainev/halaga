@@ -41,11 +41,19 @@ US_BASE = USMarketAssumptions()
 class ForecastEvidenceUnavailable(ValueError):
     """Raised when governed segment evidence has no matching normalized period."""
 
-    def __init__(self, *, period_end: str, available_periods: list[str]) -> None:
+    def __init__(
+        self,
+        *,
+        period_end: str,
+        available_periods: list[str],
+        reason: str | None = None,
+    ) -> None:
         self.period_end = period_end
         self.available_periods = available_periods
+        self.reason = reason
         super().__init__(
-            "No governed segment forecast evidence is available for normalized "
+            (f"{reason}. " if reason else "")
+            + "No governed segment forecast evidence is available for normalized "
             f"period {period_end}; configured periods: "
             f"{', '.join(available_periods) or 'none'}"
         )
@@ -153,6 +161,30 @@ def derive_forecast_assumptions(
             raise ForecastEvidenceUnavailable(
                 period_end=period_end,
                 available_periods=available_periods,
+            )
+        evidence_period_end = period_evidence.get("evidence_period_end")
+        as_of_filed_date = period_evidence.get("as_of_filed_date")
+        if evidence_period_end != period_end or not as_of_filed_date:
+            raise ForecastEvidenceUnavailable(
+                period_end=period_end,
+                available_periods=available_periods,
+                reason="Governed evidence period metadata is incomplete or mismatched",
+            )
+        invalid_sources = [
+            source
+            for source in period_evidence.get("sources", [])
+            if (
+                not source.get("period_end")
+                or not source.get("filing_date")
+                or source["period_end"] > evidence_period_end
+                or source["filing_date"] > as_of_filed_date
+            )
+        ]
+        if not period_evidence.get("sources") or invalid_sources:
+            raise ForecastEvidenceUnavailable(
+                period_end=period_end,
+                available_periods=available_periods,
+                reason="Governed evidence includes source periods or filing dates after its as-of cutoff",
             )
         issuer_evidence = {**issuer_evidence, **period_evidence}
 

@@ -267,7 +267,7 @@ def _withheld_segment_evidence_result(
             "primary": classification["valuation_policy"]["primary_model"],
             "supporting": classification["valuation_policy"]["supporting_models"],
             "blend_models": False,
-            "reason": "FCFF is the primary model for a mature non-financial hardware/services ecosystem; EPV is a separate no-growth support value.",
+            "reason": "FCFF is the primary governed model; EPV is a separate no-growth support value.",
         },
         "financials": financials,
         "forecast_assumptions": {

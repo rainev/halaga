@@ -156,6 +156,20 @@ def test_segment_operating_income_governance_rejects_invalid_evidence() -> None:
                 issuer_evidence=evidence,
             )
 
+    for field, value, error in (
+        ("ttm_revenue", 1, "Segment revenue"),
+        ("ttm_operating_income", 1, "Segment operating income"),
+    ):
+        evidence = deepcopy(original)
+        evidence["periods"][period]["segments"]["intelligent_cloud"][field] = value
+        with pytest.raises(ValueError, match=error):
+            derive_forecast_assumptions(
+                financials,
+                policy=policy,
+                discount_rate=discount_rate,
+                issuer_evidence=evidence,
+            )
+
 
 def test_segment_operating_income_without_contemporaneous_evidence_is_withheld(
     monkeypatch: pytest.MonkeyPatch,
@@ -178,6 +192,43 @@ def test_segment_operating_income_without_contemporaneous_evidence_is_withheld(
 
     assert result["review"]["publication_state"] == "withheld"
     assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert result["models"]["epv"]["intrinsic_value_per_share"] is None
+    assert result["forecast_quality"]["checks"]["segment_evidence_as_of"]["status"] == "fail"
+    assert "hardware/services" not in result["model_policy"]["reason"].lower()
+
+
+def test_segment_operating_income_future_dated_source_is_withheld(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    evidence = load_issuer_forecast_evidence("0000789019")
+    assert evidence is not None
+    evidence = deepcopy(evidence)
+    period = "2025-03-31"
+    evidence["periods"][period]["sources"].append(
+        {
+            "form": "10-K",
+            "accession": "0000950170-25-100235",
+            "filing_date": "2025-07-30",
+            "period_end": "2025-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+            "evidence": "Deliberately future-dated source for a governance test.",
+        }
+    )
+    monkeypatch.setattr(
+        valuation_pipeline,
+        "load_issuer_forecast_evidence",
+        lambda _cik: evidence,
+    )
+
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        source_manifest=microsoft_source_manifest(),
+    )
+
+    assert result["review"]["publication_state"] == "withheld"
+    assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert result["models"]["epv"]["intrinsic_value_per_share"] is None
     assert result["forecast_quality"]["checks"]["segment_evidence_as_of"]["status"] == "fail"
 
 
@@ -194,7 +245,7 @@ def test_segment_operating_income_outputs_only_derived_values() -> None:
         key not in assumptions["maintained_assumptions"]
         for key in (
             "segment_target_gross_margin",
-            "segment_operating_expense_ratio",
+            "target_operating_expense_ratio",
         )
     )
     for row in segment["segments"].values():
