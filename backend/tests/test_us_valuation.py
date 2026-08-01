@@ -12,6 +12,7 @@ import pytest
 from app.routers.us_valuations import load_generated_result
 import app.routers.us_valuations as us_valuations_router
 from app.us_valuation.assumptions import (
+    ForecastEvidenceUnavailable,
     US_BASE,
     build_discount_rate,
     derive_forecast_assumptions,
@@ -189,12 +190,28 @@ def microsoft_source_manifest() -> dict:
     }
 
 
+def load_microsoft_current_capture(name: str) -> dict:
+    path = FIXTURES / "private_captures" / "msft-2026-08-01" / name
+    return json.loads(path.read_text())
+
+
 def microsoft_financials_and_policy() -> tuple[dict, dict, dict]:
     submission = load_fixture("msft-submissions.json")
     classification = classify_issuer(submission)
+    recent = submission["filings"]["recent"]
+    filing_records = [
+        {
+            key: values[index]
+            for key, values in recent.items()
+            if isinstance(values, list) and index < len(values)
+        }
+        for index in range(len(recent["accessionNumber"]))
+    ]
     financials = CompanyFactsNormalizer(
         load_fixture("msft-companyfacts.json"),
         fiscal_year_end=submission["fiscalYearEnd"],
+        as_of_date="2025-04-30",
+        filing_records=filing_records,
     ).normalize(
         annual_count=5,
         verified_zero_bridge_fields=classification["verified_zero_bridge_fields"],
@@ -691,9 +708,9 @@ def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> N
         assert_public_artifact_is_safe(artifact, raw_statement_amounts)
 
         leaked = deepcopy(artifact)
-        leaked["forecast_quality"]["checks"]["segment_evidence_as_of"][
-            "available_periods"
-        ].append(331_839_000_000.0)
+        leaked["forecast_quality"]["checks"]["deliberate_test_leak"] = {
+            "value": 331_839_000_000.0
+        }
         with pytest.raises(AssertionError, match="raw financial-statement numeric"):
             assert_public_artifact_is_safe(leaked, raw_statement_amounts)
 
@@ -783,6 +800,133 @@ def test_segment_operating_income_evidence_reconciles_to_consolidated_ttm() -> N
     assert result["source_manifest"]["fixtures"]["msft-companyfacts.json"][
         "sha256"
     ]
+
+
+def test_microsoft_current_filing_uses_period_matched_governed_evidence() -> None:
+    submissions = load_microsoft_current_capture("submissions.json")
+    companyfacts = load_microsoft_current_capture("companyfacts.json")
+
+    result = build_us_valuation(
+        submissions=submissions,
+        companyfacts=companyfacts,
+        valuation_date="2026-08-01",
+    )
+
+    assert result["financials"]["ttm"]["period_end"] == "2026-06-30"
+    assert result["forecast_assumptions"]["segment_forecast"]["mode"] == (
+        "segment_operating_income"
+    )
+    assert result["financials"]["balance_sheet"]["bridge_complete"] is True
+    assert result["financials"]["balance_sheet"]["field_states"][
+        "finance_lease_current"
+    ] == "governed_filing_fact"
+    assert result["financials"]["balance_sheet"]["field_states"][
+        "finance_lease_noncurrent"
+    ] == "governed_filing_fact"
+    assert result["financials"]["balance_sheet"]["values"][
+        "finance_lease_current"
+    ] == 4_290_000_000
+    assert result["financials"]["balance_sheet"]["values"][
+        "finance_lease_noncurrent"
+    ] == 62_304_000_000
+    assert result["review"]["publication_state"] == "review_required"
+    assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] > 0
+    assert result["models"]["epv"]["intrinsic_value_per_share"] > 0
+
+
+def test_microsoft_current_annual_segment_evidence_uses_latest_fy_as_ttm() -> None:
+    evidence = load_issuer_forecast_evidence("0000789019")
+    assert evidence is not None
+    period = evidence["periods"]["2026-06-30"]
+
+    assert period["period_comparison_basis"] == "annual"
+    for segment in period["segments"].values():
+        assert segment["ttm_revenue"] == segment["annual_revenue"][-1]
+        assert segment["ttm_operating_income"] == (
+            segment["annual_operating_income"][-1]
+        )
+
+
+def test_microsoft_annual_comparison_evidence_rejects_coordinated_error() -> None:
+    submissions = load_microsoft_current_capture("submissions.json")
+    result = build_us_valuation(
+        submissions=submissions,
+        companyfacts=load_microsoft_current_capture("companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    evidence = deepcopy(load_issuer_forecast_evidence("0000789019"))
+    assert evidence is not None
+    path = (
+        "segments.productivity_and_business_processes.latest_ytd_revenue"
+    )
+    evidence["periods"]["2026-06-30"]["segments"][
+        "productivity_and_business_processes"
+    ]["latest_ytd_revenue"] += 1
+    evidence["periods"]["2026-06-30"]["field_source_values"][path] += 1
+
+    with pytest.raises(ValueError, match="annual comparison derivation"):
+        derive_forecast_assumptions(
+            result["financials"],
+            policy=classify_issuer(submissions)["valuation_policy"],
+            discount_rate=result["discount_rate"],
+            issuer_evidence=evidence,
+        )
+
+
+def test_segment_evidence_requires_controlling_filing_accession() -> None:
+    financials, policy, discount_rate = microsoft_financials_and_policy()
+    evidence = deepcopy(load_issuer_forecast_evidence("0000789019"))
+    assert evidence is not None
+    for source in evidence["periods"]["2025-03-31"]["sources"]:
+        if source["id"] == "fy2025_q3_10q":
+            source["accession"] = "0000950170-25-000001"
+
+    with pytest.raises(ForecastEvidenceUnavailable, match="controlling filing"):
+        derive_forecast_assumptions(
+            financials,
+            policy=policy,
+            discount_rate=discount_rate,
+            issuer_evidence=evidence,
+        )
+
+
+def test_microsoft_current_governed_bridge_rejects_wrong_accession() -> None:
+    submissions = load_microsoft_current_capture("submissions.json")
+    companyfacts = load_microsoft_current_capture("companyfacts.json")
+    classification = classify_issuer(submissions)
+    governed = deepcopy(classification["governed_bridge_fields"])
+    for evidence in governed.values():
+        evidence["source_accession"] = "0001193125-26-000001"
+    recent = submissions["filings"]["recent"]
+    filing_records = [
+        {
+            key: values[index]
+            for key, values in recent.items()
+            if isinstance(values, list) and index < len(values)
+        }
+        for index in range(len(recent["accessionNumber"]))
+    ]
+
+    financials = CompanyFactsNormalizer(
+        companyfacts,
+        fiscal_year_end=submissions["fiscalYearEnd"],
+        as_of_date="2026-08-01",
+        filing_records=filing_records,
+    ).normalize(
+        annual_count=5,
+        verified_zero_bridge_fields=classification[
+            "verified_zero_bridge_fields"
+        ],
+        governed_bridge_fields=governed,
+    )
+
+    assert financials["balance_sheet"]["bridge_complete"] is False
+    assert set(financials["balance_sheet"]["bridge_missing_fields"]) == {
+        "preferred_equity",
+        "noncontrolling_interests",
+        "finance_lease_current",
+        "finance_lease_noncurrent",
+    }
 
 
 def test_segment_operating_income_dcf_schedule_contains_segment_ebit() -> None:

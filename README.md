@@ -83,13 +83,14 @@ with the supplied SEC contact identity. Its private audit output remains under
 filing attribution, governed public assumptions, derived outputs, and review
 metadata.
 
-The checked-in 2026-08-01 Microsoft artifact is intentionally `withheld`. Its
-controlling Form 10-K is for 2026-06-30, while the currently governed segment
-evidence is only period-matched through 2025-03-31. The pipeline therefore does
-not carry forward a stale segment forecast or publish an intrinsic value. As
-with Apple, the Microsoft artifacts exclude raw financial-statement values,
-current or historical prices, price-based upside/downside, and buy/hold/sell
-labels.
+The checked-in 2026-08-01 Microsoft artifact is `review_required`. Its
+controlling Form 10-K is for 2026-06-30 and its governed segment and
+finance-lease evidence is bound to that filing's period and accession. The
+result is provisional because the dimensional filing-table extraction still
+requires review and the DCF/EPV dispersion exceeds the review threshold. The
+pipeline will not carry the evidence into a later filing. As with Apple, the
+Microsoft artifacts exclude raw financial-statement values, current or
+historical prices, price-based upside/downside, and buy/hold/sell labels.
 
 ## Optional full stack
 

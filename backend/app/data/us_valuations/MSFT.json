@@ -32,14 +32,33 @@
     "reason": "FCFF is the primary governed model for the enterprise software and cloud archetype; EPV is a separate no-growth support value."
   },
   "public_assumptions": {
-    "forecast_policy_version": null,
-    "forecast_years": null,
-    "forecast_mode": "unavailable",
-    "initial_revenue_growth": null,
-    "target_operating_margin": null,
-    "segment_assumptions": {},
-    "sales_to_capital": null,
-    "terminal_growth": null,
+    "forecast_policy_version": "MSFT-ENTERPRISE-CLOUD-1.0",
+    "forecast_years": 8,
+    "forecast_mode": "segment_operating_income",
+    "initial_revenue_growth": 0.1424825323679032,
+    "target_operating_margin": 0.46978250383294146,
+    "segment_assumptions": {
+      "productivity_and_business_processes": {
+        "label": "Productivity and Business Processes",
+        "initial_revenue_growth": 0.13544655233465205,
+        "target_operating_margin": 0.5883480413345332,
+        "target_gross_margin": null
+      },
+      "intelligent_cloud": {
+        "label": "Intelligent Cloud",
+        "initial_revenue_growth": 0.2,
+        "target_operating_margin": 0.41653435534513367,
+        "target_gross_margin": null
+      },
+      "more_personal_computing": {
+        "label": "More Personal Computing",
+        "initial_revenue_growth": 0.01408061714257895,
+        "target_operating_margin": 0.2626845158640063,
+        "target_gross_margin": null
+      }
+    },
+    "sales_to_capital": 3.0,
+    "terminal_growth": 0.02,
     "discount_policy_version": "US-RATES-1.0",
     "discount_calibration_type": "policy_calibrated",
     "policy_wacc": 0.08689486792122063,
@@ -53,54 +72,126 @@
       "model": "fcff_dcf",
       "output_type": "intrinsic_value_per_share",
       "currency": "USD",
-      "intrinsic_value_per_share": null,
-      "publication_state": "withheld",
-      "errors": [
-        "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
-      ],
+      "intrinsic_value_per_share": 316.78407090406165,
+      "publication_state": "pass",
+      "errors": [],
       "warnings": []
     },
     "epv": {
       "model": "epv",
       "output_type": "intrinsic_value_per_share",
       "currency": "USD",
-      "intrinsic_value_per_share": null,
-      "publication_state": "withheld",
-      "errors": [
-        "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
-      ],
-      "warnings": []
+      "intrinsic_value_per_share": 189.16625031588194,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "EPV is a no-growth support value, not an independent growth forecast.",
+        "It assumes normalized D&A approximates maintenance CapEx and normalized working capital is stable."
+      ]
     }
   },
-  "scenarios": {},
+  "scenarios": {
+    "bear": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 248.01811891636385,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "base": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 316.78407090406165,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "bull": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 421.9064183797141,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    }
+  },
   "scenario_range": {
-    "low": null,
-    "base": null,
-    "high": null,
+    "low": 248.01811891636385,
+    "base": 316.78407090406165,
+    "high": 421.9064183797141,
     "label": "assumption range, not a statistical confidence interval"
   },
   "forecast_quality": {
     "policy_version": "US-FORECAST-QUALITY-1.0",
-    "status": "withheld",
-    "errors": [
-      "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
+    "status": "review_required",
+    "errors": [],
+    "warnings": [
+      "DCF and EPV differ by more than 40%; the growth thesis requires review.",
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
     ],
-    "warnings": [],
     "checks": {
-      "segment_evidence_as_of": {
-        "status": "fail",
-        "normalized_period_end": "2026-06-30",
-        "available_periods": []
+      "segment_forecast_required": {
+        "status": "pass",
+        "value": true
+      },
+      "segment_reconciliation": {
+        "status": "pass",
+        "value": {
+          "segment_revenue_to_consolidated": "pass",
+          "segment_operating_income_to_consolidated": "pass"
+        }
+      },
+      "archetype_growth_weight": {
+        "status": "pass",
+        "value": 0.2,
+        "limit": 0.25
+      },
+      "forecast_horizon": {
+        "status": "pass",
+        "value": 8
+      },
+      "terminal_growth_continuity": {
+        "status": "pass",
+        "value": 0.020000000000000018,
+        "target": 0.02
+      },
+      "revenue_fcff_consistency": {
+        "status": "pass",
+        "revenue_cagr": 0.06905982242132058,
+        "fcff_cagr": 0.05773495810082041
+      },
+      "dcf_epv_dispersion": {
+        "status": "review_required",
+        "value": 0.4028542856462909,
+        "review_threshold": 0.4
+      },
+      "segment_evidence_automation": {
+        "status": "review_required",
+        "value": "governed_filing_table_transcription"
       }
     }
   },
   "review": {
-    "publication_state": "withheld",
-    "confidence_grade": "insufficient",
-    "errors": [
-      "Enterprise-to-equity bridge requires current filing evidence for preferred_equity, noncontrolling_interests, finance_lease_current, finance_lease_noncurrent. No governed segment forecast evidence is available for normalized period 2026-06-30; configured periods: none"
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "Fully diluted shares are proxied by the latest SEC cover-page/common share count plus the latest reported incremental shares from share-based awards; a complete award roll-forward is not yet modeled.",
+      "Operating NWC uses a consistent four-account public-data definition and may omit issuer-specific operating accruals.",
+      "Operating leases remain in operating expense and are not added to debt; finance leases are included when separately reported.",
+      "DCF and EPV differ by more than 40%; the growth thesis requires review.",
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
     ],
-    "warnings": [],
     "price_dependent_inputs_used": false,
     "prohibited_output_check": {
       "current_price": false,

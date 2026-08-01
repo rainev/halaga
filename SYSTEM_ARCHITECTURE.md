@@ -1259,14 +1259,23 @@ consolidated facts but not the dimensions needed for these segment tables. The
 transcription remains review-required until filing-specific inline-XBRL
 extraction is automated.
 
-The checked-in public MSFT artifact is truthfully `withheld` as of valuation
-date 2026-08-01. Its controlling financial statement is the Form 10-K for the
+The checked-in public MSFT artifact is `review_required` as of valuation date
+2026-08-01. Its controlling financial statement is the Form 10-K for the
 period ended 2026-06-30, filed 2026-07-29, accession
-`0001193125-26-323660`. Governed Microsoft segment evidence currently covers
-only the normalized period ending 2025-03-31, so the publication gate does not
-reuse it for the 2026-06-30 period. Both FCFF DCF and EPV per-share outputs are
-therefore null; no intrinsic value is published pending period-matched segment
-evidence.
+`0001193125-26-323660`. Governed FY2024-FY2026 segment evidence reconciles to
+the normalized FY2026 consolidated revenue and operating income. The current
+and noncurrent finance-lease balances use the filing's
+`FinanceLeaseLiability` fact with balance-sheet-location dimensions; preferred
+equity and noncontrolling interests are governed zero confirmations. Every
+bridge record is bound to the controlling period, accession, and review date,
+and becomes stale automatically when a newer financial statement controls.
+
+The result remains provisional for two explicit reasons: the dimensional
+filing-table values are governed transcriptions pending automated inline-XBRL
+extraction, and the DCF/EPV dispersion exceeds the 40% review threshold. The
+web application may display the derived values only with the clear
+“Preliminary valuation - requires data review” label; it must not describe the
+output as an official fair value.
 
 Private SEC response provenance, normalized facts, source hashes, and any raw
 filing-table transcriptions remain in the local untracked audit output under

@@ -64,6 +64,7 @@ def classify_issuer(
         verified_zero_bridge_fields = dict(
             override.get("verified_zero_bridge_fields", {})
         )
+        governed_bridge_fields = dict(override.get("governed_bridge_fields", {}))
         override_applied = True
     else:
         sector = match["sector"]
@@ -72,6 +73,7 @@ def classify_issuer(
         reason = "Mapped from SEC SIC; issuer-level economic review is still required."
         secondary = []
         verified_zero_bridge_fields = {}
+        governed_bridge_fields = {}
         override_applied = False
 
     policy = config.get("valuation_policies", {}).get(archetype)
@@ -107,6 +109,7 @@ def classify_issuer(
         "source_accessions": accessions,
         "valuation_policy": policy,
         "verified_zero_bridge_fields": verified_zero_bridge_fields,
+        "governed_bridge_fields": governed_bridge_fields,
         "requires_segment_forecast": bool(
             override and override.get("requires_segment_forecast", False)
         ),

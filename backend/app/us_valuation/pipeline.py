@@ -323,7 +323,7 @@ def _withheld_segment_evidence_result(
         "methodology": {
             "forecast_policy": "FINSIGHT_US_FORECAST_DISCOUNT_VALIDATION_POLICY.md",
             "sector_framework": "US_EQUITY_VALUATION_ENGINE_FRAMEWORK.md",
-            "source_policy": "SEC Companyfacts, submissions and governed filing-specific Products/Services tables; no exchange prices",
+            "source_policy": "SEC Companyfacts, submissions and governed filing-specific reportable-segment tables; no exchange prices",
         },
     }
 
@@ -369,6 +369,7 @@ def build_us_valuation(
         verified_zero_bridge_fields=classification[
             "verified_zero_bridge_fields"
         ],
+        governed_bridge_fields=classification["governed_bridge_fields"],
     )
     policy = classification["valuation_policy"]
     discount_rate = build_discount_rate(

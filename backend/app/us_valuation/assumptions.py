@@ -120,13 +120,31 @@ def _validated_field_provenance(evidence: dict[str, Any]) -> dict[str, dict[str,
         if path.endswith((".ttm_revenue", ".ttm_operating_income")):
             prefix, field = path.rsplit(".", 1)
             annual_field = field.removeprefix("ttm_")
-            derived = (
-                value_at(f"{prefix}.annual_{annual_field}[2]")
-                + value_at(f"{prefix}.latest_ytd_{annual_field}")
-                - value_at(f"{prefix}.prior_ytd_{annual_field}")
-            )
+            if evidence.get("period_comparison_basis") == "annual":
+                derived = value_at(f"{prefix}.annual_{annual_field}[2]")
+            else:
+                derived = (
+                    value_at(f"{prefix}.annual_{annual_field}[2]")
+                    + value_at(f"{prefix}.latest_ytd_{annual_field}")
+                    - value_at(f"{prefix}.prior_ytd_{annual_field}")
+                )
             if value_at(path) != derived:
                 raise ValueError(f"Governed TTM derivation mismatch for {path}")
+    if evidence.get("period_comparison_basis") == "annual":
+        for segment in evidence["segments"]:
+            prefix = f"segments.{segment}"
+            for field in ("revenue", "operating_income"):
+                for comparison, annual_index in (
+                    ("latest_ytd", 2),
+                    ("prior_ytd", 1),
+                ):
+                    comparison_path = f"{prefix}.{comparison}_{field}"
+                    annual_path = f"{prefix}.annual_{field}[{annual_index}]"
+                    if value_at(comparison_path) != value_at(annual_path):
+                        raise ValueError(
+                            "Governed annual comparison derivation mismatch for "
+                            f"{comparison_path}"
+                        )
     for field in ("revenue", "operating_income"):
         consolidated_path = f"consolidated_ttm.{field}"
         segment_total = sum(
@@ -277,6 +295,36 @@ def derive_forecast_assumptions(
                 period_end=period_end,
                 available_periods=available_periods,
                 reason="Governed evidence includes source periods or filing dates after its as-of cutoff",
+            )
+        controlling_filing = financials["ttm"].get("controlling_filing")
+        source_cutoff_date = financials["ttm"].get("source_cutoff_date")
+        controlling_source = next(
+            (
+                source
+                for source in period_evidence["sources"]
+                if controlling_filing
+                and source.get("accession") == controlling_filing.get("accession")
+                and source.get("form") == controlling_filing.get("form")
+                and source.get("period_end")
+                == controlling_filing.get("report_date")
+                and source.get("filing_date")
+                == controlling_filing.get("filing_date")
+            ),
+            None,
+        )
+        if (
+            controlling_source is None
+            or as_of_filed_date != controlling_filing.get("filing_date")
+            or (
+                source_cutoff_date
+                and controlling_filing.get("filing_date", "")
+                > source_cutoff_date
+            )
+        ):
+            raise ForecastEvidenceUnavailable(
+                period_end=period_end,
+                available_periods=available_periods,
+                reason="Governed segment evidence does not match the controlling filing",
             )
         issuer_evidence = {**issuer_evidence, **period_evidence}
         issuer_evidence["validated_field_provenance"] = _validated_field_provenance(

@@ -538,6 +538,7 @@ class CompanyFactsNormalizer:
         *,
         verified_zero_bridge_fields: Mapping[str, dict[str, Any]]
         | Iterable[str] = (),
+        governed_bridge_fields: Mapping[str, dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         if isinstance(verified_zero_bridge_fields, Mapping):
             verified_zero_evidence = dict(verified_zero_bridge_fields)
@@ -549,6 +550,7 @@ class CompanyFactsNormalizer:
                 }
                 for field in verified_zero_bridge_fields
             }
+        governed_bridge_evidence = dict(governed_bridge_fields or {})
         annual_revenue = self.annual_series("revenue", annual_count)
         if len(annual_revenue) < 3:
             raise ValueError("At least three annual revenue facts are required")
@@ -609,7 +611,7 @@ class CompanyFactsNormalizer:
                 or record.get("filingDate", "") <= self.as_of_date
             )
         ]
-        controlling_accession = (
+        controlling_filing = (
             max(
                 controlling_filings,
                 key=lambda record: (
@@ -617,10 +619,31 @@ class CompanyFactsNormalizer:
                     record.get("form", "").endswith("/A"),
                     record.get("accessionNumber", ""),
                 ),
-            ).get("accessionNumber")
+            )
             if controlling_filings
             else None
         )
+        controlling_accession = (
+            controlling_filing.get("accessionNumber")
+            if controlling_filing
+            else None
+        )
+        current_governed_bridge_fields = {
+            field
+            for field, evidence in governed_bridge_evidence.items()
+            if evidence.get("controlled_period_end") == ttm_end
+            and evidence.get("source_accession") == controlling_accession
+            and isinstance(evidence.get("value"), (int, float))
+            and not isinstance(evidence.get("value"), bool)
+            and evidence["value"] >= 0
+            and (
+                not self.as_of_date
+                or (
+                    bool(evidence.get("reviewed_on"))
+                    and evidence["reviewed_on"] <= self.as_of_date
+                )
+            )
+        }
         verified_zero_fields = {
             field
             for field, evidence in verified_zero_evidence.items()
@@ -689,6 +712,8 @@ class CompanyFactsNormalizer:
                 "value": (
                     fact.value
                     if fact
+                    else float(governed_bridge_evidence[field]["value"])
+                    if field in current_governed_bridge_fields
                     else 0.0
                     if field in verified_zero_fields
                     else None
@@ -696,6 +721,11 @@ class CompanyFactsNormalizer:
                 "source": (
                     fact.as_dict()
                     if fact
+                    else {
+                        "value_status": "governed_filing_fact",
+                        **governed_bridge_evidence[field],
+                    }
+                    if field in current_governed_bridge_fields
                     else {
                         "value_status": "policy_verified_zero",
                         **verified_zero_evidence[field],
@@ -706,10 +736,13 @@ class CompanyFactsNormalizer:
                 "state": (
                     "reported"
                     if fact
+                    else "governed_filing_fact"
+                    if field in current_governed_bridge_fields
                     else "policy_verified_zero"
                     if field in verified_zero_fields
                     else "verification_stale"
-                    if field in verified_zero_evidence
+                    if field in governed_bridge_evidence
+                    or field in verified_zero_evidence
                     else "missing"
                 ),
             }
@@ -774,6 +807,20 @@ class CompanyFactsNormalizer:
             "ttm": {
                 "period_end": ttm_end,
                 "method": ttm_fields["revenue"]["method"],
+                "source_cutoff_date": self.as_of_date,
+                "controlling_filing": (
+                    {
+                        "accession": controlling_filing.get("accessionNumber"),
+                        "form": controlling_filing.get("form"),
+                        "report_date": controlling_filing.get("reportDate"),
+                        "filing_date": controlling_filing.get("filingDate"),
+                        "primary_document": controlling_filing.get(
+                            "primaryDocument"
+                        ),
+                    }
+                    if controlling_filing
+                    else None
+                ),
                 "values": {
                     **{field: fact["value"] for field, fact in ttm_fields.items()},
                     "effective_tax_rate": effective_tax,

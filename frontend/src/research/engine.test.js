@@ -20,9 +20,9 @@ test('Microsoft is available as a U.S. filing-only valuation company', () => {
   assert.ok(microsoft, 'Microsoft should be registered in the valuation company list')
   assert.equal(microsoft.valuation.us.ticker, 'MSFT')
   assert.equal(microsoft.valuation.us.data_boundary.stock_prices_used, false)
-  assert.equal(microsoft.valuation.us.review.publication_state, 'withheld')
-  assert.equal(microsoft.valuation.us.models.fcff_dcf.intrinsic_value_per_share, null)
-  assert.equal(microsoft.valuation.us.models.epv.intrinsic_value_per_share, null)
+  assert.equal(microsoft.valuation.us.review.publication_state, 'review_required')
+  assert.ok(Math.abs(microsoft.valuation.us.models.fcff_dcf.intrinsic_value_per_share - 316.7840709) < 0.001)
+  assert.ok(Math.abs(microsoft.valuation.us.models.epv.intrinsic_value_per_share - 189.1662503) < 0.001)
   const segmentEntries = Object.entries(
     microsoft.valuation.us.public_assumptions.segment_assumptions ?? {},
   )
@@ -80,6 +80,7 @@ test('withheld U.S. artifacts suppress every displayable derived value', () => {
     VALUATION_COMPANIES.find((company) => company.symbol === 'MSFT'),
   )
   const us = microsoft.valuation.us
+  us.review.publication_state = 'withheld'
   us.models.fcff_dcf.intrinsic_value_per_share = 123
   us.models.epv.intrinsic_value_per_share = 99
   us.scenarios = {

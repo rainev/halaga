@@ -47,6 +47,64 @@
     },
     "0000789019": {
       "requires_segment_forecast": true,
+      "governed_bridge_fields": {
+        "preferred_equity": {
+          "value": 0,
+          "rationale": "The controlling Microsoft Form 10-K presents common stockholders' equity and no preferred-equity ownership claim.",
+          "source_accession": "0001193125-26-323660",
+          "controlled_period_end": "2026-06-30",
+          "form": "10-K",
+          "filing_date": "2026-07-29",
+          "unit": "USD",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-FILING-1.0"
+        },
+        "noncontrolling_interests": {
+          "value": 0,
+          "rationale": "The controlling Microsoft Form 10-K presents no noncontrolling-interest balance or earnings allocation.",
+          "source_accession": "0001193125-26-323660",
+          "controlled_period_end": "2026-06-30",
+          "form": "10-K",
+          "filing_date": "2026-07-29",
+          "unit": "USD",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-FILING-1.0"
+        },
+        "finance_lease_current": {
+          "value": 4290000000,
+          "rationale": "Reported current finance-lease liability in Other current liabilities; Microsoft tags the amount with FinanceLeaseLiability and a balance-sheet-location dimension.",
+          "source_accession": "0001193125-26-323660",
+          "controlled_period_end": "2026-06-30",
+          "form": "10-K",
+          "filing_date": "2026-07-29",
+          "unit": "USD",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+          "concept": "us-gaap:FinanceLeaseLiability",
+          "dimension": "us-gaap:BalanceSheetLocationAxis=us-gaap:OtherCurrentLiabilitiesMember",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-FILING-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "value": 62304000000,
+          "rationale": "Reported noncurrent finance-lease liability in Other long-term liabilities; Microsoft tags the amount with FinanceLeaseLiability and a balance-sheet-location dimension.",
+          "source_accession": "0001193125-26-323660",
+          "controlled_period_end": "2026-06-30",
+          "form": "10-K",
+          "filing_date": "2026-07-29",
+          "unit": "USD",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+          "concept": "us-gaap:FinanceLeaseLiability",
+          "dimension": "us-gaap:BalanceSheetLocationAxis=us-gaap:OtherNoncurrentLiabilitiesMember",
+          "reviewer": "FinSight U.S. valuation policy review",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-FILING-1.0"
+        }
+      },
       "verified_zero_bridge_fields": {
         "preferred_equity": {
           "rationale": "The controlling Microsoft Form 10-Q does not present preferred equity or a preferred-stock ownership claim.",
@@ -65,7 +123,7 @@
           "verification_version": "US-BRIDGE-ZERO-1.0"
         },
         "finance_lease_current": {
-          "rationale": "The controlling Microsoft Form 10-Q has no separately reported current finance-lease liability. This governed zero is limited to the controlling period and requires review on each new filing.",
+          "rationale": "The controlling Microsoft Form 10-Q has no separately reported current finance-lease liability.",
           "source_accession": "0000950170-25-061046",
           "controlled_period_end": "2025-03-31",
           "reviewer": "FinSight U.S. valuation policy review",
@@ -73,7 +131,7 @@
           "verification_version": "US-BRIDGE-ZERO-1.0"
         },
         "finance_lease_noncurrent": {
-          "rationale": "The controlling Microsoft Form 10-Q has no separately reported noncurrent finance-lease liability. This governed zero is limited to the controlling period and requires review on each new filing.",
+          "rationale": "The controlling Microsoft Form 10-Q has no separately reported noncurrent finance-lease liability.",
           "source_accession": "0000950170-25-061046",
           "controlled_period_end": "2025-03-31",
           "reviewer": "FinSight U.S. valuation policy review",
