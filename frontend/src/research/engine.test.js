@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import * as researchEngine from './engine.js'
 import { INDUSTRIAL_COMPANIES, VALUATION_COMPANIES } from './data.js'
 import {
   buildSmartBrief,
@@ -12,6 +13,24 @@ import {
   scoreCompany,
   validateFinancialHistory,
 } from './engine.js'
+
+test('Microsoft is available as a U.S. filing-only valuation company', () => {
+  const microsoft = VALUATION_COMPANIES.find((company) => company.symbol === 'MSFT')
+
+  assert.ok(microsoft, 'Microsoft should be registered in the valuation company list')
+  assert.equal(microsoft.valuation.us.ticker, 'MSFT')
+  assert.equal(microsoft.valuation.us.data_boundary.stock_prices_used, false)
+  assert.equal(microsoft.valuation.us.review.publication_state, 'review_required')
+  assert.ok(Math.abs(microsoft.valuation.us.models.fcff_dcf.intrinsic_value_per_share - 316.7840709) < 0.001)
+  assert.ok(Math.abs(microsoft.valuation.us.models.epv.intrinsic_value_per_share - 189.1662503) < 0.001)
+  const segmentEntries = Object.entries(
+    microsoft.valuation.us.public_assumptions.segment_assumptions ?? {},
+  )
+  assert.ok(
+    microsoft.valuation.us.public_assumptions.forecast_mode === 'unavailable' || segmentEntries.length > 0,
+    'a U.S. artifact must declare unavailable forecasting or supply data-driven segment assumptions',
+  )
+})
 
 test('sentiment cases are ordered for every Industrial company', () => {
   for (const company of INDUSTRIAL_COMPANIES) {
@@ -37,6 +56,78 @@ test('BDO routes to bank valuation models with filing-derived inputs', () => {
   assert.ok(Math.abs(result.models.justified_pb.perShare - 144.7904) < 0.001)
   assert.ok(Math.abs(result.scenarioLow - 109.7277) < 0.001)
   assert.ok(Math.abs(result.scenarioHigh - 200.5609) < 0.001)
+})
+
+test('Apple routes to the U.S. filing-only FCFF lane without exposing raw facts', () => {
+  const apple = VALUATION_COMPANIES.find((company) => company.symbol === 'AAPL')
+  const bear = calculateValuation(apple, 'bear')
+  const base = calculateValuation(apple, 'base')
+  const bull = calculateValuation(apple, 'bull')
+
+  assert.equal(apple.market, 'US')
+  assert.equal(base.primaryModel, 'fcff_dcf')
+  assert.deepEqual(base.crossChecks, ['epv'])
+  assert.ok(Math.abs(base.primaryValue - 137.8839487) < 0.001)
+  assert.ok(Math.abs(base.models.epv.perShare - 91.3648524) < 0.001)
+  assert.ok(bear.primaryValue < base.primaryValue)
+  assert.ok(base.primaryValue < bull.primaryValue)
+  assert.equal(apple.valuation.us.data_boundary.stock_prices_used, false)
+  assert.equal('financials' in apple.valuation.us, false)
+})
+
+test('withheld U.S. artifacts suppress every displayable derived value', () => {
+  const microsoft = structuredClone(
+    VALUATION_COMPANIES.find((company) => company.symbol === 'MSFT'),
+  )
+  const us = microsoft.valuation.us
+  us.review.publication_state = 'withheld'
+  us.models.fcff_dcf.intrinsic_value_per_share = 123
+  us.models.epv.intrinsic_value_per_share = 99
+  us.scenarios = {
+    bear: { fcff_dcf: { intrinsic_value_per_share: 111, publication_state: 'pass' } },
+    base: { fcff_dcf: { intrinsic_value_per_share: 123, publication_state: 'pass' } },
+    bull: { fcff_dcf: { intrinsic_value_per_share: 135, publication_state: 'pass' } },
+  }
+
+  const display = calculateValuation(microsoft, 'base')
+
+  assert.equal(display.primaryValue, null)
+  assert.equal(display.scenarioLow, null)
+  assert.equal(display.scenarioHigh, null)
+  assert.equal(display.models.fcff_dcf.perShare, null)
+  assert.equal(display.models.epv.perShare, null)
+})
+
+test('legacy and unknown U.S. publication states fail closed at the adapter boundary', () => {
+  const apple = structuredClone(
+    VALUATION_COMPANIES.find((company) => company.symbol === 'AAPL'),
+  )
+  apple.valuation.us.review.publication_state = 'review'
+  apple.valuation.us.scenario_range = { low: 111, base: 123, high: 135 }
+  const legacy = calculateValuation(apple, 'base')
+
+  assert.equal(legacy.status, 'withheld')
+  assert.equal(legacy.primaryValue, null)
+  assert.equal(legacy.scenarioLow, null)
+  assert.equal(legacy.scenarioHigh, null)
+
+  apple.valuation.us.review.publication_state = 'unknown'
+  assert.equal(calculateValuation(apple, 'base').status, 'withheld')
+})
+
+test('U.S. publication presentation distinguishes pass, review, and withheld states', () => {
+  const pass = researchEngine.getUsPublicationPresentation('pass')
+  const review = researchEngine.getUsPublicationPresentation('review_required')
+  const withheld = researchEngine.getUsPublicationPresentation('withheld')
+
+  assert.equal(pass.statusLabel, 'validation passed')
+  assert.equal(pass.isWithheld, false)
+  assert.equal(review.statusLabel, 'Preliminary valuation - requires data review')
+  assert.equal(review.requiresDataReview, true)
+  assert.equal(withheld.statusLabel, 'No intrinsic value published')
+  assert.equal(withheld.isWithheld, true)
+  assert.match(withheld.pageDescription, /withheld pending governed evidence/i)
+  assert.match(withheld.historyTitle, /waiting on governed evidence/i)
 })
 
 test('incompatible valuation methods are never blended', () => {

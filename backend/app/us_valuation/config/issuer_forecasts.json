@@ -1,0 +1,321 @@
+{
+  "version": "US-ISSUER-FORECAST-1.1",
+  "issuers": {
+    "0000320193": {
+      "forecast_mode": "segment_gross_profit",
+      "forecast_policy_version": "AAPL-HARDWARE-SERVICES-1.0",
+      "forecast_years": 10,
+      "growth_persistence": 0.82,
+      "margin_persistence": 0.82,
+      "terminal_roic_premium": 0.05,
+      "evidence_status": "governed_filing_table_transcription",
+      "evidence_note": "Products and Services values are transcribed from the controlling Apple SEC filing tables because SEC Companyfacts excludes issuer-extension dimensions. They reconcile to the standardized consolidated facts and remain review-required until filing-specific inline-XBRL extraction is automated.",
+      "segments": {
+        "products": {
+          "label": "Products",
+          "annual_revenue": [
+            298085000000,
+            294866000000,
+            307003000000
+          ],
+          "annual_gross_profit": [
+            108803000000,
+            109633000000,
+            112887000000
+          ],
+          "latest_ytd_revenue": 193951000000,
+          "prior_ytd_revenue": 166674000000,
+          "ttm_revenue": 334280000000,
+          "ttm_gross_profit": 126984000000,
+          "archetype_growth_anchor": 0.03
+        },
+        "services": {
+          "label": "Services",
+          "annual_revenue": [
+            85200000000,
+            96169000000,
+            109158000000
+          ],
+          "annual_gross_profit": [
+            60345000000,
+            71050000000,
+            82314000000
+          ],
+          "latest_ytd_revenue": 60989000000,
+          "prior_ytd_revenue": 52985000000,
+          "ttm_revenue": 117162000000,
+          "ttm_gross_profit": 89087000000,
+          "archetype_growth_anchor": 0.08
+        }
+      },
+      "annual_operating_expense": [
+        54847000000,
+        57467000000,
+        62151000000
+      ],
+      "annual_total_revenue": [
+        383285000000,
+        391035000000,
+        416161000000
+      ],
+      "ttm_operating_expense": 68705000000,
+      "ttm_total_revenue": 451442000000,
+      "growth_weights": {
+        "recent_ytd": 0.4,
+        "company_history": 0.4,
+        "archetype_anchor": 0.2
+      },
+      "sources": [
+        {
+          "form": "10-K",
+          "accession": "0000320193-25-000079",
+          "period_end": "2025-09-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+          "evidence": "Products and Services revenue, gross margin and operating-expense history"
+        },
+        {
+          "form": "10-Q",
+          "accession": "0000320193-26-000013",
+          "period_end": "2026-03-28",
+          "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm",
+          "evidence": "Current and comparative YTD Products and Services revenue, cost of sales and consolidated operating expenses"
+        }
+      ]
+    },
+    "0000789019": {
+      "forecast_mode": "segment_operating_income",
+      "forecast_policy_version": "MSFT-ENTERPRISE-CLOUD-1.0",
+      "forecast_years": 8,
+      "growth_persistence": 0.8,
+      "margin_persistence": 0.8,
+      "terminal_roic_premium": 0.05,
+      "evidence_status": "governed_filing_table_transcription",
+      "evidence_note": "This operating-income route forecasts reported segment revenue and reported segment operating income directly. Segment cost of revenue and operating expenses are publicly disclosed table inputs but are intentionally not separate forecast drivers: their economics are already represented by the governed operating-income margin. The TTM bridge reconciles to standardized consolidated Companyfacts and remains review-required until filing-specific inline-XBRL extraction is automated.",
+      "periods": {
+        "2026-06-30": {
+          "period_comparison_basis": "annual",
+          "consolidated_ttm": {"revenue": 331839000000, "operating_income": 155237000000},
+          "growth_weights": {"recent_ytd": 0.4, "company_history": 0.4, "archetype_anchor": 0.2},
+          "segments": {
+            "productivity_and_business_processes": {
+              "label": "Productivity and Business Processes",
+              "annual_revenue": [106820000000, 120810000000, 139996000000],
+              "annual_operating_income": [59661000000, 69773000000, 83879000000],
+              "latest_ytd_revenue": 139996000000, "prior_ytd_revenue": 120810000000,
+              "latest_ytd_operating_income": 83879000000, "prior_ytd_operating_income": 69773000000,
+              "ttm_revenue": 139996000000, "ttm_operating_income": 83879000000,
+              "archetype_growth_anchor": 0.07
+            },
+            "intelligent_cloud": {
+              "label": "Intelligent Cloud",
+              "annual_revenue": [87464000000, 106265000000, 137791000000],
+              "annual_operating_income": [37813000000, 44589000000, 56972000000],
+              "latest_ytd_revenue": 137791000000, "prior_ytd_revenue": 106265000000,
+              "latest_ytd_operating_income": 56972000000, "prior_ytd_operating_income": 44589000000,
+              "ttm_revenue": 137791000000, "ttm_operating_income": 56972000000,
+              "archetype_growth_anchor": 0.10
+            },
+            "more_personal_computing": {
+              "label": "More Personal Computing",
+              "annual_revenue": [50838000000, 54649000000, 54052000000],
+              "annual_operating_income": [11959000000, 14166000000, 14386000000],
+              "latest_ytd_revenue": 54052000000, "prior_ytd_revenue": 54649000000,
+              "latest_ytd_operating_income": 14386000000, "prior_ytd_operating_income": 14166000000,
+              "ttm_revenue": 54052000000, "ttm_operating_income": 14386000000,
+              "archetype_growth_anchor": 0.03
+            }
+          },
+          "sources": [{
+            "id": "fy2026_10k", "form": "10-K", "accession": "0001193125-26-323660",
+            "filing_date": "2026-07-29", "period_end": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+            "evidence": "FY2024-FY2026 reportable-segment revenue and operating income, consolidated reconciliation, and finance-lease table."
+          }],
+          "cost_of_revenue_and_opex_scope": {
+            "status": "not_model_inputs", "policy": "segment_operating_income",
+            "rationale": "Reported segment operating income is the direct margin driver; separately forecasting cost of revenue and operating expenses would double-count the same segment economics."
+          },
+          "provenance_contexts": {
+            "annual_revenue_2024": {"source_ids": ["fy2026_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 comparative column"},
+            "annual_revenue_2025": {"source_ids": ["fy2026_10k"], "fiscal_year": "2025", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2025 comparative column"},
+            "annual_revenue_2026": {"source_ids": ["fy2026_10k"], "fiscal_year": "2026", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2026 column"},
+            "annual_operating_income_2024": {"source_ids": ["fy2026_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 comparative column"},
+            "annual_operating_income_2025": {"source_ids": ["fy2026_10k"], "fiscal_year": "2025", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2025 comparative column"},
+            "annual_operating_income_2026": {"source_ids": ["fy2026_10k"], "fiscal_year": "2026", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2026 column"},
+            "archetype_anchor": {"source_ids": [], "fiscal_year": "policy", "fiscal_period": "policy", "duration_basis": "policy", "unit": "ratio", "table_line": "Enterprise software/cloud governed growth anchor", "status": "governed_policy", "derivation": "bounded archetype policy input"},
+            "consolidated_revenue_2026": {"source_ids": ["fy2026_10k"], "fiscal_year": "2026", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Consolidated revenue reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "reported FY2026 total"},
+            "consolidated_operating_income_2026": {"source_ids": ["fy2026_10k"], "fiscal_year": "2026", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Consolidated operating income reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "reported FY2026 total"}
+          },
+          "field_provenance": {
+            "consolidated_ttm.revenue": "consolidated_revenue_2026", "consolidated_ttm.operating_income": "consolidated_operating_income_2026",
+            "segments.productivity_and_business_processes.annual_revenue[0]": "annual_revenue_2024", "segments.productivity_and_business_processes.annual_revenue[1]": "annual_revenue_2025", "segments.productivity_and_business_processes.annual_revenue[2]": "annual_revenue_2026",
+            "segments.productivity_and_business_processes.annual_operating_income[0]": "annual_operating_income_2024", "segments.productivity_and_business_processes.annual_operating_income[1]": "annual_operating_income_2025", "segments.productivity_and_business_processes.annual_operating_income[2]": "annual_operating_income_2026",
+            "segments.productivity_and_business_processes.latest_ytd_revenue": "annual_revenue_2026", "segments.productivity_and_business_processes.prior_ytd_revenue": "annual_revenue_2025", "segments.productivity_and_business_processes.latest_ytd_operating_income": "annual_operating_income_2026", "segments.productivity_and_business_processes.prior_ytd_operating_income": "annual_operating_income_2025", "segments.productivity_and_business_processes.ttm_revenue": "annual_revenue_2026", "segments.productivity_and_business_processes.ttm_operating_income": "annual_operating_income_2026", "segments.productivity_and_business_processes.archetype_growth_anchor": "archetype_anchor",
+            "segments.intelligent_cloud.annual_revenue[0]": "annual_revenue_2024", "segments.intelligent_cloud.annual_revenue[1]": "annual_revenue_2025", "segments.intelligent_cloud.annual_revenue[2]": "annual_revenue_2026",
+            "segments.intelligent_cloud.annual_operating_income[0]": "annual_operating_income_2024", "segments.intelligent_cloud.annual_operating_income[1]": "annual_operating_income_2025", "segments.intelligent_cloud.annual_operating_income[2]": "annual_operating_income_2026",
+            "segments.intelligent_cloud.latest_ytd_revenue": "annual_revenue_2026", "segments.intelligent_cloud.prior_ytd_revenue": "annual_revenue_2025", "segments.intelligent_cloud.latest_ytd_operating_income": "annual_operating_income_2026", "segments.intelligent_cloud.prior_ytd_operating_income": "annual_operating_income_2025", "segments.intelligent_cloud.ttm_revenue": "annual_revenue_2026", "segments.intelligent_cloud.ttm_operating_income": "annual_operating_income_2026", "segments.intelligent_cloud.archetype_growth_anchor": "archetype_anchor",
+            "segments.more_personal_computing.annual_revenue[0]": "annual_revenue_2024", "segments.more_personal_computing.annual_revenue[1]": "annual_revenue_2025", "segments.more_personal_computing.annual_revenue[2]": "annual_revenue_2026",
+            "segments.more_personal_computing.annual_operating_income[0]": "annual_operating_income_2024", "segments.more_personal_computing.annual_operating_income[1]": "annual_operating_income_2025", "segments.more_personal_computing.annual_operating_income[2]": "annual_operating_income_2026",
+            "segments.more_personal_computing.latest_ytd_revenue": "annual_revenue_2026", "segments.more_personal_computing.prior_ytd_revenue": "annual_revenue_2025", "segments.more_personal_computing.latest_ytd_operating_income": "annual_operating_income_2026", "segments.more_personal_computing.prior_ytd_operating_income": "annual_operating_income_2025", "segments.more_personal_computing.ttm_revenue": "annual_revenue_2026", "segments.more_personal_computing.ttm_operating_income": "annual_operating_income_2026", "segments.more_personal_computing.archetype_growth_anchor": "archetype_anchor"
+          },
+          "field_source_values": {
+            "consolidated_ttm.revenue": 331839000000, "consolidated_ttm.operating_income": 155237000000,
+            "segments.productivity_and_business_processes.annual_revenue[0]": 106820000000, "segments.productivity_and_business_processes.annual_revenue[1]": 120810000000, "segments.productivity_and_business_processes.annual_revenue[2]": 139996000000,
+            "segments.productivity_and_business_processes.annual_operating_income[0]": 59661000000, "segments.productivity_and_business_processes.annual_operating_income[1]": 69773000000, "segments.productivity_and_business_processes.annual_operating_income[2]": 83879000000,
+            "segments.productivity_and_business_processes.latest_ytd_revenue": 139996000000, "segments.productivity_and_business_processes.prior_ytd_revenue": 120810000000, "segments.productivity_and_business_processes.latest_ytd_operating_income": 83879000000, "segments.productivity_and_business_processes.prior_ytd_operating_income": 69773000000, "segments.productivity_and_business_processes.ttm_revenue": 139996000000, "segments.productivity_and_business_processes.ttm_operating_income": 83879000000, "segments.productivity_and_business_processes.archetype_growth_anchor": 0.07,
+            "segments.intelligent_cloud.annual_revenue[0]": 87464000000, "segments.intelligent_cloud.annual_revenue[1]": 106265000000, "segments.intelligent_cloud.annual_revenue[2]": 137791000000,
+            "segments.intelligent_cloud.annual_operating_income[0]": 37813000000, "segments.intelligent_cloud.annual_operating_income[1]": 44589000000, "segments.intelligent_cloud.annual_operating_income[2]": 56972000000,
+            "segments.intelligent_cloud.latest_ytd_revenue": 137791000000, "segments.intelligent_cloud.prior_ytd_revenue": 106265000000, "segments.intelligent_cloud.latest_ytd_operating_income": 56972000000, "segments.intelligent_cloud.prior_ytd_operating_income": 44589000000, "segments.intelligent_cloud.ttm_revenue": 137791000000, "segments.intelligent_cloud.ttm_operating_income": 56972000000, "segments.intelligent_cloud.archetype_growth_anchor": 0.10,
+            "segments.more_personal_computing.annual_revenue[0]": 50838000000, "segments.more_personal_computing.annual_revenue[1]": 54649000000, "segments.more_personal_computing.annual_revenue[2]": 54052000000,
+            "segments.more_personal_computing.annual_operating_income[0]": 11959000000, "segments.more_personal_computing.annual_operating_income[1]": 14166000000, "segments.more_personal_computing.annual_operating_income[2]": 14386000000,
+            "segments.more_personal_computing.latest_ytd_revenue": 54052000000, "segments.more_personal_computing.prior_ytd_revenue": 54649000000, "segments.more_personal_computing.latest_ytd_operating_income": 14386000000, "segments.more_personal_computing.prior_ytd_operating_income": 14166000000, "segments.more_personal_computing.ttm_revenue": 54052000000, "segments.more_personal_computing.ttm_operating_income": 14386000000, "segments.more_personal_computing.archetype_growth_anchor": 0.03
+          },
+          "evidence_period_end": "2026-06-30",
+          "as_of_filed_date": "2026-07-29"
+        },
+        "2025-03-31": {
+          "consolidated_ttm": {
+            "revenue": 270010000000,
+            "operating_income": 122130000000
+          },
+          "growth_weights": {
+            "recent_ytd": 0.4,
+            "company_history": 0.4,
+            "archetype_anchor": 0.2
+          },
+          "segments": {
+            "productivity_and_business_processes": {
+              "label": "Productivity and Business Processes",
+              "annual_revenue": [
+                63364000000,
+                69274000000,
+                77728000000
+              ],
+              "annual_operating_income": [
+                29690000000,
+                34189000000,
+                40540000000
+              ],
+              "latest_ytd_revenue": 87698000000,
+              "prior_ytd_revenue": 78193000000,
+              "latest_ytd_operating_income": 50780000000,
+              "prior_ytd_operating_income": 43955000000,
+              "ttm_revenue": 87233000000,
+              "ttm_operating_income": 47365000000,
+              "archetype_growth_anchor": 0.07
+            },
+            "intelligent_cloud": {
+              "label": "Intelligent Cloud",
+              "annual_revenue": [
+                74965000000,
+                87907000000,
+                105362000000
+              ],
+              "annual_operating_income": [
+                33203000000,
+                37884000000,
+                49584000000
+              ],
+              "latest_ytd_revenue": 76387000000,
+              "prior_ytd_revenue": 63679000000,
+              "latest_ytd_operating_income": 32449000000,
+              "prior_ytd_operating_income": 27978000000,
+              "ttm_revenue": 118070000000,
+              "ttm_operating_income": 54055000000,
+              "archetype_growth_anchor": 0.1
+            },
+            "more_personal_computing": {
+              "label": "More Personal Computing",
+              "annual_revenue": [
+                59941000000,
+                54734000000,
+                62032000000
+              ],
+              "annual_operating_income": [
+                20490000000,
+                16450000000,
+                19309000000
+              ],
+              "latest_ytd_revenue": 41198000000,
+              "prior_ytd_revenue": 38523000000,
+              "latest_ytd_operating_income": 10976000000,
+              "prior_ytd_operating_income": 9575000000,
+              "ttm_revenue": 64707000000,
+              "ttm_operating_income": 20710000000,
+              "archetype_growth_anchor": 0.03
+            }
+          },
+          "sources": [
+            {
+              "id": "fy2024_10k",
+              "form": "10-K",
+              "accession": "0000950170-24-087843",
+              "filing_date": "2024-07-30",
+              "period_end": "2024-06-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+              "evidence": "FY2022-FY2024 reportable-segment revenue and operating income."
+            },
+            {
+              "id": "fy2025_q3_10q",
+              "form": "10-Q",
+              "accession": "0000950170-25-061046",
+              "filing_date": "2025-04-30",
+              "period_end": "2025-03-31",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+              "evidence": "Current and comparable prior-year nine-month reportable-segment revenue and operating income used in the TTM bridge."
+            }
+          ],
+          "cost_of_revenue_and_opex_scope": {
+            "status": "not_model_inputs",
+            "policy": "segment_operating_income",
+            "rationale": "Reported segment operating income is the direct margin driver. Separately forecasting cost of revenue and operating expenses would double-count the same segment economics without a governed allocation policy."
+          },
+          "provenance_contexts": {
+            "annual_revenue_2022": {"source_ids": ["fy2024_10k"], "fiscal_year": "2022", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2022 comparative column"},
+            "annual_revenue_2023": {"source_ids": ["fy2024_10k"], "fiscal_year": "2023", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2023 comparative column"},
+            "annual_revenue_2024": {"source_ids": ["fy2024_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 column"},
+            "annual_operating_income_2022": {"source_ids": ["fy2024_10k"], "fiscal_year": "2022", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2022 comparative column"},
+            "annual_operating_income_2023": {"source_ids": ["fy2024_10k"], "fiscal_year": "2023", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2023 comparative column"},
+            "annual_operating_income_2024": {"source_ids": ["fy2024_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 column"},
+            "current_ytd_revenue": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported current-year nine-month column"},
+            "prior_ytd_revenue": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2024", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported prior-year comparative nine-month column"},
+            "current_ytd_operating_income": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported current-year nine-month column"},
+            "prior_ytd_operating_income": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2024", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported prior-year comparative nine-month column"},
+            "ttm_revenue": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "ttm_operating_income": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "archetype_anchor": {"source_ids": [], "fiscal_year": "policy", "fiscal_period": "policy", "duration_basis": "policy", "unit": "ratio", "table_line": "Enterprise software/cloud governed growth anchor", "status": "governed_policy", "derivation": "bounded archetype policy input"},
+            "consolidated_ttm_revenue": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Consolidated revenue reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "consolidated_ttm_operating_income": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Consolidated operating income reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"}
+          },
+          "field_provenance": {
+            "consolidated_ttm.revenue": "consolidated_ttm_revenue",
+            "consolidated_ttm.operating_income": "consolidated_ttm_operating_income",
+            "segments.productivity_and_business_processes.annual_revenue[0]": "annual_revenue_2022", "segments.productivity_and_business_processes.annual_revenue[1]": "annual_revenue_2023", "segments.productivity_and_business_processes.annual_revenue[2]": "annual_revenue_2024",
+            "segments.productivity_and_business_processes.annual_operating_income[0]": "annual_operating_income_2022", "segments.productivity_and_business_processes.annual_operating_income[1]": "annual_operating_income_2023", "segments.productivity_and_business_processes.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.productivity_and_business_processes.latest_ytd_revenue": "current_ytd_revenue", "segments.productivity_and_business_processes.prior_ytd_revenue": "prior_ytd_revenue", "segments.productivity_and_business_processes.latest_ytd_operating_income": "current_ytd_operating_income", "segments.productivity_and_business_processes.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.productivity_and_business_processes.ttm_revenue": "ttm_revenue", "segments.productivity_and_business_processes.ttm_operating_income": "ttm_operating_income", "segments.productivity_and_business_processes.archetype_growth_anchor": "archetype_anchor",
+            "segments.intelligent_cloud.annual_revenue[0]": "annual_revenue_2022", "segments.intelligent_cloud.annual_revenue[1]": "annual_revenue_2023", "segments.intelligent_cloud.annual_revenue[2]": "annual_revenue_2024",
+            "segments.intelligent_cloud.annual_operating_income[0]": "annual_operating_income_2022", "segments.intelligent_cloud.annual_operating_income[1]": "annual_operating_income_2023", "segments.intelligent_cloud.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.intelligent_cloud.latest_ytd_revenue": "current_ytd_revenue", "segments.intelligent_cloud.prior_ytd_revenue": "prior_ytd_revenue", "segments.intelligent_cloud.latest_ytd_operating_income": "current_ytd_operating_income", "segments.intelligent_cloud.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.intelligent_cloud.ttm_revenue": "ttm_revenue", "segments.intelligent_cloud.ttm_operating_income": "ttm_operating_income", "segments.intelligent_cloud.archetype_growth_anchor": "archetype_anchor",
+            "segments.more_personal_computing.annual_revenue[0]": "annual_revenue_2022", "segments.more_personal_computing.annual_revenue[1]": "annual_revenue_2023", "segments.more_personal_computing.annual_revenue[2]": "annual_revenue_2024",
+            "segments.more_personal_computing.annual_operating_income[0]": "annual_operating_income_2022", "segments.more_personal_computing.annual_operating_income[1]": "annual_operating_income_2023", "segments.more_personal_computing.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.more_personal_computing.latest_ytd_revenue": "current_ytd_revenue", "segments.more_personal_computing.prior_ytd_revenue": "prior_ytd_revenue", "segments.more_personal_computing.latest_ytd_operating_income": "current_ytd_operating_income", "segments.more_personal_computing.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.more_personal_computing.ttm_revenue": "ttm_revenue", "segments.more_personal_computing.ttm_operating_income": "ttm_operating_income", "segments.more_personal_computing.archetype_growth_anchor": "archetype_anchor"
+          },
+          "field_source_values": {
+            "consolidated_ttm.revenue": 270010000000, "consolidated_ttm.operating_income": 122130000000,
+            "segments.productivity_and_business_processes.annual_revenue[0]": 63364000000, "segments.productivity_and_business_processes.annual_revenue[1]": 69274000000, "segments.productivity_and_business_processes.annual_revenue[2]": 77728000000,
+            "segments.productivity_and_business_processes.annual_operating_income[0]": 29690000000, "segments.productivity_and_business_processes.annual_operating_income[1]": 34189000000, "segments.productivity_and_business_processes.annual_operating_income[2]": 40540000000,
+            "segments.productivity_and_business_processes.latest_ytd_revenue": 87698000000, "segments.productivity_and_business_processes.prior_ytd_revenue": 78193000000, "segments.productivity_and_business_processes.latest_ytd_operating_income": 50780000000, "segments.productivity_and_business_processes.prior_ytd_operating_income": 43955000000, "segments.productivity_and_business_processes.ttm_revenue": 87233000000, "segments.productivity_and_business_processes.ttm_operating_income": 47365000000, "segments.productivity_and_business_processes.archetype_growth_anchor": 0.07,
+            "segments.intelligent_cloud.annual_revenue[0]": 74965000000, "segments.intelligent_cloud.annual_revenue[1]": 87907000000, "segments.intelligent_cloud.annual_revenue[2]": 105362000000,
+            "segments.intelligent_cloud.annual_operating_income[0]": 33203000000, "segments.intelligent_cloud.annual_operating_income[1]": 37884000000, "segments.intelligent_cloud.annual_operating_income[2]": 49584000000,
+            "segments.intelligent_cloud.latest_ytd_revenue": 76387000000, "segments.intelligent_cloud.prior_ytd_revenue": 63679000000, "segments.intelligent_cloud.latest_ytd_operating_income": 32449000000, "segments.intelligent_cloud.prior_ytd_operating_income": 27978000000, "segments.intelligent_cloud.ttm_revenue": 118070000000, "segments.intelligent_cloud.ttm_operating_income": 54055000000, "segments.intelligent_cloud.archetype_growth_anchor": 0.1,
+            "segments.more_personal_computing.annual_revenue[0]": 59941000000, "segments.more_personal_computing.annual_revenue[1]": 54734000000, "segments.more_personal_computing.annual_revenue[2]": 62032000000,
+            "segments.more_personal_computing.annual_operating_income[0]": 20490000000, "segments.more_personal_computing.annual_operating_income[1]": 16450000000, "segments.more_personal_computing.annual_operating_income[2]": 19309000000,
+            "segments.more_personal_computing.latest_ytd_revenue": 41198000000, "segments.more_personal_computing.prior_ytd_revenue": 38523000000, "segments.more_personal_computing.latest_ytd_operating_income": 10976000000, "segments.more_personal_computing.prior_ytd_operating_income": 9575000000, "segments.more_personal_computing.ttm_revenue": 64707000000, "segments.more_personal_computing.ttm_operating_income": 20710000000, "segments.more_personal_computing.archetype_growth_anchor": 0.03
+          },
+          "evidence_period_end": "2025-03-31",
+          "as_of_filed_date": "2025-04-30"
+        }
+      }
+    }
+  }
+}

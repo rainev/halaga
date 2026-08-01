@@ -1,0 +1,37 @@
+{
+  "cik": "0000789019",
+  "entityType": "operating",
+  "sic": "7372",
+  "sicDescription": "Services-Prepackaged Software",
+  "name": "MICROSOFT CORP",
+  "tickers": [
+    "MSFT"
+  ],
+  "fiscalYearEnd": "0630",
+  "filings": {
+    "recent": {
+      "accessionNumber": [
+        "0000950170-25-061046"
+      ],
+      "form": [
+        "10-Q"
+      ],
+      "filingDate": [
+        "2025-04-30"
+      ],
+      "reportDate": [
+        "2025-03-31"
+      ],
+      "primaryDocument": [
+        "msft-20250331.htm"
+      ]
+    }
+  },
+  "capture_metadata": {
+    "sec_endpoint": "https://data.sec.gov/submissions/CIK0000789019.json",
+    "retrieved_at": "2026-08-01T07:29:53Z",
+    "as_of_cutoff": "2025-04-30",
+    "sha256": "e5391fc775c88b00fea4a1d257b4156470eff6f208c2aec8a04ecef981dc1c79",
+    "minimization_method": "Retained only Microsoft identity, SIC classification, fiscal year end, and the controlling 2025-03-31 Form 10-Q filing identity."
+  }
+}

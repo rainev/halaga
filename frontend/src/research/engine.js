@@ -56,6 +56,69 @@ export const VALUATION_CONTROLS = {
   terminalValueWarningShare: 0.75,
 };
 
+export function getUsPublicationPresentation(publicationState) {
+  if (!["pass", "review_required", "withheld"].includes(publicationState)) {
+    return getUsPublicationPresentation("withheld");
+  }
+  const isWithheld = publicationState === "withheld";
+  const requiresDataReview = publicationState === "review_required";
+  if (isWithheld) {
+    return {
+      isWithheld,
+      requiresDataReview,
+      statusLabel: "No intrinsic value published",
+      pageDescription:
+        "This filing-only valuation is withheld pending governed evidence for the latest filing period.",
+      historyTitle: "Publication is waiting on governed evidence.",
+      historyDescription:
+        "The latest filing period is loaded, but a valuation cannot be published until period-matched governed segment evidence is available.",
+      valuationNote:
+        "Any future published valuation will use governed filing-derived inputs.",
+    };
+  }
+  return {
+    isWithheld,
+    requiresDataReview,
+    statusLabel: requiresDataReview
+      ? "Preliminary valuation - requires data review"
+      : "validation passed",
+    pageDescription: "Compare bear, base, and bull assumptions.",
+    historyTitle: "More periods can be added without blocking today’s valuation.",
+    historyDescription: null,
+    valuationNote: null,
+  };
+}
+
+const US_PUBLICATION_STATES = new Set(["pass", "review_required", "withheld"]);
+
+export function normalizeUsPublicationArtifact(artifact) {
+  const result = structuredClone(artifact || {});
+  const invalidState = !US_PUBLICATION_STATES.has(result.review?.publication_state)
+    || Object.values(result.models || {}).some((model) => !US_PUBLICATION_STATES.has(model?.publication_state))
+    || Object.values(result.scenarios || {}).some((scenario) => !US_PUBLICATION_STATES.has(scenario?.fcff_dcf?.publication_state));
+  if (!result.review) result.review = {};
+  if (invalidState) result.review.publication_state = "withheld";
+  if (result.review.publication_state !== "withheld") return result;
+
+  for (const model of Object.values(result.models || {})) {
+    if (!model) continue;
+    model.intrinsic_value_per_share = null;
+    model.publication_state = "withheld";
+  }
+  for (const scenario of Object.values(result.scenarios || {})) {
+    if (!scenario?.fcff_dcf) continue;
+    scenario.fcff_dcf.intrinsic_value_per_share = null;
+    scenario.fcff_dcf.publication_state = "withheld";
+  }
+  result.scenario_range = {
+    ...(result.scenario_range || {}),
+    low: null,
+    base: null,
+    high: null,
+  };
+  return result;
+}
+
 const THRESHOLDS = {
   1: {
     cashToDebt: 1,
@@ -562,7 +625,72 @@ export function calculateJustifiedPb(company, sentiment = "base") {
   };
 }
 
+export function calculateUsFilingValuation(company, sentiment = "base") {
+  const result = normalizeUsPublicationArtifact(company?.valuation?.us);
+  const scenario = result?.scenarios?.[sentiment]?.fcff_dcf;
+  if (!result || !scenario) {
+    return {
+      primaryModel: "fcff_dcf",
+      primaryValue: null,
+      scenarioLow: null,
+      scenarioHigh: null,
+      crossChecks: ["epv"],
+      status: "withheld",
+      policyReason: "The U.S. filing-only result is unavailable.",
+      warnings: [],
+      errors: ["The generated U.S. valuation artifact is missing."],
+      models: {},
+    };
+  }
+  const primary = {
+    perShare: scenario.intrinsic_value_per_share,
+    status: scenario.publication_state || "withheld",
+    errors: scenario.errors || [],
+    warnings: scenario.warnings || [],
+    detail: scenario.detail || {},
+  };
+  const epv = result.models?.epv
+    ? {
+        perShare: result.models.epv.intrinsic_value_per_share,
+        status: result.models.epv.publication_state || "withheld",
+        errors: result.models.epv.errors || [],
+        warnings: result.models.epv.warnings || [],
+        detail: result.models.epv.detail || {},
+      }
+    : null;
+  const values = ["bear", "base", "bull"]
+    .map((caseName) =>
+      result.scenarios?.[caseName]?.fcff_dcf?.intrinsic_value_per_share,
+    )
+    .filter((value) => Number.isFinite(value));
+  const withheld = result.review?.publication_state === "withheld";
+  return {
+    primaryModel: "fcff_dcf",
+    primaryValue: withheld ? null : primary.perShare,
+    scenarioLow: withheld || !values.length ? null : Math.min(...values),
+    scenarioHigh: withheld || !values.length ? null : Math.max(...values),
+    crossChecks: ["epv"],
+    status: result.review?.publication_state || "withheld",
+    policyReason: result.model_policy?.reason || "",
+    warnings: [
+      ...(result.review?.warnings || []),
+      ...(primary.warnings || []),
+    ],
+    errors: [
+      ...(result.review?.errors || []),
+      ...(primary.errors || []),
+    ],
+    models: {
+      fcff_dcf: withheld ? { ...primary, perShare: null } : primary,
+      epv: withheld && epv ? { ...epv, perShare: null } : epv,
+    },
+  };
+}
+
 export function calculateValuation(company, sentiment = "base") {
+  if (company?.valuation?.us) {
+    return calculateUsFilingValuation(company, sentiment);
+  }
   const policy = company.valuation.modelPolicy || {
     primary: "dcf",
     crossChecks: ["multiples"],

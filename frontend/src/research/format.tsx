@@ -2,6 +2,24 @@ export const peso = (value: number, digits = 2) => new Intl.NumberFormat('en-PH'
   style: 'currency', currency: 'PHP', minimumFractionDigits: digits, maximumFractionDigits: digits,
 }).format(value)
 
+export const money = (value: number, currency = 'PHP', digits = 2) =>
+  new Intl.NumberFormat(currency === 'PHP' ? 'en-PH' : 'en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  }).format(value)
+
+export function compactMoney(value: number | null, currency = 'PHP') {
+  if (!Number.isFinite(value)) return 'Not reported'
+  const amount = value as number
+  const symbol = currency === 'USD' ? '$' : '₱'
+  if (Math.abs(amount) >= 1e12) return `${symbol}${(amount / 1e12).toFixed(1)}T`
+  if (Math.abs(amount) >= 1e9) return `${symbol}${(amount / 1e9).toFixed(1)}B`
+  if (Math.abs(amount) >= 1e6) return `${symbol}${(amount / 1e6).toFixed(1)}M`
+  return money(amount, currency, 0)
+}
+
 export function compactPeso(value: number | null) {
   if (!Number.isFinite(value)) return 'Not reported'
   const amount = value as number

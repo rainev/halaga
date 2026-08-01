@@ -1,6 +1,9 @@
 # FinSight
 
-FinSight is a beginner-focused Philippine company research app built on [rainev/halaga](https://github.com/rainev/halaga). It retains the React/TypeScript + FastAPI architecture and Philippine-adjusted valuation foundation.
+FinSight is a beginner-focused company research app built on
+[rainev/halaga](https://github.com/rainev/halaga). It retains the
+React/TypeScript + FastAPI architecture, the Philippine-adjusted valuation
+foundation, and Apple/Microsoft U.S. filing valuation pilots.
 
 The default experience is a no-cost, browser-local mockup for four Industrial-sector companies. It requires no account, API key, database, live quote feed, or generative-AI call.
 
@@ -15,6 +18,9 @@ The default experience is a no-cost, browser-local mockup for four Industrial-se
 - Browser-local portfolio cost organizer
 - Transparent rules-based Smart Brief
 - Responsive desktop and mobile navigation
+- Apple SEC filing ingestion with a public-safe FCFF/EPV valuation range
+- Microsoft SEC filing ingestion with a public-safe, currently withheld
+  enterprise-software/cloud valuation route
 
 Current and historical market prices are intentionally excluded. Portfolio current value and P/L are therefore not calculated.
 
@@ -35,6 +41,56 @@ cd frontend
 npm test
 npm run build
 ```
+
+## Replay U.S. filing-only valuation artifacts
+
+The checked-in SEC cache supports a deterministic, network-free replay:
+
+```sh
+python3 scripts/build_apple_us_valuation_pipeline.py
+```
+
+A monitored server-side refresh requires `SEC_USER_AGENT`:
+
+```sh
+SEC_USER_AGENT="FinSight monitored-contact@example.com" \
+python3 scripts/build_apple_us_valuation_pipeline.py --refresh
+```
+
+The full audit result stays under `output/us-testing/aapl/`. The frontend and
+`GET /api/us-valuations/AAPL` use reduced artifacts that exclude raw financial
+statement amounts and all stock-price fields.
+
+### Rebuild Microsoft
+
+Microsoft maps from SEC SIC 7372 to FinSight's Technology sector and
+`enterprise_software_cloud` archetype. Its filing-only route requires
+`segment_operating_income` evidence. Rebuild the generic issuer artifacts with:
+
+```sh
+SEC_USER_AGENT='FinSight contact@example.com' PYTHONPATH=backend python3 scripts/build_us_valuation_pipeline.py --cik 0000789019 --ticker MSFT --short-name Microsoft --subsector 'Enterprise software & cloud' --valuation-date 2026-08-01
+```
+
+The command replays the tracked, minimized private SEC capture under
+`backend/tests/fixtures/us/private_captures/msft-2026-08-01/` by default.
+It contains only the SEC identity and normalized-concept fields required to
+reproduce this controlled release; it is intentionally outside
+`frontend/public`. `valuation_date` is a strict filing/fact cutoff, so
+later-filed SEC data is excluded even if present in a cache. Use `--refresh
+--capture-private-fixture` only for a deliberately reviewed replacement capture
+with the supplied SEC contact identity. Its private audit output remains under
+`output/us-testing/msft/`; checked-in frontend and API artifacts contain only
+filing attribution, governed public assumptions, derived outputs, and review
+metadata.
+
+The checked-in 2026-08-01 Microsoft artifact is `review_required`. Its
+controlling Form 10-K is for 2026-06-30 and its governed segment and
+finance-lease evidence is bound to that filing's period and accession. The
+result is provisional because the dimensional filing-table extraction still
+requires review and the DCF/EPV dispersion exceeds the review threshold. The
+pipeline will not carry the evidence into a later filing. As with Apple, the
+Microsoft artifacts exclude raw financial-statement values, current or
+historical prices, price-based upside/downside, and buy/hold/sell labels.
 
 ## Optional full stack
 
