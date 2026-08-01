@@ -16,6 +16,7 @@ from app.us_valuation.assumptions import (
     load_issuer_forecast_evidence,
 )
 from app.us_valuation.classification import classify_issuer
+from app.us_valuation.artifacts import frontend_company, public_result
 import app.us_valuation.pipeline as valuation_pipeline
 from app.us_valuation.pipeline import build_us_valuation
 from app.us_valuation.sec_client import SecClient
@@ -97,6 +98,43 @@ def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
     assert result["primary_archetype"] == "enterprise_software_cloud"
     assert result["requires_segment_forecast"] is True
     assert result["valuation_policy"]["primary_model"] == "fcff_dcf"
+
+
+def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
+    """Catch public payloads that expose private SEC statement inputs."""
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+
+    public = public_result(result, load_fixture("msft-submissions.json"))
+    serialized = json.dumps(public)
+
+    assert public["ticker"] == "MSFT"
+    assert public["data_boundary"]["stock_prices_used"] is False
+    assert "revenue_ttm" not in serialized
+    assert "cash_and_nonoperating_investments" not in serialized
+
+
+def test_apple_frontend_artifact_retains_form_in_source_label(result: dict) -> None:
+    """Catch a generic source label that loses Apple's existing filing wording."""
+    public = public_result(result, load_fixture("aapl-submissions.json"))
+    frontend = frontend_company(
+        result,
+        public,
+        {
+            "ticker": "AAPL",
+            "short_name": "Apple",
+            "subsector": "Hardware & electronic equipment",
+            "insight": "Apple filing-only valuation.",
+        },
+    )
+
+    assert frontend["source"]["label"] == (
+        "Latest financial statement used: Apple Form 10-Q for 2026-03-28, "
+        "filed 2026-05-01"
+    )
 
 
 def test_segment_operating_income_evidence_reconciles_to_consolidated_ttm() -> None:
