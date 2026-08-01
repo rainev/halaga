@@ -43,6 +43,7 @@ JFC FS Reports/
 Refinitiv Interface/
 PH-Stocks/
 tmp/
+.worktrees/
 Financial Health Metrics.pdf
 *.xlsx
 ~$*
