@@ -1232,3 +1232,38 @@ and an EPV support value of approximately `$91.36`. These remain internal
 `review_required` outputs and were not calibrated to the current stock price or
 any third-party valuation. The Apple postmortem remains a required test case for
 every future U.S. archetype.
+
+### 17.10 Microsoft enterprise software/cloud route and release state
+
+Microsoft is the second explicit U.S. issuer route. SEC SIC 7372
+(`Services-Prepackaged Software`) maps to FinSight's `Technology` sector and
+the `enterprise_software_cloud` archetype. That policy uses FCFF DCF as its
+primary model, EPV as a separate support value, and an eight-year forecast. The
+Microsoft issuer override requires a segment forecast; it does not replace the
+underlying SIC route.
+
+Microsoft's governed forecast mode is `segment_operating_income` under
+`MSFT-ENTERPRISE-CLOUD-1.0`. It projects disclosed reportable-segment revenue
+and operating income, then reconciles the segment totals to normalized
+consolidated TTM Companyfacts. The evidence status is
+`governed_filing_table_transcription`: SEC Companyfacts provides standardized
+consolidated facts but not the dimensions needed for these segment tables. The
+transcription remains review-required until filing-specific inline-XBRL
+extraction is automated.
+
+The checked-in public MSFT artifact is truthfully `withheld` as of valuation
+date 2026-08-01. Its controlling financial statement is the Form 10-K for the
+period ended 2026-06-30, filed 2026-07-29, accession
+`0001193125-26-323660`. Governed Microsoft segment evidence currently covers
+only the normalized period ending 2025-03-31, so the publication gate does not
+reuse it for the 2026-06-30 period. Both FCFF DCF and EPV per-share outputs are
+therefore null; no intrinsic value is published pending period-matched segment
+evidence.
+
+Private SEC response provenance, normalized facts, source hashes, and any raw
+filing-table transcriptions remain in the local untracked audit output under
+`output/us-testing/msft/`. The public artifacts are limited to filing
+attribution, classification, governed public assumptions, derived outputs,
+methodology, and review state. They exclude raw financial-statement values and
+source-PDF/table text, and they never use or expose current or historical stock
+prices, price-based upside/downside, or buy/hold/sell labels.

@@ -29,6 +29,99 @@ from app.us_valuation.xbrl import CompanyFactsNormalizer
 
 
 FIXTURES = Path(__file__).parent / "fixtures" / "us"
+MICROSOFT_PUBLIC_ARTIFACTS = (
+    Path("backend/app/data/us_valuations/MSFT.json"),
+    Path("frontend/public/data/microsoft-valuation-pipeline.json"),
+)
+
+
+def numeric_values(value: Any) -> set[int | float]:
+    """Collect numeric leaves while keeping JSON booleans out of the set."""
+    if isinstance(value, bool):
+        return set()
+    if isinstance(value, (int, float)):
+        return {value}
+    if isinstance(value, dict):
+        return set().union(*(numeric_values(child) for child in value.values()))
+    if isinstance(value, list):
+        return set().union(*(numeric_values(child) for child in value))
+    return set()
+
+
+def assert_public_artifact_is_safe(
+    public: dict[str, Any], raw_financial_values: set[int | float]
+) -> None:
+    """Reject private statement fields and their numeric values in public DTOs."""
+    private_fields = {
+        "financials",
+        "financial_period_end",
+        "revenue",
+        "revenue_ttm",
+        "operating_income",
+        "cash",
+        "debt",
+        "shares",
+        "cash_and_nonoperating_investments",
+        "annual",
+        "quarterly",
+        "current_ytd",
+        "prior_ytd",
+        "sources",
+        "values",
+        "source_manifest",
+        "forecast_assumptions",
+        "discount_rate",
+        "source_pdf",
+        "source_pdf_text",
+        "raw_statement_table",
+        "current_price",
+        "historical_price",
+        "stock_price",
+        "price",
+        "upside_pct",
+        "upside_downside",
+        "buy_hold_sell",
+        "recommendation",
+    }
+    forbidden_recommendations = {"buy", "hold", "sell", "buy/hold/sell"}
+    source_pdf_markers = {
+        "consolidated statements of income",
+        "consolidated statements of operations",
+        "three months ended",
+        "nine months ended",
+    }
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            if set(value) == {
+                "current_price",
+                "upside_downside",
+                "buy_hold_sell",
+                "trading_multiples",
+            }:
+                assert value == {
+                    "current_price": False,
+                    "upside_downside": False,
+                    "buy_hold_sell": False,
+                    "trading_multiples": False,
+                }
+                return
+            assert not (private_fields & value.keys())
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            assert value not in raw_financial_values, (
+                "Public artifact contains a raw financial-statement numeric value"
+            )
+        elif isinstance(value, str):
+            normalized = value.lower()
+            assert normalized not in forbidden_recommendations
+            assert not any(marker in normalized for marker in source_pdf_markers)
+
+    visit(public)
 
 
 def load_fixture(name: str) -> dict:
@@ -106,7 +199,7 @@ def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
 
 
 def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
-    """Catch public payloads that expose private SEC statement inputs."""
+    """Catch public payloads that expose private SEC statement inputs or values."""
     result = build_us_valuation(
         submissions=load_fixture("msft-submissions.json"),
         companyfacts=load_fixture("msft-companyfacts.json"),
@@ -135,37 +228,55 @@ def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
         "data_boundary",
     }
 
-    private_fields = {
-        "financials",
-        "financial_period_end",
-        "revenue",
-        "revenue_ttm",
-        "operating_income",
-        "cash",
-        "debt",
-        "shares",
-        "cash_and_nonoperating_investments",
-        "annual",
-        "quarterly",
-        "current_ytd",
-        "prior_ytd",
-        "sources",
-        "values",
-        "source_manifest",
-        "forecast_assumptions",
-        "discount_rate",
+    raw_financial_values = numeric_values(result["financials"])
+    assert public["public_assumptions"]["policy_wacc"] not in raw_financial_values
+    assert_public_artifact_is_safe(public, raw_financial_values)
+
+    # Governed assumptions and derived values may be numeric. A raw statement
+    # amount must still be rejected even when hidden under an otherwise allowed
+    # nested key.
+    permitted = deepcopy(public)
+    permitted["forecast_quality"]["derived_indicator"] = public[
+        "public_assumptions"
+    ]["policy_wacc"]
+    assert_public_artifact_is_safe(permitted, raw_financial_values)
+
+    leaked = deepcopy(permitted)
+    leaked["forecast_quality"]["derived_indicator"] = result["financials"][
+        "ttm"
+    ]["values"]["revenue"]
+    with pytest.raises(AssertionError, match="raw financial-statement numeric"):
+        assert_public_artifact_is_safe(leaked, raw_financial_values)
+
+
+def test_microsoft_artifact_preserves_provenance_and_no_price_input() -> None:
+    """Keep the checked-in MSFT artifact attributable and price-free."""
+    artifact = json.loads(
+        Path("backend/app/data/us_valuations/MSFT.json").read_text(encoding="utf-8")
+    )
+    assert artifact["source_financial_statement"]["accession"]
+    assert artifact["data_boundary"]["stock_prices_used"] is False
+    assert artifact["review"]["publication_state"] in {
+        "pass",
+        "review_required",
+        "withheld",
     }
 
-    def assert_no_private_fields(value: Any) -> None:
-        if isinstance(value, dict):
-            assert not (private_fields & value.keys())
-            for child in value.values():
-                assert_no_private_fields(child)
-        elif isinstance(value, list):
-            for child in value:
-                assert_no_private_fields(child)
 
-    assert_no_private_fields(public)
+def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> None:
+    """Keep both public MSFT JSON artifacts free of prices, labels, and raw data."""
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    raw_financial_values = numeric_values(result["financials"])
+
+    for path in MICROSOFT_PUBLIC_ARTIFACTS:
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+        assert artifact["data_boundary"]["stock_prices_used"] is False
+        assert artifact["data_boundary"]["raw_financial_statement_values_included"] is False
+        assert_public_artifact_is_safe(artifact, raw_financial_values)
 
 
 def test_sec_refresh_cache_replay_preserves_bytes_hash_and_provenance(
