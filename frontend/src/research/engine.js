@@ -56,6 +56,38 @@ export const VALUATION_CONTROLS = {
   terminalValueWarningShare: 0.75,
 };
 
+export function getUsPublicationPresentation(publicationState) {
+  const isWithheld = publicationState === "withheld";
+  const requiresDataReview = publicationState === "review_required";
+  if (isWithheld) {
+    return {
+      isWithheld,
+      requiresDataReview,
+      statusLabel: "No intrinsic value published",
+      pageDescription:
+        "This filing-only valuation is withheld pending governed evidence for the latest filing period.",
+      historyTitle: "Publication is waiting on governed evidence.",
+      historyDescription:
+        "The latest filing period is loaded, but a valuation cannot be published until period-matched governed segment evidence is available.",
+      valuationNote:
+        "Any future published valuation will use governed filing-derived inputs.",
+    };
+  }
+  return {
+    isWithheld,
+    requiresDataReview,
+    statusLabel: requiresDataReview
+      ? "Preliminary valuation - requires data review"
+      : publicationState === "pass"
+        ? "validation passed"
+        : "preliminary — review required",
+    pageDescription: "Compare bear, base, and bull assumptions.",
+    historyTitle: "More periods can be added without blocking today’s valuation.",
+    historyDescription: null,
+    valuationNote: null,
+  };
+}
+
 const THRESHOLDS = {
   1: {
     cashToDebt: 1,
@@ -604,8 +636,8 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
   return {
     primaryModel: "fcff_dcf",
     primaryValue: withheld ? null : primary.perShare,
-    scenarioLow: values.length ? Math.min(...values) : null,
-    scenarioHigh: values.length ? Math.max(...values) : null,
+    scenarioLow: withheld || !values.length ? null : Math.min(...values),
+    scenarioHigh: withheld || !values.length ? null : Math.max(...values),
     crossChecks: ["epv"],
     status: withheld ? "blocked" : "review",
     policyReason: result.model_policy?.reason || "",
@@ -618,8 +650,8 @@ export function calculateUsFilingValuation(company, sentiment = "base") {
       ...(primary.errors || []),
     ],
     models: {
-      fcff_dcf: primary,
-      epv,
+      fcff_dcf: withheld ? { ...primary, perShare: null } : primary,
+      epv: withheld && epv ? { ...epv, perShare: null } : epv,
     },
   };
 }

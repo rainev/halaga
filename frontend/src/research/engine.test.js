@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import * as researchEngine from './engine.js'
 import { INDUSTRIAL_COMPANIES, VALUATION_COMPANIES } from './data.js'
 import {
   buildSmartBrief,
@@ -72,6 +73,43 @@ test('Apple routes to the U.S. filing-only FCFF lane without exposing raw facts'
   assert.ok(base.primaryValue < bull.primaryValue)
   assert.equal(apple.valuation.us.data_boundary.stock_prices_used, false)
   assert.equal('financials' in apple.valuation.us, false)
+})
+
+test('withheld U.S. artifacts suppress every displayable derived value', () => {
+  const microsoft = structuredClone(
+    VALUATION_COMPANIES.find((company) => company.symbol === 'MSFT'),
+  )
+  const us = microsoft.valuation.us
+  us.models.fcff_dcf.intrinsic_value_per_share = 123
+  us.models.epv.intrinsic_value_per_share = 99
+  us.scenarios = {
+    bear: { fcff_dcf: { intrinsic_value_per_share: 111, publication_state: 'pass' } },
+    base: { fcff_dcf: { intrinsic_value_per_share: 123, publication_state: 'pass' } },
+    bull: { fcff_dcf: { intrinsic_value_per_share: 135, publication_state: 'pass' } },
+  }
+
+  const display = calculateValuation(microsoft, 'base')
+
+  assert.equal(display.primaryValue, null)
+  assert.equal(display.scenarioLow, null)
+  assert.equal(display.scenarioHigh, null)
+  assert.equal(display.models.fcff_dcf.perShare, null)
+  assert.equal(display.models.epv.perShare, null)
+})
+
+test('U.S. publication presentation distinguishes pass, review, and withheld states', () => {
+  const pass = researchEngine.getUsPublicationPresentation('pass')
+  const review = researchEngine.getUsPublicationPresentation('review_required')
+  const withheld = researchEngine.getUsPublicationPresentation('withheld')
+
+  assert.equal(pass.statusLabel, 'validation passed')
+  assert.equal(pass.isWithheld, false)
+  assert.equal(review.statusLabel, 'Preliminary valuation - requires data review')
+  assert.equal(review.requiresDataReview, true)
+  assert.equal(withheld.statusLabel, 'No intrinsic value published')
+  assert.equal(withheld.isWithheld, true)
+  assert.match(withheld.pageDescription, /withheld pending governed evidence/i)
+  assert.match(withheld.historyTitle, /waiting on governed evidence/i)
 })
 
 test('incompatible valuation methods are never blended', () => {

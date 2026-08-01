@@ -16,6 +16,15 @@ export interface HealthMetric {
 
 export const RISK_PROFILES: Record<number, { label: string; short: string; tone: string }>
 export const SENTIMENTS: Record<Sentiment, { label: string; fcfGrowth: number; discountRate: number; terminalGrowth: number; multipleFactor: number; epsGrowthPoints: number; dividendGrowth: number }>
+export function getUsPublicationPresentation(publicationState?: string): {
+  isWithheld: boolean
+  requiresDataReview: boolean
+  statusLabel: string
+  pageDescription: string
+  historyTitle: string
+  historyDescription: string | null
+  valuationNote: string | null
+}
 export function getHealthMetrics(company: any, risk?: number): { pnl: HealthMetric[]; balance: HealthMetric[]; thresholds: Record<string, number>; derived: Record<string, number | null> }
 export function getFinancialSnapshot(company: any): Record<string, any>
 export function getFinancialHistorySummary(company: any): HistorySummary
