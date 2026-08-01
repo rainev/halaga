@@ -35,21 +35,71 @@ MICROSOFT_PUBLIC_ARTIFACTS = (
 )
 
 
-def numeric_values(value: Any) -> set[int | float]:
-    """Collect numeric leaves while keeping JSON booleans out of the set."""
-    if isinstance(value, bool):
-        return set()
-    if isinstance(value, (int, float)):
-        return {value}
-    if isinstance(value, dict):
-        return set().union(*(numeric_values(child) for child in value.values()))
-    if isinstance(value, list):
-        return set().union(*(numeric_values(child) for child in value))
-    return set()
+def reported_statement_amounts(financials: dict[str, Any]) -> set[int | float]:
+    """Collect only non-zero reported source-fact amounts, not derived metadata."""
+    amounts: set[int | float] = set()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            amount = value.get("value")
+            if (
+                value.get("value_status") == "reported"
+                and isinstance(amount, (int, float))
+                and not isinstance(amount, bool)
+                and amount != 0
+            ):
+                amounts.add(amount)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(financials)
+    return amounts
+
+
+def is_permitted_public_numeric_path(path: tuple[str, ...]) -> bool:
+    """Allow only the public contract's governed rates and derived outputs."""
+    public_assumption_fields = {
+        "forecast_years",
+        "initial_revenue_growth",
+        "target_operating_margin",
+        "sales_to_capital",
+        "terminal_growth",
+        "policy_wacc",
+        "risk_free_rate",
+        "equity_risk_premium",
+    }
+    if path[:1] == ("public_assumptions",):
+        return (
+            len(path) == 2 and path[1] in public_assumption_fields
+        ) or (
+            len(path) == 4
+            and path[1] == "segment_assumptions"
+            and path[3]
+            in {
+                "initial_revenue_growth",
+                "target_operating_margin",
+                "target_gross_margin",
+            }
+        )
+    return (
+        len(path) == 3
+        and path[0] == "models"
+        and path[2] == "intrinsic_value_per_share"
+    ) or (
+        len(path) == 4
+        and path[0] == "scenarios"
+        and path[2:] == ("fcff_dcf", "intrinsic_value_per_share")
+    ) or (
+        path[:1] == ("scenario_range",)
+        and path[1:] in {("low",), ("base",), ("high",)}
+    )
 
 
 def assert_public_artifact_is_safe(
-    public: dict[str, Any], raw_financial_values: set[int | float]
+    public: dict[str, Any], raw_statement_amounts: set[int | float]
 ) -> None:
     """Reject private statement fields and their numeric values in public DTOs."""
     private_fields = {
@@ -91,7 +141,7 @@ def assert_public_artifact_is_safe(
         "nine months ended",
     }
 
-    def visit(value: Any) -> None:
+    def visit(value: Any, path: tuple[str, ...] = ()) -> None:
         if isinstance(value, dict):
             if set(value) == {
                 "current_price",
@@ -107,13 +157,13 @@ def assert_public_artifact_is_safe(
                 }
                 return
             assert not (private_fields & value.keys())
-            for child in value.values():
-                visit(child)
+            for key, child in value.items():
+                visit(child, (*path, key))
         elif isinstance(value, list):
-            for child in value:
-                visit(child)
+            for index, child in enumerate(value):
+                visit(child, (*path, str(index)))
         elif isinstance(value, (int, float)) and not isinstance(value, bool):
-            assert value not in raw_financial_values, (
+            assert value not in raw_statement_amounts or is_permitted_public_numeric_path(path), (
                 "Public artifact contains a raw financial-statement numeric value"
             )
         elif isinstance(value, str):
@@ -228,9 +278,8 @@ def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
         "data_boundary",
     }
 
-    raw_financial_values = numeric_values(result["financials"])
-    assert public["public_assumptions"]["policy_wacc"] not in raw_financial_values
-    assert_public_artifact_is_safe(public, raw_financial_values)
+    raw_statement_amounts = reported_statement_amounts(result["financials"])
+    assert_public_artifact_is_safe(public, raw_statement_amounts)
 
     # Governed assumptions and derived values may be numeric. A raw statement
     # amount must still be rejected even when hidden under an otherwise allowed
@@ -239,14 +288,14 @@ def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
     permitted["forecast_quality"]["derived_indicator"] = public[
         "public_assumptions"
     ]["policy_wacc"]
-    assert_public_artifact_is_safe(permitted, raw_financial_values)
+    assert_public_artifact_is_safe(permitted, raw_statement_amounts)
 
     leaked = deepcopy(permitted)
     leaked["forecast_quality"]["derived_indicator"] = result["financials"][
-        "ttm"
-    ]["values"]["revenue"]
+        "annual"
+    ][-1]["sources"]["revenue"]["value"]
     with pytest.raises(AssertionError, match="raw financial-statement numeric"):
-        assert_public_artifact_is_safe(leaked, raw_financial_values)
+        assert_public_artifact_is_safe(leaked, raw_statement_amounts)
 
 
 def test_microsoft_artifact_preserves_provenance_and_no_price_input() -> None:
@@ -263,6 +312,33 @@ def test_microsoft_artifact_preserves_provenance_and_no_price_input() -> None:
     }
 
 
+def test_public_artifact_allows_governed_rates_and_derived_value_paths() -> None:
+    """Allow high-level public values even when their numbers occur privately."""
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    public = public_result(result, load_fixture("msft-submissions.json"))
+    permitted = deepcopy(public)
+    permitted["public_assumptions"]["policy_wacc"] = result["financials"][
+        "normalized"
+    ]["tax_rate"]
+    permitted["models"]["fcff_dcf"]["intrinsic_value_per_share"] = result[
+        "financials"
+    ]["annual"][-1]["sources"]["revenue"]["value"]
+    permitted["forecast_quality"]["metadata"] = {
+        "normalized_tax_rate": result["financials"]["normalized"]["tax_rate"],
+        "zero": 0,
+        "fiscal_year": result["financials"]["annual"][-1]["fiscal_year"],
+        "fiscal_quarter": 3,
+    }
+
+    assert_public_artifact_is_safe(
+        permitted, reported_statement_amounts(result["financials"])
+    )
+
+
 def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> None:
     """Keep both public MSFT JSON artifacts free of prices, labels, and raw data."""
     result = build_us_valuation(
@@ -270,13 +346,20 @@ def test_checked_in_microsoft_public_artifacts_exclude_prohibited_content() -> N
         companyfacts=load_fixture("msft-companyfacts.json"),
         valuation_date="2026-08-01",
     )
-    raw_financial_values = numeric_values(result["financials"])
+    raw_statement_amounts = reported_statement_amounts(result["financials"])
 
     for path in MICROSOFT_PUBLIC_ARTIFACTS:
         artifact = json.loads(path.read_text(encoding="utf-8"))
         assert artifact["data_boundary"]["stock_prices_used"] is False
         assert artifact["data_boundary"]["raw_financial_statement_values_included"] is False
-        assert_public_artifact_is_safe(artifact, raw_financial_values)
+        assert_public_artifact_is_safe(artifact, raw_statement_amounts)
+
+        leaked = deepcopy(artifact)
+        leaked["forecast_quality"]["unapproved_statement_amount"] = result[
+            "financials"
+        ]["annual"][-1]["sources"]["revenue"]["value"]
+        with pytest.raises(AssertionError, match="raw financial-statement numeric"):
+            assert_public_artifact_is_safe(leaked, raw_statement_amounts)
 
 
 def test_sec_refresh_cache_replay_preserves_bytes_hash_and_provenance(

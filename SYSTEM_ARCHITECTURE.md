@@ -5,8 +5,9 @@ This document is the working reference for the repository. It summarizes the end
 ## 1. What This System Is
 
 FinSight is an equity research and valuation application with an implemented
-Philippine-market path and an implemented Apple-first U.S. pilot. The broader
-multi-archetype U.S. expansion remains a target architecture. The repo contains
+Philippine-market path and controlled Apple/Microsoft U.S. filing pilots. The
+broader multi-archetype U.S. expansion remains a target architecture; these two
+issuer routes do not represent production-scale U.S. coverage. The repo contains
 two related runtimes:
 
 - A browser-local research app in `frontend/src/research/` that runs entirely on embedded data and local UI logic.
@@ -35,7 +36,8 @@ The system is organized into four layers:
 
 4. Ingestion and tooling layer
    - PDF statement parser
-   - Implemented SEC submissions/Companyfacts ingestion for the Apple pilot
+   - SEC submissions/Companyfacts ingestion and generic artifact builder for
+     the controlled Apple/Microsoft filing pilots
    - Planned filing-specific inline-XBRL support for issuer extensions and segments
    - Batch ingest scripts
    - Validation and report generation scripts
@@ -74,6 +76,8 @@ This path uses:
 - `frontend/src/research/format.tsx`
 - `frontend/src/research/generated/bdo-valuation.js` for the generated BDO bank valuation snapshot
 - `frontend/src/research/generated/apple-valuation.js` for the public-safe Apple valuation snapshot
+- `frontend/src/research/generated/microsoft-valuation.js` for the public-safe,
+  currently withheld Microsoft valuation snapshot
 
 It is designed to run without:
 
@@ -105,10 +109,13 @@ Infrastructure:
 - `infrastructure/redis/redis.conf`
 - `infrastructure/minio/create-buckets.sh`
 
-### 3.3 Apple-first U.S. filing path
+### 3.3 Apple/Microsoft U.S. filing path
 
-The first U.S. runtime is implemented for Apple. It uses SEC filing data rather
-than the Philippine PDF-first pipeline:
+The controlled U.S. runtime supports Apple and Microsoft from SEC filing data
+rather than the Philippine PDF-first pipeline. Apple uses a
+`segment_gross_profit` forecast; Microsoft requires
+`segment_operating_income` evidence and is withheld when the normalized period
+has no governed segment evidence:
 
 ```text
 SEC submissions + Companyfacts
@@ -123,7 +130,7 @@ CIK identity gate + SIC/issuer override classification
 US-GAAP alias mapping + annual/quarter/TTM normalization
         |
         v
-Apple hardware/services archetype
+Issuer-specific archetype and segment forecast mode
         |
         v
 Governed forecast and U.S. discount-rate policy
@@ -138,7 +145,7 @@ Validation and publication review
         |
         +--> Public DTO with derived values, assumptions and filing attribution
                     |
-                    +--> GET /api/us-valuations/AAPL
+                    +--> GET /api/us-valuations/{ticker}
                     +--> browser-local Valuation tab
 ```
 
@@ -150,6 +157,8 @@ Implemented modules:
 - `backend/app/us_valuation/assumptions.py`
 - `backend/app/us_valuation/models.py`
 - `backend/app/us_valuation/pipeline.py`
+- `backend/app/us_valuation/artifacts.py`
+- `scripts/build_us_valuation_pipeline.py`
 - `scripts/build_apple_us_valuation_pipeline.py`
 - `backend/app/routers/us_valuations.py`
 
@@ -157,7 +166,9 @@ The SEC connector is server-side, uses an identifying `User-Agent` for network
 fetches, rate limits within a process, caches responses, retries with backoff,
 and records source URLs and hashes. Browser and mobile clients do not query
 EDGAR directly. Centralized cross-process throttling and SEC bulk archives are
-still required before large-universe production refreshes.
+still required before large-universe production refreshes. The generic builder
+creates private local audit output plus reduced public artifacts; it is a
+controlled two-issuer workflow, not a production refresh service.
 
 ## 4. Frontend Architecture
 
@@ -698,8 +709,9 @@ disclosed bank-sector fallback, not as a measured regression beta.
 
 This gives each saved run a reproducible rate build, which matters because assumptions can change over time.
 
-The Apple U.S. pilot uses a separate, versioned U.S. assumptions snapshot in
-`backend/app/us_valuation/assumptions.py`. Its filing-only cost of equity uses a
+The Apple and Microsoft U.S. pilot routes use a separate, versioned U.S.
+assumptions snapshot in `backend/app/us_valuation/assumptions.py`. Their
+filing-only cost of equity uses a
 dated U.S. Treasury risk-free rate, an approved U.S. equity-risk-premium policy,
 an archetype risk coefficient, and a bounded filing-supported company risk
 overlay. It does not calculate a company-specific regression beta from stock
