@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,11 @@ from app.us_valuation.assumptions import (
     load_issuer_forecast_evidence,
 )
 from app.us_valuation.classification import classify_issuer
-from app.us_valuation.artifacts import frontend_company, public_result
+from app.us_valuation.artifacts import (
+    frontend_company,
+    public_result,
+    sec_cache_manifest,
+)
 import app.us_valuation.pipeline as valuation_pipeline
 from app.us_valuation.pipeline import build_us_valuation
 from app.us_valuation.sec_client import SecClient
@@ -109,12 +114,105 @@ def test_microsoft_public_artifact_contains_no_raw_financial_amounts() -> None:
     )
 
     public = public_result(result, load_fixture("msft-submissions.json"))
-    serialized = json.dumps(public)
-
     assert public["ticker"] == "MSFT"
     assert public["data_boundary"]["stock_prices_used"] is False
-    assert "revenue_ttm" not in serialized
-    assert "cash_and_nonoperating_investments" not in serialized
+    assert set(public) == {
+        "schema_version",
+        "valuation_date",
+        "market",
+        "currency",
+        "ticker",
+        "issuer",
+        "source_financial_statement",
+        "model_policy",
+        "public_assumptions",
+        "models",
+        "scenarios",
+        "scenario_range",
+        "forecast_quality",
+        "review",
+        "methodology",
+        "data_boundary",
+    }
+
+    private_fields = {
+        "financials",
+        "financial_period_end",
+        "revenue",
+        "revenue_ttm",
+        "operating_income",
+        "cash",
+        "debt",
+        "shares",
+        "cash_and_nonoperating_investments",
+        "annual",
+        "quarterly",
+        "current_ytd",
+        "prior_ytd",
+        "sources",
+        "values",
+        "source_manifest",
+        "forecast_assumptions",
+        "discount_rate",
+    }
+
+    def assert_no_private_fields(value: Any) -> None:
+        if isinstance(value, dict):
+            assert not (private_fields & value.keys())
+            for child in value.values():
+                assert_no_private_fields(child)
+        elif isinstance(value, list):
+            for child in value:
+                assert_no_private_fields(child)
+
+    assert_no_private_fields(public)
+
+
+def test_sec_refresh_cache_replay_preserves_bytes_hash_and_provenance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Catch metadata hashes recorded for response bytes not written to cache."""
+    payloads = {
+        "https://data.sec.gov/submissions/CIK0000789019.json": json.dumps(
+            load_fixture("msft-submissions.json"), indent=2
+        ).encode("utf-8"),
+        "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json": json.dumps(
+            load_fixture("msft-companyfacts.json"), indent=2
+        ).encode("utf-8"),
+    }
+
+    class Response:
+        def __init__(self, body: bytes) -> None:
+            self.body = body
+
+        def __enter__(self) -> "Response":
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return self.body
+
+    def fake_urlopen(request: Any, *, timeout: int) -> Response:
+        return Response(payloads[request.full_url])
+
+    monkeypatch.setattr("app.us_valuation.sec_client.urlopen", fake_urlopen)
+    captured_client = SecClient(
+        user_agent="FinSight contact@example.com",
+        cache_dir=tmp_path,
+        requests_per_second=5,
+    )
+    captured_client.submissions("0000789019", refresh=True)
+    captured_client.companyfacts("0000789019", refresh=True)
+    captured_manifest = sec_cache_manifest(tmp_path, "0000789019")
+
+    replay_client = SecClient(user_agent=None, cache_dir=tmp_path)
+    replay_client.submissions("0000789019")
+    replay_client.companyfacts("0000789019")
+
+    assert sec_cache_manifest(tmp_path, "0000789019") == captured_manifest
 
 
 def test_apple_frontend_artifact_retains_form_in_source_label(result: dict) -> None:
@@ -233,6 +331,29 @@ def test_segment_operating_income_without_contemporaneous_evidence_is_withheld(
     assert result["models"]["epv"]["intrinsic_value_per_share"] is None
     assert result["forecast_quality"]["checks"]["segment_evidence_as_of"]["status"] == "fail"
     assert "hardware/services" not in result["model_policy"]["reason"].lower()
+
+
+def test_withheld_segment_forecast_public_mode_is_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Catch a withheld segment route mislabeled as a consolidated forecast."""
+    evidence = deepcopy(load_issuer_forecast_evidence("0000789019"))
+    assert evidence is not None
+    evidence["periods"] = {}
+    monkeypatch.setattr(
+        valuation_pipeline,
+        "load_issuer_forecast_evidence",
+        lambda _cik: evidence,
+    )
+
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+    )
+    public = public_result(result, load_fixture("msft-submissions.json"))
+
+    assert result["review"]["publication_state"] == "withheld"
+    assert public["public_assumptions"]["forecast_mode"] == "unavailable"
 
 
 def test_segment_operating_income_future_dated_source_is_withheld(

@@ -179,7 +179,7 @@ export default {
       "public_assumptions": {
         "forecast_policy_version": null,
         "forecast_years": null,
-        "forecast_mode": "consolidated",
+        "forecast_mode": "unavailable",
         "initial_revenue_growth": null,
         "target_operating_margin": null,
         "segment_assumptions": {},

@@ -107,10 +107,7 @@ class SecClient:
                     with urlopen(request, timeout=self.timeout_seconds) as response:
                         raw = response.read()
                 payload = json.loads(raw.decode("utf-8"))
-                path.write_text(
-                    json.dumps(payload, separators=(",", ":")),
-                    encoding="utf-8",
-                )
+                path.write_bytes(raw)
                 self._write_cache_metadata(
                     path,
                     url=url,

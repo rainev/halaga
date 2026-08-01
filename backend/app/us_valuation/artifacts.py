@@ -157,6 +157,16 @@ def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[s
     discount_rate = result["discount_rate"]
     market_assumptions = discount_rate["market_assumptions"]
     segment_forecast = assumptions.get("segment_forecast")
+    forecast_mode = (
+        segment_forecast["mode"]
+        if segment_forecast
+        else (
+            "unavailable"
+            if assumptions.get("forecast_evidence_status")
+            == "unavailable_for_normalized_period"
+            else "consolidated"
+        )
+    )
     segment_assumptions = (
         {
             key: {
@@ -197,9 +207,7 @@ def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[s
         "public_assumptions": {
             "forecast_policy_version": assumptions.get("forecast_policy_version"),
             "forecast_years": assumptions.get("forecast_years"),
-            "forecast_mode": (
-                segment_forecast["mode"] if segment_forecast else "consolidated"
-            ),
+            "forecast_mode": forecast_mode,
             "initial_revenue_growth": assumptions.get("initial_revenue_growth"),
             "target_operating_margin": assumptions.get("target_operating_margin"),
             "segment_assumptions": segment_assumptions,
