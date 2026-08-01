@@ -22,30 +22,33 @@ def classify_issuer(
     cik = normalize_cik(submissions.get("cik", ""))
     override = config.get("issuer_overrides", {}).get(cik)
     raw_sic = str(submissions.get("sic") or "").zfill(4)
+    match = next(
+        (
+            row
+            for row in config.get("sic_ranges", [])
+            if raw_sic.isdigit() and row["start"] <= int(raw_sic) <= row["end"]
+        ),
+        None,
+    )
+    if not match and not override:
+        raise ValueError(
+            f"No supported U.S. valuation archetype for SEC SIC {raw_sic}"
+        )
 
     if override:
-        sector = override["sector"]
-        archetype = override["archetype"]
-        confidence = override["confidence"]
-        reason = override["reason"]
+        sector = override.get("sector", match["sector"])
+        archetype = override.get("archetype", match["archetype"])
+        confidence = override.get("confidence", match["confidence"])
+        reason = override.get(
+            "reason",
+            "Mapped from SEC SIC; issuer-level economic review is still required.",
+        )
         secondary = list(override.get("secondary_archetypes", []))
         verified_zero_bridge_fields = dict(
             override.get("verified_zero_bridge_fields", {})
         )
         override_applied = True
     else:
-        match = next(
-            (
-                row
-                for row in config.get("sic_ranges", [])
-                if raw_sic.isdigit() and row["start"] <= int(raw_sic) <= row["end"]
-            ),
-            None,
-        )
-        if not match:
-            raise ValueError(
-                f"No supported U.S. valuation archetype for SEC SIC {raw_sic}"
-            )
         sector = match["sector"]
         archetype = match["archetype"]
         confidence = match["confidence"]
@@ -87,4 +90,7 @@ def classify_issuer(
         "source_accessions": accessions,
         "valuation_policy": policy,
         "verified_zero_bridge_fields": verified_zero_bridge_fields,
+        "requires_segment_forecast": bool(
+            override and override.get("requires_segment_forecast", False)
+        ),
     }

@@ -10,6 +10,7 @@ import pytest
 
 from app.routers.us_valuations import load_generated_result
 from app.us_valuation.assumptions import US_BASE
+from app.us_valuation.classification import classify_issuer
 from app.us_valuation.pipeline import build_us_valuation
 from app.us_valuation.sec_client import SecClient
 from app.us_valuation.xbrl import CompanyFactsNormalizer
@@ -43,6 +44,21 @@ def test_apple_classification_and_model_route(result: dict):
     assert result["model_policy"]["primary"] == "fcff_dcf"
     assert result["model_policy"]["supporting"] == ["epv"]
     assert result["model_policy"]["blend_models"] is False
+
+
+def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
+    submission = {
+        "cik": "789019",
+        "tickers": ["MSFT"],
+        "name": "MICROSOFT CORP",
+        "sic": "7372",
+        "sicDescription": "Services-Prepackaged Software",
+        "filings": {"recent": {"accessionNumber": [], "form": []}},
+    }
+    result = classify_issuer(submission)
+    assert result["primary_archetype"] == "enterprise_software_cloud"
+    assert result["requires_segment_forecast"] is True
+    assert result["valuation_policy"]["primary_model"] == "fcff_dcf"
 
 
 def test_apple_ttm_reconciliation_and_history(result: dict):

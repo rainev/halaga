@@ -7,6 +7,13 @@
       "sector": "Technology",
       "archetype": "hardware_electronic_equipment",
       "confidence": 0.8
+    },
+    {
+      "start": 7372,
+      "end": 7372,
+      "sector": "Technology",
+      "archetype": "enterprise_software_cloud",
+      "confidence": 0.9
     }
   ],
   "issuer_overrides": {
@@ -35,6 +42,9 @@
           "verification_version": "US-BRIDGE-ZERO-1.0"
         }
       }
+    },
+    "0000789019": {
+      "requires_segment_forecast": true
     }
   },
   "valuation_policies": {
@@ -53,6 +63,23 @@
       "target_debt_weight": 0.1,
       "default_debt_spread": 0.01,
       "terminal_roic_premium": 0.03,
+      "normal_company_overlay": 0.0
+    },
+    "enterprise_software_cloud": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 8,
+      "archetype_median_growth": 0.07,
+      "archetype_target_operating_margin": 0.35,
+      "growth_persistence": 0.78,
+      "margin_persistence": 0.78,
+      "sales_to_capital": 3.0,
+      "unlevered_policy_beta": 0.9,
+      "target_debt_weight": 0.05,
+      "default_debt_spread": 0.01,
+      "terminal_roic_premium": 0.05,
       "normal_company_overlay": 0.0
     }
   }
