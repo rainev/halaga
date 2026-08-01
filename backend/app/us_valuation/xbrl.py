@@ -601,13 +601,20 @@ class CompanyFactsNormalizer:
             source.get("accession")
             for field in ttm_fields.values()
             for source in field.get("sources", [])
-            if source.get("accession")
+            if source.get("accession") and source.get("end") == ttm_end
         }
         verified_zero_fields = {
             field
             for field, evidence in verified_zero_evidence.items()
             if evidence.get("controlled_period_end") == ttm_end
             and evidence.get("source_accession") in controlling_accessions
+            and (
+                not self.as_of_date
+                or (
+                    bool(evidence.get("reviewed_on"))
+                    and evidence["reviewed_on"] <= self.as_of_date
+                )
+            )
         }
         prior_end = ttm_fields["revenue"].get("prior_ytd", {}).get("end")
         if not prior_end:

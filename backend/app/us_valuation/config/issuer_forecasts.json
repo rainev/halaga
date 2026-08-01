@@ -166,6 +166,7 @@
           },
           "sources": [
             {
+              "id": "fy2024_10k",
               "form": "10-K",
               "accession": "0000950170-24-087843",
               "filing_date": "2024-07-30",
@@ -174,6 +175,7 @@
               "evidence": "FY2022-FY2024 reportable-segment revenue and operating income."
             },
             {
+              "id": "fy2025_q3_10q",
               "form": "10-Q",
               "accession": "0000950170-25-061046",
               "filing_date": "2025-04-30",
@@ -187,59 +189,35 @@
             "policy": "segment_operating_income",
             "rationale": "Reported segment operating income is the direct margin driver. Separately forecasting cost of revenue and operating expenses would double-count the same segment economics without a governed allocation policy."
           },
-          "field_source_map": {
-            "segments.*.annual_revenue[*]": {
-              "accession": "0000950170-24-087843",
-              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
-              "filing_date": "2024-07-30",
-              "period_end": "2024-06-30",
-              "fiscal_year": "2024",
-              "fiscal_period": "FY",
-              "duration_basis": "annual comparative columns FY2022-FY2024",
-              "unit": "USD",
-              "table_line": "Reportable segment revenue",
-              "status": "governed_filing_table_transcription",
-              "derivation": "reported annual table values, ordered FY2022 through FY2024"
-            },
-            "segments.*.annual_operating_income[*]": {
-              "accession": "0000950170-24-087843",
-              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
-              "filing_date": "2024-07-30",
-              "period_end": "2024-06-30",
-              "fiscal_year": "2024",
-              "fiscal_period": "FY",
-              "duration_basis": "annual comparative columns FY2022-FY2024",
-              "unit": "USD",
-              "table_line": "Reportable segment operating income",
-              "status": "governed_filing_table_transcription",
-              "derivation": "reported annual table values, ordered FY2022 through FY2024"
-            },
-            "segments.*.latest_ytd_revenue|prior_ytd_revenue|ttm_revenue": {
-              "accession": "0000950170-25-061046",
-              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
-              "filing_date": "2025-04-30",
-              "period_end": "2025-03-31",
-              "fiscal_year": "2025",
-              "fiscal_period": "Q3",
-              "duration_basis": "nine-month current/prior comparative columns; TTM = FY2024 + current nine months - prior nine months",
-              "unit": "USD",
-              "table_line": "Reportable segment revenue",
-              "status": "governed_filing_table_transcription",
-              "derivation": "latest/prior YTD reported; TTM formula stated in duration basis"
-            },
-            "segments.*.latest_ytd_operating_income|prior_ytd_operating_income|ttm_operating_income|consolidated_ttm.*": {
-              "accession": "0000950170-25-061046",
-              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
-              "filing_date": "2025-04-30",
-              "period_end": "2025-03-31",
-              "fiscal_year": "2025",
-              "fiscal_period": "Q3",
-              "duration_basis": "nine-month current/prior comparative columns; TTM = FY2024 + current nine months - prior nine months",
-              "unit": "USD",
-              "table_line": "Reportable segment operating income; consolidated operating income reconciliation",
-              "status": "governed_filing_table_transcription",
-              "derivation": "latest/prior YTD reported; TTM formula stated in duration basis"
-            }
+          "provenance_contexts": {
+            "annual_revenue_2022": {"source_ids": ["fy2024_10k"], "fiscal_year": "2022", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2022 comparative column"},
+            "annual_revenue_2023": {"source_ids": ["fy2024_10k"], "fiscal_year": "2023", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2023 comparative column"},
+            "annual_revenue_2024": {"source_ids": ["fy2024_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 column"},
+            "annual_operating_income_2022": {"source_ids": ["fy2024_10k"], "fiscal_year": "2022", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2022 comparative column"},
+            "annual_operating_income_2023": {"source_ids": ["fy2024_10k"], "fiscal_year": "2023", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2023 comparative column"},
+            "annual_operating_income_2024": {"source_ids": ["fy2024_10k"], "fiscal_year": "2024", "fiscal_period": "FY", "duration_basis": "annual", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported FY2024 column"},
+            "current_ytd_revenue": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported current-year nine-month column"},
+            "prior_ytd_revenue": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2024", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "reported prior-year comparative nine-month column"},
+            "current_ytd_operating_income": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported current-year nine-month column"},
+            "prior_ytd_operating_income": {"source_ids": ["fy2025_q3_10q"], "fiscal_year": "2024", "fiscal_period": "Q3", "duration_basis": "nine months YTD", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "reported prior-year comparative nine-month column"},
+            "ttm_revenue": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Reportable segment revenue", "status": "governed_filing_table_transcription", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "ttm_operating_income": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Reportable segment operating income", "status": "governed_filing_table_transcription", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "archetype_anchor": {"source_ids": [], "fiscal_year": "policy", "fiscal_period": "policy", "duration_basis": "policy", "unit": "ratio", "table_line": "Enterprise software/cloud governed growth anchor", "status": "governed_policy", "derivation": "bounded archetype policy input"},
+            "consolidated_ttm_revenue": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Consolidated revenue reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"},
+            "consolidated_ttm_operating_income": {"source_ids": ["fy2024_10k", "fy2025_q3_10q"], "fiscal_year": "2025", "fiscal_period": "Q3", "duration_basis": "TTM", "unit": "USD", "table_line": "Consolidated operating income reconciliation", "status": "standardized_companyfacts_reconciliation", "derivation": "FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD"}
+          },
+          "field_provenance": {
+            "consolidated_ttm.revenue": "consolidated_ttm_revenue",
+            "consolidated_ttm.operating_income": "consolidated_ttm_operating_income",
+            "segments.productivity_and_business_processes.annual_revenue[0]": "annual_revenue_2022", "segments.productivity_and_business_processes.annual_revenue[1]": "annual_revenue_2023", "segments.productivity_and_business_processes.annual_revenue[2]": "annual_revenue_2024",
+            "segments.productivity_and_business_processes.annual_operating_income[0]": "annual_operating_income_2022", "segments.productivity_and_business_processes.annual_operating_income[1]": "annual_operating_income_2023", "segments.productivity_and_business_processes.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.productivity_and_business_processes.latest_ytd_revenue": "current_ytd_revenue", "segments.productivity_and_business_processes.prior_ytd_revenue": "prior_ytd_revenue", "segments.productivity_and_business_processes.latest_ytd_operating_income": "current_ytd_operating_income", "segments.productivity_and_business_processes.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.productivity_and_business_processes.ttm_revenue": "ttm_revenue", "segments.productivity_and_business_processes.ttm_operating_income": "ttm_operating_income", "segments.productivity_and_business_processes.archetype_growth_anchor": "archetype_anchor",
+            "segments.intelligent_cloud.annual_revenue[0]": "annual_revenue_2022", "segments.intelligent_cloud.annual_revenue[1]": "annual_revenue_2023", "segments.intelligent_cloud.annual_revenue[2]": "annual_revenue_2024",
+            "segments.intelligent_cloud.annual_operating_income[0]": "annual_operating_income_2022", "segments.intelligent_cloud.annual_operating_income[1]": "annual_operating_income_2023", "segments.intelligent_cloud.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.intelligent_cloud.latest_ytd_revenue": "current_ytd_revenue", "segments.intelligent_cloud.prior_ytd_revenue": "prior_ytd_revenue", "segments.intelligent_cloud.latest_ytd_operating_income": "current_ytd_operating_income", "segments.intelligent_cloud.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.intelligent_cloud.ttm_revenue": "ttm_revenue", "segments.intelligent_cloud.ttm_operating_income": "ttm_operating_income", "segments.intelligent_cloud.archetype_growth_anchor": "archetype_anchor",
+            "segments.more_personal_computing.annual_revenue[0]": "annual_revenue_2022", "segments.more_personal_computing.annual_revenue[1]": "annual_revenue_2023", "segments.more_personal_computing.annual_revenue[2]": "annual_revenue_2024",
+            "segments.more_personal_computing.annual_operating_income[0]": "annual_operating_income_2022", "segments.more_personal_computing.annual_operating_income[1]": "annual_operating_income_2023", "segments.more_personal_computing.annual_operating_income[2]": "annual_operating_income_2024",
+            "segments.more_personal_computing.latest_ytd_revenue": "current_ytd_revenue", "segments.more_personal_computing.prior_ytd_revenue": "prior_ytd_revenue", "segments.more_personal_computing.latest_ytd_operating_income": "current_ytd_operating_income", "segments.more_personal_computing.prior_ytd_operating_income": "prior_ytd_operating_income", "segments.more_personal_computing.ttm_revenue": "ttm_revenue", "segments.more_personal_computing.ttm_operating_income": "ttm_operating_income", "segments.more_personal_computing.archetype_growth_anchor": "archetype_anchor"
           },
           "evidence_period_end": "2025-03-31",
           "as_of_filed_date": "2025-04-30"

@@ -71,6 +71,59 @@ def load_issuer_forecast_evidence(cik: str) -> dict[str, Any] | None:
     }
 
 
+def _validated_field_provenance(evidence: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Resolve exact private provenance for every governed segment input."""
+    expected = {
+        "consolidated_ttm.revenue",
+        "consolidated_ttm.operating_income",
+    }
+    for segment in evidence["segments"]:
+        expected.update(
+            f"segments.{segment}.{field}"
+            for field in (
+                *(f"annual_revenue[{index}]" for index in range(3)),
+                *(f"annual_operating_income[{index}]" for index in range(3)),
+                "latest_ytd_revenue",
+                "prior_ytd_revenue",
+                "latest_ytd_operating_income",
+                "prior_ytd_operating_income",
+                "ttm_revenue",
+                "ttm_operating_income",
+                "archetype_growth_anchor",
+            )
+        )
+    mapped = evidence.get("field_provenance", {})
+    if set(mapped) != expected:
+        raise ValueError("Governed segment field provenance must cover each input exactly once")
+    contexts = evidence.get("provenance_contexts", {})
+    resolved: dict[str, dict[str, Any]] = {}
+    required = {
+        "fiscal_year",
+        "fiscal_period",
+        "duration_basis",
+        "unit",
+        "table_line",
+        "status",
+        "derivation",
+    }
+    for path, context_id in mapped.items():
+        context = contexts.get(context_id)
+        if not isinstance(context, dict) or not required <= set(context):
+            raise ValueError(f"Governed provenance context is incomplete for {path}")
+        source_ids = context.get("source_ids", [])
+        sources = [
+            source for source in evidence["sources"] if source.get("id") in source_ids
+        ]
+        if len(sources) != len(source_ids):
+            raise ValueError(f"Governed provenance source is missing for {path}")
+        resolved[path] = {
+            **context,
+            "source_accessions": [source["accession"] for source in sources],
+            "sources": sources,
+        }
+    return resolved
+
+
 def _cagr(values: list[float]) -> float:
     if len(values) < 2 or values[0] <= 0 or values[-1] <= 0:
         raise ValueError("CAGR needs at least two positive values")
@@ -187,6 +240,9 @@ def derive_forecast_assumptions(
                 reason="Governed evidence includes source periods or filing dates after its as-of cutoff",
             )
         issuer_evidence = {**issuer_evidence, **period_evidence}
+        issuer_evidence["validated_field_provenance"] = _validated_field_provenance(
+            issuer_evidence
+        )
 
     annual = financials["annual"]
     latest_three = annual[-3:]
@@ -591,6 +647,11 @@ def derive_forecast_assumptions(
         "terminal_marginal_roic": wacc + terminal_roic_premium,
         "forecast_evidence_status": evidence_status,
         "forecast_evidence_sources": evidence_sources,
+        "forecast_evidence_field_provenance": (
+            issuer_evidence.get("validated_field_provenance", {})
+            if issuer_evidence
+            else {}
+        ),
         "evidence": {
             "ttm_yoy_growth": ttm_yoy_growth,
             "available_history_cagr": annual_cagr,

@@ -38,3 +38,12 @@ located under backend test fixtures, never under frontend public or generated
 frontend assets. If this repository is distributed publicly, the underlying
 facts are already public SEC disclosures; nevertheless, release governance
 should continue to review the fixture because it is a controlled source input.
+
+## Re-review addendum
+
+| Re-review finding | Additional remediation | Regression evidence |
+| --- | --- | --- |
+| Stored API artifact could bypass the generation scrub | `sanitize_public_artifact` is the shared state-aware public validator/sanitizer used by both `public_result` and `load_generated_result`. Unsupported overall/model/scenario states become `withheld` and all public values are scrubbed. | `test_api_loader_scrubs_adversarial_withheld_stored_artifact`; `test_api_loader_fails_closed_for_legacy_publication_state` |
+| Frontend adapter accepted legacy state values | `normalizeUsPublicationArtifact` runs at adapter entry and converts legacy/unknown state to a null-valued `withheld` result before calculating any display value. The stale architecture Apple wording now says `review_required`. | `legacy and unknown U.S. publication states fail closed at the adapter boundary` |
+| Grouped MSFT provenance did not reach private audit | `field_provenance` now maps every one of the 41 governed paths exactly once to a structured provenance context. The assumptions layer validates coverage and source references, resolves the full field-level map into the private result, and public serialization omits it. TTM contexts include both FY2024 10-K and FY2025 Q3 10-Q accessions. The design and plan formally document the intentional direct-operating-income scope. | `test_microsoft_governed_segment_fields_have_complete_private_provenance` |
+| Bridge accepted a same-period stale annual accession | Bridge-zero validation now selects only source accessions with report end equal to the normalized TTM end and requires a review date on/before the valuation cutoff. | `test_same_period_stale_annual_zero_accession_cannot_clear_bridge` |

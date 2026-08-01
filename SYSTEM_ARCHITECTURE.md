@@ -1211,7 +1211,7 @@ SEC_USER_AGENT="FinSight monitored-contact@example.com" \
 python3 scripts/build_apple_us_valuation_pipeline.py --refresh
 ```
 
-The revised Apple result remains in `review` state with `medium` confidence.
+The revised Apple result remains in `review_required` state with `medium` confidence.
 The deliberate limits are a narrow operating-working-capital definition, a
 filing-based diluted-share proxy rather than a full award roll-forward, and
 governed transcription of filing-specific Products and Services tables pending

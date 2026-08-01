@@ -9,6 +9,7 @@ from pathlib import Path
 from fastapi import APIRouter
 
 from ..errors import AppError
+from ..us_valuation.artifacts import sanitize_public_artifact
 
 
 router = APIRouter(prefix="/us-valuations", tags=["us-valuations"])
@@ -29,7 +30,7 @@ def load_generated_result(ticker: str) -> dict:
         raise AppError("U.S. valuation artifact is invalid", 500) from exc
     if result.get("issuer", {}).get("ticker") != normalized:
         raise AppError("U.S. valuation artifact identity mismatch", 500)
-    return result
+    return sanitize_public_artifact(result)
 
 
 @router.get("/{ticker}")

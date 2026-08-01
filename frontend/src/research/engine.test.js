@@ -97,6 +97,23 @@ test('withheld U.S. artifacts suppress every displayable derived value', () => {
   assert.equal(display.models.epv.perShare, null)
 })
 
+test('legacy and unknown U.S. publication states fail closed at the adapter boundary', () => {
+  const apple = structuredClone(
+    VALUATION_COMPANIES.find((company) => company.symbol === 'AAPL'),
+  )
+  apple.valuation.us.review.publication_state = 'review'
+  apple.valuation.us.scenario_range = { low: 111, base: 123, high: 135 }
+  const legacy = calculateValuation(apple, 'base')
+
+  assert.equal(legacy.status, 'withheld')
+  assert.equal(legacy.primaryValue, null)
+  assert.equal(legacy.scenarioLow, null)
+  assert.equal(legacy.scenarioHigh, null)
+
+  apple.valuation.us.review.publication_state = 'unknown'
+  assert.equal(calculateValuation(apple, 'base').status, 'withheld')
+})
+
 test('U.S. publication presentation distinguishes pass, review, and withheld states', () => {
   const pass = researchEngine.getUsPublicationPresentation('pass')
   const review = researchEngine.getUsPublicationPresentation('review_required')

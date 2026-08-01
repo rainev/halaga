@@ -35,7 +35,7 @@ Microsoft segments are:
 2. Intelligent Cloud.
 3. More Personal Computing.
 
-Each segment record contains annual revenue, cost of revenue, operating expenses, operating income, latest YTD and comparable prior-year YTD revenue, a bounded archetype growth anchor, and filing-source metadata. The engine forecasts segment revenue and segment operating income, then reconciles their totals with the consolidated filing facts before it produces FCFF.
+Each segment record contains annual revenue, operating income, latest YTD and comparable prior-year YTD revenue, a bounded archetype growth anchor, and exact private field provenance. Microsoft uses the direct `segment_operating_income` design intentionally: reported segment operating income is the margin driver, so separately forecasting cost of revenue and operating expenses would double-count segment economics without a governed allocation policy. The engine forecasts segment revenue and segment operating income, then reconciles their totals with the consolidated filing facts before it produces FCFF.
 
 The route uses a 7-to-10-year fade because Microsoft is a durable, multi-business issuer. Company evidence must account for at least 75% of growth weighting when sufficient history exists; the archetype anchor may never exceed 25%.
 
@@ -54,7 +54,7 @@ The core FCFF DCF, EPV, scenario, sensitivity, source-manifest, and public-artif
 
 The pipeline will retrieve the latest available Microsoft 10-K and 10-Q through the existing SEC client. Standardized Companyfacts will provide consolidated facts. Filing-specific inline XBRL or governed source-table extraction will provide segment facts where Companyfacts does not retain issuer dimensions.
 
-Required private evidence includes revenue, operating income, tax rate, depreciation and amortization, capital expenditures, operating working capital, cash, short-term investments, debt, lease liabilities where material, diluted shares, and the enterprise-to-equity bridge. Segment revenue and operating income must reconcile to consolidated facts.
+Required private evidence includes revenue, operating income, tax rate, depreciation and amortization, capital expenditures, operating working capital, cash, short-term investments, debt, lease liabilities where material, diluted shares, and the enterprise-to-equity bridge. Every governed Microsoft segment input is retained in the private audit result with one exact field path, source accession(s), period/context, duration, unit, table line, status, and derivation; that map is never copied to public artifacts. Segment revenue and operating income must reconcile to consolidated facts.
 
 If issuer-specific segment data are governed transcriptions rather than automated extraction, the forecast-quality result must be `review_required`.
 

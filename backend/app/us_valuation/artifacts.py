@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -151,14 +152,38 @@ def _public_model(model: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _scrub_withheld_publication(public: dict[str, Any]) -> dict[str, Any]:
-    """Remove all intrinsic outputs at the final public/API publication boundary."""
-    if public["review"]["publication_state"] != "withheld":
+PUBLICATION_STATES = {"pass", "review_required", "withheld"}
+
+
+def sanitize_public_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
+    """Validate public state vocabulary and fail closed at every serving boundary."""
+    public = deepcopy(artifact)
+    review = public.get("review")
+    if not isinstance(review, dict):
+        review = {}
+        public["review"] = review
+    state = review.get("publication_state")
+    invalid_state = state not in PUBLICATION_STATES
+    for model in public.get("models", {}).values():
+        if not isinstance(model, dict) or model.get("publication_state") not in PUBLICATION_STATES:
+            invalid_state = True
+    for scenario in public.get("scenarios", {}).values():
+        model = scenario.get("fcff_dcf") if isinstance(scenario, dict) else None
+        if not isinstance(model, dict) or model.get("publication_state") not in PUBLICATION_STATES:
+            invalid_state = True
+    if invalid_state:
+        review["publication_state"] = "withheld"
+        review.setdefault("errors", []).append(
+            "Public artifact has an unsupported publication state and was withheld."
+        )
+    if review["publication_state"] != "withheld":
         return public
-    for model in public["models"].values():
+    models = public.setdefault("models", {})
+    scenarios = public.setdefault("scenarios", {})
+    for model in models.values():
         model["intrinsic_value_per_share"] = None
         model["publication_state"] = "withheld"
-    for scenario in public["scenarios"].values():
+    for scenario in scenarios.values():
         scenario_model = scenario["fcff_dcf"]
         scenario_model["intrinsic_value_per_share"] = None
         scenario_model["publication_state"] = "withheld"
@@ -166,7 +191,7 @@ def _scrub_withheld_publication(public: dict[str, Any]) -> dict[str, Any]:
         "low": None,
         "base": None,
         "high": None,
-        "label": public["scenario_range"].get(
+            "label": public.get("scenario_range", {}).get(
             "label", "assumption range, not a statistical confidence interval"
         ),
     }
@@ -265,7 +290,7 @@ def public_result(result: dict[str, Any], submissions: dict[str, Any]) -> dict[s
             "public_payload_contains": "derived valuation outputs, governed assumptions, methodology, warnings, and filing attribution",
         },
     }
-    return _scrub_withheld_publication(public)
+    return sanitize_public_artifact(public)
 
 
 def frontend_company(

@@ -10,6 +10,7 @@ from typing import Any
 import pytest
 
 from app.routers.us_valuations import load_generated_result
+import app.routers.us_valuations as us_valuations_router
 from app.us_valuation.assumptions import (
     US_BASE,
     build_discount_rate,
@@ -348,6 +349,40 @@ def test_withheld_public_artifact_scrubs_post_model_values() -> None:
     }
 
 
+def test_api_loader_scrubs_adversarial_withheld_stored_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    artifact = json.loads(
+        Path("backend/app/data/us_valuations/AAPL.json").read_text(encoding="utf-8")
+    )
+    artifact["review"]["publication_state"] = "withheld"
+    artifact["models"]["fcff_dcf"]["intrinsic_value_per_share"] = 999.0
+    artifact["scenarios"]["base"]["fcff_dcf"]["intrinsic_value_per_share"] = 999.0
+    artifact["scenario_range"].update({"low": 999.0, "base": 999.0, "high": 999.0})
+    (tmp_path / "AAPL.json").write_text(json.dumps(artifact), encoding="utf-8")
+    monkeypatch.setattr(us_valuations_router, "DATA_ROOT", tmp_path)
+
+    loaded = load_generated_result("AAPL")
+
+    assert loaded["review"]["publication_state"] == "withheld"
+    assert loaded["models"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert loaded["scenarios"]["base"]["fcff_dcf"]["intrinsic_value_per_share"] is None
+    assert loaded["scenario_range"]["base"] is None
+
+
+def test_api_loader_fails_closed_for_legacy_publication_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    artifact = json.loads(
+        Path("backend/app/data/us_valuations/AAPL.json").read_text(encoding="utf-8")
+    )
+    artifact["review"]["publication_state"] = "review"
+    (tmp_path / "AAPL.json").write_text(json.dumps(artifact), encoding="utf-8")
+    monkeypatch.setattr(us_valuations_router, "DATA_ROOT", tmp_path)
+
+    assert load_generated_result("AAPL")["review"]["publication_state"] == "withheld"
+
+
 def test_segment_required_issuer_without_registry_evidence_fails_before_models(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -446,20 +481,40 @@ def test_microsoft_governed_segment_fields_have_complete_private_provenance() ->
     evidence = load_issuer_forecast_evidence("0000789019")
     assert evidence is not None
     period = evidence["periods"]["2025-03-31"]
-    required = {
-        "accession",
-        "url",
-        "filing_date",
-        "period_end",
-        "fiscal_year",
-        "fiscal_period",
-        "duration_basis",
-        "unit",
-        "table_line",
-        "status",
-        "derivation",
+    expected_paths = {
+        "consolidated_ttm.revenue",
+        "consolidated_ttm.operating_income",
+        *(
+            f"segments.{segment}.{field}"
+            for segment in period["segments"]
+            for field in (
+                *(f"annual_revenue[{index}]" for index in range(3)),
+                *(f"annual_operating_income[{index}]" for index in range(3)),
+                "latest_ytd_revenue",
+                "prior_ytd_revenue",
+                "latest_ytd_operating_income",
+                "prior_ytd_operating_income",
+                "ttm_revenue",
+                "ttm_operating_income",
+                "archetype_growth_anchor",
+            )
+        ),
     }
-    assert all(required <= set(record) for record in period["field_source_map"].values())
+    assert set(period["field_provenance"]) == expected_paths
+    result = build_us_valuation(
+        submissions=load_fixture("msft-submissions.json"),
+        companyfacts=load_fixture("msft-companyfacts.json"),
+        valuation_date="2026-08-01",
+    )
+    private = result["forecast_assumptions"]["forecast_evidence_field_provenance"]
+    assert set(private) == expected_paths
+    assert private["segments.intelligent_cloud.ttm_revenue"]["source_accessions"] == [
+        "0000950170-24-087843",
+        "0000950170-25-061046",
+    ]
+    assert "forecast_evidence_field_provenance" not in json.dumps(
+        public_result(result, load_fixture("msft-submissions.json"))
+    )
     assert period["cost_of_revenue_and_opex_scope"]["status"] == "not_model_inputs"
 
 
@@ -478,6 +533,27 @@ def test_stale_verified_zero_cannot_clear_current_bridge() -> None:
     assert set(financials["balance_sheet"]["bridge_missing_fields"]) >= {
         "preferred_equity",
         "noncontrolling_interests",
+    }
+
+
+def test_same_period_stale_annual_zero_accession_cannot_clear_bridge() -> None:
+    submission = load_fixture("msft-submissions.json")
+    classification = classify_issuer(submission)
+    stale = deepcopy(classification["verified_zero_bridge_fields"])
+    for record in stale.values():
+        record["source_accession"] = "0000950170-24-087843"
+    financials = CompanyFactsNormalizer(
+        load_fixture("msft-companyfacts.json"),
+        fiscal_year_end=submission["fiscalYearEnd"],
+        as_of_date="2025-04-30",
+    ).normalize(annual_count=5, verified_zero_bridge_fields=stale)
+
+    assert financials["balance_sheet"]["bridge_complete"] is False
+    assert set(financials["balance_sheet"]["bridge_missing_fields"]) >= {
+        "preferred_equity",
+        "noncontrolling_interests",
+        "finance_lease_current",
+        "finance_lease_noncurrent",
     }
 
 

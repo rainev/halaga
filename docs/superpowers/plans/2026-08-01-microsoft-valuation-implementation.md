@@ -194,7 +194,7 @@ Add a CIK `0000789019` record to `issuer_forecasts.json` with:
 }
 ```
 
-Include the three disclosed segments, the three latest annual periods, latest and comparable prior-year YTD values, the required segment cost and operating-income values, consolidated reconciliation totals, and dated source metadata for the controlling 10-K and 10-Q. The source records must use real SEC accession numbers and URLs.
+Include the three disclosed segments, the three latest annual periods, latest and comparable prior-year YTD values, segment operating-income values, consolidated reconciliation totals, and dated source metadata for the controlling 10-K and 10-Q. This plan is amended to the intentional direct `segment_operating_income` approach: publicly disclosed cost of revenue and operating expenses are not separate model inputs because reported segment operating income is the governed margin driver and separately projecting those lines would double-count economics without a governed allocation policy. Each governed value must have one exact private field-provenance path with source accession(s), fiscal period, duration, unit, table line, status, and derivation; no provenance values may enter public artifacts.
 
 - [ ] **Step 4: Implement segment-operating-income evidence normalization**
 

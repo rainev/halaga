@@ -89,6 +89,36 @@ export function getUsPublicationPresentation(publicationState) {
   };
 }
 
+const US_PUBLICATION_STATES = new Set(["pass", "review_required", "withheld"]);
+
+export function normalizeUsPublicationArtifact(artifact) {
+  const result = structuredClone(artifact || {});
+  const invalidState = !US_PUBLICATION_STATES.has(result.review?.publication_state)
+    || Object.values(result.models || {}).some((model) => !US_PUBLICATION_STATES.has(model?.publication_state))
+    || Object.values(result.scenarios || {}).some((scenario) => !US_PUBLICATION_STATES.has(scenario?.fcff_dcf?.publication_state));
+  if (!result.review) result.review = {};
+  if (invalidState) result.review.publication_state = "withheld";
+  if (result.review.publication_state !== "withheld") return result;
+
+  for (const model of Object.values(result.models || {})) {
+    if (!model) continue;
+    model.intrinsic_value_per_share = null;
+    model.publication_state = "withheld";
+  }
+  for (const scenario of Object.values(result.scenarios || {})) {
+    if (!scenario?.fcff_dcf) continue;
+    scenario.fcff_dcf.intrinsic_value_per_share = null;
+    scenario.fcff_dcf.publication_state = "withheld";
+  }
+  result.scenario_range = {
+    ...(result.scenario_range || {}),
+    low: null,
+    base: null,
+    high: null,
+  };
+  return result;
+}
+
 const THRESHOLDS = {
   1: {
     cashToDebt: 1,
@@ -596,7 +626,7 @@ export function calculateJustifiedPb(company, sentiment = "base") {
 }
 
 export function calculateUsFilingValuation(company, sentiment = "base") {
-  const result = company?.valuation?.us;
+  const result = normalizeUsPublicationArtifact(company?.valuation?.us);
   const scenario = result?.scenarios?.[sentiment]?.fcff_dcf;
   if (!result || !scenario) {
     return {
