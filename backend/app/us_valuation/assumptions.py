@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from datetime import date
 from importlib.resources import files
@@ -96,6 +97,44 @@ def _validated_field_provenance(evidence: dict[str, Any]) -> dict[str, dict[str,
     if set(mapped) != expected:
         raise ValueError("Governed segment field provenance must cover each input exactly once")
     contexts = evidence.get("provenance_contexts", {})
+    source_values = evidence.get("field_source_values", {})
+    if set(source_values) != expected:
+        raise ValueError("Governed segment source values must cover each input exactly once")
+
+    def value_at(path: str) -> float:
+        value: Any = evidence
+        for component in path.split("."):
+            match = re.fullmatch(r"([^\[\]]+)(?:\[(\d+)\])?", component)
+            if match is None:
+                raise ValueError(f"Invalid governed provenance path: {path}")
+            value = value[match.group(1)]
+            if match.group(2) is not None:
+                value = value[int(match.group(2))]
+        return float(value)
+
+    for path in expected:
+        if value_at(path) != float(source_values[path]):
+            raise ValueError(
+                f"Governed source value mismatch for {path.replace('_', ' ')}"
+            )
+        if path.endswith((".ttm_revenue", ".ttm_operating_income")):
+            prefix, field = path.rsplit(".", 1)
+            annual_field = field.removeprefix("ttm_")
+            derived = (
+                value_at(f"{prefix}.annual_{annual_field}[2]")
+                + value_at(f"{prefix}.latest_ytd_{annual_field}")
+                - value_at(f"{prefix}.prior_ytd_{annual_field}")
+            )
+            if value_at(path) != derived:
+                raise ValueError(f"Governed TTM derivation mismatch for {path}")
+    for field in ("revenue", "operating_income"):
+        consolidated_path = f"consolidated_ttm.{field}"
+        segment_total = sum(
+            value_at(f"segments.{segment}.ttm_{field}")
+            for segment in evidence["segments"]
+        )
+        if value_at(consolidated_path) != segment_total:
+            raise ValueError(f"Governed consolidated derivation mismatch for {consolidated_path}")
     resolved: dict[str, dict[str, Any]] = {}
     required = {
         "fiscal_year",

@@ -501,6 +501,22 @@ def test_microsoft_governed_segment_fields_have_complete_private_provenance() ->
         ),
     }
     assert set(period["field_provenance"]) == expected_paths
+    assert {
+        key: values["ttm_revenue"]
+        for key, values in period["segments"].items()
+    } == {
+        "productivity_and_business_processes": 87_233_000_000,
+        "intelligent_cloud": 118_070_000_000,
+        "more_personal_computing": 64_707_000_000,
+    }
+    assert {
+        key: values["ttm_operating_income"]
+        for key, values in period["segments"].items()
+    } == {
+        "productivity_and_business_processes": 47_365_000_000,
+        "intelligent_cloud": 54_055_000_000,
+        "more_personal_computing": 20_710_000_000,
+    }
     result = build_us_valuation(
         submissions=load_fixture("msft-submissions.json"),
         companyfacts=load_fixture("msft-companyfacts.json"),
@@ -515,6 +531,23 @@ def test_microsoft_governed_segment_fields_have_complete_private_provenance() ->
     assert "forecast_evidence_field_provenance" not in json.dumps(
         public_result(result, load_fixture("msft-submissions.json"))
     )
+
+
+def test_segment_provenance_rejects_compensating_ttm_allocation_error() -> None:
+    financials, policy, discount_rate = microsoft_financials_and_policy()
+    evidence = deepcopy(load_issuer_forecast_evidence("0000789019"))
+    assert evidence is not None
+    period = evidence["periods"][financials["ttm"]["period_end"]]
+    period["segments"]["productivity_and_business_processes"]["ttm_revenue"] += 1
+    period["segments"]["intelligent_cloud"]["ttm_revenue"] -= 1
+
+    with pytest.raises(ValueError, match="Governed source value mismatch"):
+        derive_forecast_assumptions(
+            financials,
+            policy=policy,
+            discount_rate=discount_rate,
+            issuer_evidence=evidence,
+        )
     assert period["cost_of_revenue_and_opex_scope"]["status"] == "not_model_inputs"
 
 
@@ -555,6 +588,43 @@ def test_same_period_stale_annual_zero_accession_cannot_clear_bridge() -> None:
         "finance_lease_current",
         "finance_lease_noncurrent",
     }
+
+
+def test_same_period_noncontrolling_accession_cannot_clear_bridge() -> None:
+    submission = load_fixture("msft-submissions.json")
+    recent = submission["filings"]["recent"]
+    filing_records = [
+        {
+            key: values[index]
+            for key, values in recent.items()
+            if isinstance(values, list) and index < len(values)
+        }
+        for index in range(len(recent["accessionNumber"]))
+    ]
+    filing_records.append(
+        {
+            "accessionNumber": "0000950170-25-000001",
+            "form": "10-Q",
+            "reportDate": "2025-03-31",
+            "filingDate": "2025-04-29",
+        }
+    )
+    classification = classify_issuer(submission)
+    stale = deepcopy(classification["verified_zero_bridge_fields"])
+    for record in stale.values():
+        record["source_accession"] = "0000950170-25-000001"
+    financials = CompanyFactsNormalizer(
+        load_fixture("msft-companyfacts.json"),
+        fiscal_year_end=submission["fiscalYearEnd"],
+        as_of_date="2025-04-30",
+        filing_records=filing_records,
+    ).normalize(annual_count=5, verified_zero_bridge_fields=stale)
+
+    assert financials["balance_sheet"]["bridge_complete"] is False
+    assert all(
+        financials["balance_sheet"]["field_states"][field] == "verification_stale"
+        for field in stale
+    )
 
 
 def test_valuation_date_excludes_later_filed_facts(
@@ -753,8 +823,8 @@ def test_segment_operating_income_governance_rejects_invalid_evidence() -> None:
             )
 
     for field, value, error in (
-        ("ttm_revenue", 1, "Segment revenue"),
-        ("ttm_operating_income", 1, "Segment operating income"),
+        ("ttm_revenue", 1, "Governed source value mismatch"),
+        ("ttm_operating_income", 1, "Governed source value mismatch"),
     ):
         evidence = deepcopy(original)
         evidence["periods"][period]["segments"]["intelligent_cloud"][field] = value

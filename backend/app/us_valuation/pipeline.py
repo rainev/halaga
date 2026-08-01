@@ -350,10 +350,20 @@ def build_us_valuation(
     classification = classify_issuer(submissions)
     if str(companyfacts.get("cik", "")).zfill(10) != classification["cik"]:
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
+    recent_filings = submissions.get("filings", {}).get("recent", {})
+    filing_records = [
+        {
+            key: values[index]
+            for key, values in recent_filings.items()
+            if isinstance(values, list) and index < len(values)
+        }
+        for index in range(len(recent_filings.get("accessionNumber", [])))
+    ]
     financials = CompanyFactsNormalizer(
         companyfacts,
         fiscal_year_end=submissions.get("fiscalYearEnd"),
         as_of_date=valuation_date,
+        filing_records=filing_records,
     ).normalize(
         annual_count=5,
         verified_zero_bridge_fields=classification[

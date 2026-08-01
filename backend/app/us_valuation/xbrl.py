@@ -66,6 +66,7 @@ class CompanyFactsNormalizer:
         *,
         fiscal_year_end: str | None = None,
         as_of_date: str | None = None,
+        filing_records: Iterable[Mapping[str, Any]] = (),
     ) -> None:
         self.companyfacts = companyfacts
         self.config = concept_config or load_concept_config()
@@ -79,6 +80,7 @@ class CompanyFactsNormalizer:
             else None
         )
         self.as_of_date = as_of_date
+        self.filing_records = [dict(record) for record in filing_records]
         if as_of_date:
             date.fromisoformat(as_of_date)
         if not self.us_gaap:
@@ -597,17 +599,33 @@ class CompanyFactsNormalizer:
                 "TTM flow inputs do not share one period end and reconstruction basis"
             )
         ttm_end = ttm_fields["revenue"]["period_end"]
-        controlling_accessions = {
-            source.get("accession")
-            for field in ttm_fields.values()
-            for source in field.get("sources", [])
-            if source.get("accession") and source.get("end") == ttm_end
-        }
+        controlling_filings = [
+            record
+            for record in self.filing_records
+            if record.get("reportDate") == ttm_end
+            and record.get("form") in {"10-Q", "10-Q/A", "10-K", "10-K/A"}
+            and (
+                not self.as_of_date
+                or record.get("filingDate", "") <= self.as_of_date
+            )
+        ]
+        controlling_accession = (
+            max(
+                controlling_filings,
+                key=lambda record: (
+                    record.get("filingDate", ""),
+                    record.get("form", "").endswith("/A"),
+                    record.get("accessionNumber", ""),
+                ),
+            ).get("accessionNumber")
+            if controlling_filings
+            else None
+        )
         verified_zero_fields = {
             field
             for field, evidence in verified_zero_evidence.items()
             if evidence.get("controlled_period_end") == ttm_end
-            and evidence.get("source_accession") in controlling_accessions
+            and evidence.get("source_accession") == controlling_accession
             and (
                 not self.as_of_date
                 or (

@@ -14,8 +14,8 @@
 
 ## Commands and results
 
-- `PYTHONPATH=backend pytest -q backend/tests` — passed (79 tests; one unrelated Python deprecation warning).
-- `cd frontend && npm test` — passed (19 tests).
+- `PYTHONPATH=backend pytest -q backend/tests` — passed (84 tests; one unrelated Python deprecation warning).
+- `cd frontend && npm test` — passed (20 tests).
 - `cd frontend && npm run build` — passed.
 - `PYTHONPATH=backend python3 -m compileall -q backend` — passed.
 - `git diff --check && git diff --cached --check` — passed.
@@ -47,3 +47,13 @@ should continue to review the fixture because it is a controlled source input.
 | Frontend adapter accepted legacy state values | `normalizeUsPublicationArtifact` runs at adapter entry and converts legacy/unknown state to a null-valued `withheld` result before calculating any display value. The stale architecture Apple wording now says `review_required`. | `legacy and unknown U.S. publication states fail closed at the adapter boundary` |
 | Grouped MSFT provenance did not reach private audit | `field_provenance` now maps every one of the 41 governed paths exactly once to a structured provenance context. The assumptions layer validates coverage and source references, resolves the full field-level map into the private result, and public serialization omits it. TTM contexts include both FY2024 10-K and FY2025 Q3 10-Q accessions. The design and plan formally document the intentional direct-operating-income scope. | `test_microsoft_governed_segment_fields_have_complete_private_provenance` |
 | Bridge accepted a same-period stale annual accession | Bridge-zero validation now selects only source accessions with report end equal to the normalized TTM end and requires a review date on/before the valuation cutoff. | `test_same_period_stale_annual_zero_accession_cannot_clear_bridge` |
+
+## Post-remediation final-review addendum
+
+| Final-review finding | Additional remediation | Regression evidence |
+| --- | --- | --- |
+| Six TTM segment values contradicted declared derivations | Corrected each segment revenue and operating-income TTM input to `FY2024 + FY2025 Q3 YTD - FY2024 Q3 YTD`. Exact field source values now cover every governed path; validation rejects any source-value mismatch, recomputes each TTM derivation, and validates consolidated totals. | `test_microsoft_governed_segment_fields_have_complete_private_provenance`; `test_segment_provenance_rejects_compensating_ttm_allocation_error` |
+| Any same-end source could authorize bridge zeroes | The normalizer now receives cutoff-filtered submissions and derives one latest controlling filing for the normalized period. Governed zeros must match that exact accession, period, and cutoff-valid review date. | `test_same_period_noncontrolling_accession_cannot_clear_bridge` |
+| Verification counts were stale | Counts are refreshed after the final full verification below. | Full-suite record below |
+
+Final verification: `84` backend tests and `20` frontend tests passed; frontend production build, Python compilation, public-data safety scan, and staged/unstaged whitespace checks passed. MSFT remains `withheld` with null public model, scenario, and range values.
