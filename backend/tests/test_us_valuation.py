@@ -38,12 +38,13 @@ def result(submissions: dict, companyfacts: dict) -> dict:
     )
 
 
-def test_apple_classification_and_model_route(result: dict):
+def test_apple_classification_and_model_route(result: dict, submissions: dict):
     assert result["issuer"]["ticker"] == "AAPL"
     assert result["issuer"]["primary_archetype"] == "hardware_electronic_equipment"
     assert result["model_policy"]["primary"] == "fcff_dcf"
     assert result["model_policy"]["supporting"] == ["epv"]
     assert result["model_policy"]["blend_models"] is False
+    assert classify_issuer(submissions)["requires_segment_forecast"] is False
 
 
 def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
@@ -59,6 +60,55 @@ def test_microsoft_sic_routes_to_enterprise_software_cloud() -> None:
     assert result["primary_archetype"] == "enterprise_software_cloud"
     assert result["requires_segment_forecast"] is True
     assert result["valuation_policy"]["primary_model"] == "fcff_dcf"
+
+
+def test_complete_override_routes_without_matching_sic() -> None:
+    config = {
+        "version": "test",
+        "sic_ranges": [],
+        "issuer_overrides": {
+            "0000123456": {
+                "ticker": "TEST",
+                "sector": "Test sector",
+                "archetype": "test_archetype",
+                "confidence": 1.0,
+                "reason": "Complete issuer override for a controlled test.",
+            }
+        },
+        "valuation_policies": {"test_archetype": {"primary_model": "fcff_dcf"}},
+    }
+    submission = {
+        "cik": "123456",
+        "tickers": ["TEST"],
+        "name": "TEST CORP",
+        "sic": "9999",
+        "filings": {"recent": {"accessionNumber": [], "form": []}},
+    }
+
+    result = classify_issuer(submission, config)
+
+    assert result["finsight_sector"] == "Test sector"
+    assert result["primary_archetype"] == "test_archetype"
+
+
+def test_partial_override_without_matching_sic_is_rejected() -> None:
+    config = {
+        "version": "test",
+        "sic_ranges": [],
+        "issuer_overrides": {"0000123456": {"requires_segment_forecast": True}},
+        "valuation_policies": {},
+    }
+    submission = {
+        "cik": "123456",
+        "sic": "9999",
+        "filings": {"recent": {"accessionNumber": [], "form": []}},
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="Incomplete issuer override for CIK 0000123456 without a SIC route",
+    ):
+        classify_issuer(submission, config)
 
 
 def test_apple_ttm_reconciliation_and_history(result: dict):

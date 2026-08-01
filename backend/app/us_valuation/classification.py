@@ -36,9 +36,26 @@ def classify_issuer(
         )
 
     if override:
-        sector = override.get("sector", match["sector"])
-        archetype = override.get("archetype", match["archetype"])
-        confidence = override.get("confidence", match["confidence"])
+        required_override_fields = ("sector", "archetype", "confidence")
+        if not match and any(
+            field not in override for field in required_override_fields
+        ):
+            raise ValueError(
+                f"Incomplete issuer override for CIK {cik} without a SIC route"
+            )
+        sector = (
+            override["sector"] if "sector" in override else match["sector"]
+        )
+        archetype = (
+            override["archetype"]
+            if "archetype" in override
+            else match["archetype"]
+        )
+        confidence = (
+            override["confidence"]
+            if "confidence" in override
+            else match["confidence"]
+        )
         reason = override.get(
             "reason",
             "Mapped from SEC SIC; issuer-level economic review is still required.",
