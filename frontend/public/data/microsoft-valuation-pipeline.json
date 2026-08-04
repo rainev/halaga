@@ -1,0 +1,213 @@
+{
+  "schema_version": "US-PUBLIC-VALUATION-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "ticker": "MSFT",
+  "issuer": {
+    "cik": "0000789019",
+    "ticker": "MSFT",
+    "issuer_name": "MICROSOFT CORP",
+    "finsight_sector": "Technology",
+    "primary_archetype": "enterprise_software_cloud",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.9,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required."
+  },
+  "source_financial_statement": {
+    "form": "10-K",
+    "period_end": "2026-06-30",
+    "filed_date": "2026-07-29",
+    "accession": "0001193125-26-323660",
+    "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+    "note": "Latest financial statement used; this does not claim to be the issuer's latest disclosure of every type."
+  },
+  "model_policy": {
+    "primary": "fcff_dcf",
+    "supporting": [
+      "epv"
+    ],
+    "blend_models": false,
+    "reason": "FCFF is the primary governed model for the enterprise software and cloud archetype; EPV is a separate no-growth support value."
+  },
+  "public_assumptions": {
+    "forecast_policy_version": "MSFT-ENTERPRISE-CLOUD-1.0",
+    "forecast_years": 8,
+    "forecast_mode": "segment_operating_income",
+    "initial_revenue_growth": 0.1424825323679032,
+    "target_operating_margin": 0.46978250383294146,
+    "segment_assumptions": {
+      "productivity_and_business_processes": {
+        "label": "Productivity and Business Processes",
+        "initial_revenue_growth": 0.13544655233465205,
+        "target_operating_margin": 0.5883480413345332,
+        "target_gross_margin": null
+      },
+      "intelligent_cloud": {
+        "label": "Intelligent Cloud",
+        "initial_revenue_growth": 0.2,
+        "target_operating_margin": 0.41653435534513367,
+        "target_gross_margin": null
+      },
+      "more_personal_computing": {
+        "label": "More Personal Computing",
+        "initial_revenue_growth": 0.01408061714257895,
+        "target_operating_margin": 0.2626845158640063,
+        "target_gross_margin": null
+      }
+    },
+    "sales_to_capital": 3.0,
+    "terminal_growth": 0.02,
+    "discount_policy_version": "US-RATES-1.0",
+    "discount_calibration_type": "policy_calibrated",
+    "policy_wacc": 0.08689486792122063,
+    "risk_free_rate": 0.0468,
+    "risk_free_effective_date": "2026-07-30",
+    "risk_free_source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value_month=202607&type=daily_treasury_yield_curve",
+    "equity_risk_premium": 0.045
+  },
+  "models": {
+    "fcff_dcf": {
+      "model": "fcff_dcf",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 316.78407090406165,
+      "publication_state": "pass",
+      "errors": [],
+      "warnings": []
+    },
+    "epv": {
+      "model": "epv",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 189.16625031588194,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "EPV is a no-growth support value, not an independent growth forecast.",
+        "It assumes normalized D&A approximates maintenance CapEx and normalized working capital is stable."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 248.01811891636385,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "base": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 316.78407090406165,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "bull": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 421.9064183797141,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 248.01811891636385,
+    "base": 316.78407090406165,
+    "high": 421.9064183797141,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "forecast_quality": {
+    "policy_version": "US-FORECAST-QUALITY-1.0",
+    "status": "review_required",
+    "errors": [],
+    "warnings": [
+      "DCF and EPV differ by more than 40%; the growth thesis requires review.",
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
+    ],
+    "checks": {
+      "segment_forecast_required": {
+        "status": "pass",
+        "value": true
+      },
+      "segment_reconciliation": {
+        "status": "pass",
+        "value": {
+          "segment_revenue_to_consolidated": "pass",
+          "segment_operating_income_to_consolidated": "pass"
+        }
+      },
+      "archetype_growth_weight": {
+        "status": "pass",
+        "value": 0.2,
+        "limit": 0.25
+      },
+      "forecast_horizon": {
+        "status": "pass",
+        "value": 8
+      },
+      "terminal_growth_continuity": {
+        "status": "pass",
+        "value": 0.020000000000000018,
+        "target": 0.02
+      },
+      "revenue_fcff_consistency": {
+        "status": "pass",
+        "revenue_cagr": 0.06905982242132058,
+        "fcff_cagr": 0.05773495810082041
+      },
+      "dcf_epv_dispersion": {
+        "status": "review_required",
+        "value": 0.4028542856462909,
+        "review_threshold": 0.4
+      },
+      "segment_evidence_automation": {
+        "status": "review_required",
+        "value": "governed_filing_table_transcription"
+      }
+    }
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "Fully diluted shares are proxied by the latest SEC cover-page/common share count plus the latest reported incremental shares from share-based awards; a complete award roll-forward is not yet modeled.",
+      "Operating NWC uses a consistent four-account public-data definition and may omit issuer-specific operating accruals.",
+      "Operating leases remain in operating expense and are not added to debt; finance leases are included when separately reported.",
+      "DCF and EPV differ by more than 40%; the growth thesis requires review.",
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
+    ],
+    "price_dependent_inputs_used": false,
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts, submissions and governed filing-specific Products/Services tables; no exchange prices"
+  },
+  "data_boundary": {
+    "raw_financial_statement_values_included": false,
+    "stock_prices_used": false,
+    "public_payload_contains": "derived valuation outputs, governed assumptions, methodology, warnings, and filing attribution"
+  }
+}

@@ -12,6 +12,7 @@ from . import (
     insights,
     news,
     research,
+    us_valuations,
     valuations,
 )
 
@@ -30,4 +31,5 @@ api_router.include_router(holdings.router, dependencies=_limited)
 api_router.include_router(insights.router, dependencies=_limited)
 api_router.include_router(news.router, dependencies=_limited)
 api_router.include_router(research.router, dependencies=_limited)
+api_router.include_router(us_valuations.router, dependencies=_limited)
 api_router.include_router(valuations.router, dependencies=_limited)

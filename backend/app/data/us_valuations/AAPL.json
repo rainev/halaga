@@ -1,0 +1,207 @@
+{
+  "schema_version": "US-PUBLIC-VALUATION-1.0",
+  "valuation_date": "2026-07-31",
+  "market": "US",
+  "currency": "USD",
+  "ticker": "AAPL",
+  "issuer": {
+    "cik": "0000320193",
+    "ticker": "AAPL",
+    "issuer_name": "Apple Inc.",
+    "finsight_sector": "Technology",
+    "primary_archetype": "hardware_electronic_equipment",
+    "secondary_archetypes": [
+      "digital_services_ecosystem"
+    ],
+    "classification_confidence": 0.98,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "classification_reason": "Apple combines mature hardware with a material services ecosystem; consolidated FCFF remains appropriate for the initial filing-only route."
+  },
+  "source_financial_statement": {
+    "form": "10-Q",
+    "period_end": "2026-03-28",
+    "filed_date": "2026-05-01",
+    "accession": "0000320193-26-000013",
+    "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm",
+    "note": "Latest financial statement used; this does not claim to be the issuer's latest disclosure of every type."
+  },
+  "model_policy": {
+    "primary": "fcff_dcf",
+    "supporting": [
+      "epv"
+    ],
+    "blend_models": false,
+    "reason": "FCFF is the primary governed model for the hardware and services archetype; EPV is a separate no-growth support value."
+  },
+  "public_assumptions": {
+    "forecast_policy_version": "AAPL-HARDWARE-SERVICES-1.0",
+    "forecast_years": 10,
+    "forecast_mode": "segment_gross_profit",
+    "initial_revenue_growth": 0.09084056606764632,
+    "target_operating_margin": 0.332996971551094,
+    "segment_assumptions": {
+      "products": {
+        "label": "Products",
+        "initial_revenue_growth": 0.07740135179640473,
+        "target_operating_margin": null,
+        "target_gross_margin": 0.369756340430778
+      },
+      "services": {
+        "label": "Services",
+        "initial_revenue_growth": 0.12918457305447345,
+        "target_operating_margin": null,
+        "target_gross_margin": 0.7464424022978013
+      }
+    },
+    "sales_to_capital": 2.5,
+    "terminal_growth": 0.02,
+    "discount_policy_version": "US-RATES-1.0",
+    "discount_calibration_type": "policy_calibrated",
+    "policy_wacc": 0.09118064378138147,
+    "risk_free_rate": 0.0468,
+    "risk_free_effective_date": "2026-07-30",
+    "risk_free_source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value_month=202607&type=daily_treasury_yield_curve",
+    "equity_risk_premium": 0.045
+  },
+  "models": {
+    "fcff_dcf": {
+      "model": "fcff_dcf",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 137.88394865730277,
+      "publication_state": "pass",
+      "errors": [],
+      "warnings": []
+    },
+    "epv": {
+      "model": "epv",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 91.36485244771345,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "EPV is a no-growth support value, not an independent growth forecast.",
+        "It assumes normalized D&A approximates maintenance CapEx and normalized working capital is stable."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 108.06548432373914,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "base": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 137.88394865730277,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    },
+    "bull": {
+      "fcff_dcf": {
+        "model": "fcff_dcf",
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": 183.14790284352432,
+        "publication_state": "pass",
+        "errors": [],
+        "warnings": []
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 108.06548432373914,
+    "base": 137.88394865730277,
+    "high": 183.14790284352432,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "forecast_quality": {
+    "policy_version": "US-FORECAST-QUALITY-1.0",
+    "status": "review_required",
+    "errors": [],
+    "warnings": [
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
+    ],
+    "checks": {
+      "segment_forecast_required": {
+        "status": "pass",
+        "value": false
+      },
+      "segment_reconciliation": {
+        "status": "pass",
+        "value": {
+          "segment_revenue_to_consolidated": "pass",
+          "gross_profit_less_opex_to_operating_income": "pass"
+        }
+      },
+      "archetype_growth_weight": {
+        "status": "pass",
+        "value": 0.2,
+        "limit": 0.25
+      },
+      "forecast_horizon": {
+        "status": "pass",
+        "value": 10
+      },
+      "terminal_growth_continuity": {
+        "status": "pass",
+        "value": 0.02000000000000024,
+        "target": 0.02
+      },
+      "revenue_fcff_consistency": {
+        "status": "pass",
+        "revenue_cagr": 0.04655922725185624,
+        "fcff_cagr": 0.042744729873012144
+      },
+      "dcf_epv_dispersion": {
+        "status": "pass",
+        "value": 0.3373786192126543,
+        "review_threshold": 0.4
+      },
+      "segment_evidence_automation": {
+        "status": "review_required",
+        "value": "governed_filing_table_transcription"
+      }
+    }
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "Fully diluted shares are proxied by the latest SEC cover-page/common share count plus the latest reported incremental shares from share-based awards; a complete award roll-forward is not yet modeled.",
+      "Operating NWC uses a consistent four-account public-data definition and may omit issuer-specific operating accruals.",
+      "Operating leases remain in operating expense and are not added to debt; finance leases are included when separately reported.",
+      "Segment evidence is governed filing-table transcription; automated filing-specific inline-XBRL extraction is not yet implemented."
+    ],
+    "price_dependent_inputs_used": false,
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts, submissions and governed filing-specific Products/Services tables; no exchange prices"
+  },
+  "data_boundary": {
+    "raw_financial_statement_values_included": false,
+    "stock_prices_used": false,
+    "public_payload_contains": "derived valuation outputs, governed assumptions, methodology, warnings, and filing attribution"
+  }
+}
