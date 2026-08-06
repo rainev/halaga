@@ -182,3 +182,73 @@ export interface SmartBrief {
   passLabels: string[]
   watchLabels: string[]
 }
+
+// Filing-only U.S. valuations served by GET /api/us-valuations/{ticker}.
+// The public artifact is price-free by design: no reported statement amounts,
+// no market price, no buy/hold/sell label — only derived intrinsic values,
+// governed assumptions, and provenance. Fields are optional/loose because the
+// artifact carries provenance the UI shows opportunistically.
+export type UsPublicationState = 'pass' | 'review_required' | 'withheld' | null
+
+export interface UsModelResult {
+  model: string
+  output_type: string
+  currency: string
+  intrinsic_value_per_share: number | null
+  publication_state: UsPublicationState
+  errors: string[]
+  warnings: string[]
+}
+
+export interface UsSegmentAssumption {
+  label: string
+  initial_revenue_growth?: number | null
+  target_operating_margin?: number | null
+  target_gross_margin?: number | null
+}
+
+export interface UsValuation {
+  schema_version: string
+  valuation_date: string
+  market: string
+  currency: string
+  ticker: string
+  issuer: {
+    cik: string
+    ticker: string
+    issuer_name: string
+    finsight_sector: string
+    primary_archetype: string
+    secondary_archetypes: string[]
+    classification_confidence: number
+    classification_reason?: string
+  }
+  source_financial_statement: {
+    form: string
+    period_end: string
+    filed_date: string
+    accession: string
+    url: string
+    note?: string
+  }
+  model_policy: { primary: string; supporting: string[]; blend_models: boolean; reason?: string }
+  public_assumptions: {
+    forecast_years: number
+    forecast_mode?: string
+    initial_revenue_growth?: number | null
+    target_operating_margin?: number | null
+    segment_assumptions?: Record<string, UsSegmentAssumption>
+    terminal_growth: number
+    policy_wacc: number
+    risk_free_rate: number
+    risk_free_effective_date?: string
+    risk_free_source_url?: string
+    equity_risk_premium: number
+  }
+  models: Record<string, UsModelResult>
+  scenarios: Record<string, Record<string, UsModelResult>>
+  scenario_range: { low: number; base: number; high: number; label?: string }
+  review?: { publication_state: UsPublicationState; errors?: string[]; warnings?: string[] }
+  methodology?: string
+  data_boundary?: string
+}

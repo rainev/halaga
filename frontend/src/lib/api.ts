@@ -18,6 +18,7 @@ import type {
   SavedValuation,
   Sentiment,
   SmartBrief,
+  UsValuation,
   ValuationResult,
 } from './types'
 
@@ -173,4 +174,9 @@ export function getValuation(ticker: string, sentiment: Sentiment): Promise<Rese
 
 export function getBrief(ticker: string, risk: number, sentiment: Sentiment): Promise<SmartBrief> {
   return request<SmartBrief>(`/research/brief/${ticker}?risk=${risk}&sentiment=${sentiment}`)
+}
+
+// Filing-only U.S. valuations (precomputed, reviewed, price-free public artifact).
+export function getUsValuation(ticker: string): Promise<UsValuation> {
+  return request<UsValuation>(`/us-valuations/${ticker}`)
 }
