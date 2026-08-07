@@ -269,3 +269,48 @@ def build_equity_level_result(*, classification, companyfacts, valuation_date, s
                          model_name, scenarios, pa, warnings)
 
     raise ValueError(f"build_equity_level_result cannot handle primary_model={model_name!r}")
+
+
+# Generic equity-level fallbacks used when the FCFF enterprise->equity bridge
+# cannot be built (a single missing bridge field should not withhold a company
+# we can value another way). Residual income is the general profitable-company
+# equity model (book + excess return, no debt bridge); DDM suits dividend-driven
+# names. Both governed/CANDIDATE and clearly labelled as fallbacks.
+_FALLBACK_RI = {
+    "primary_model": "residual_income", "supporting_models": [], "forecast_years": 5,
+    "risk_free_rate": 0.0468, "equity_risk_premium": 0.045, "policy_beta": 1.0,
+    "terminal_roe": 0.11, "terminal_growth": 0.02, "default_payout_ratio": 0.40,
+    "model_policy_reason": "Fallback (residual income): FCFF enterprise bridge incomplete.",
+}
+_FALLBACK_DDM = {
+    "primary_model": "ddm", "supporting_models": [], "forecast_years": 10,
+    "risk_free_rate": 0.0468, "equity_risk_premium": 0.045, "policy_beta": 0.90,
+    "high_growth_years": 5, "high_dividend_growth": 0.03, "terminal_growth": 0.025,
+    "model_policy_reason": "Fallback (DDM): FCFF enterprise bridge incomplete.",
+}
+
+
+def build_fallback_valuation(*, classification, companyfacts, valuation_date, source_manifest, fcff_reason):
+    """Try equity-level models when FCFF can't complete. Returns a result or None."""
+    gaap = companyfacts.get("facts", {}).get("us-gaap", {})
+    # Dividend-driven names (high payout) -> DDM first; otherwise residual income.
+    try:
+        payout = extract_bank_inputs(gaap, valuation_date)["current_payout_ratio"]
+    except EquityInputsUnavailable:
+        payout = None
+    order = ([_FALLBACK_DDM, _FALLBACK_RI] if (payout is not None and payout >= 0.5)
+             else [_FALLBACK_RI, _FALLBACK_DDM])
+    for policy in order:
+        cls = {**classification, "valuation_policy": {**classification["valuation_policy"], **policy}}
+        result = build_equity_level_result(
+            classification=cls, companyfacts=companyfacts,
+            valuation_date=valuation_date, source_manifest=source_manifest,
+        )
+        if result["review"]["publication_state"] == "review_required":
+            note = (f"FCFF enterprise-to-equity bridge incomplete ({fcff_reason}); "
+                    f"valued via {policy['primary_model']} equity-level fallback.")
+            result["review"].setdefault("warnings", []).insert(0, note)
+            result["model_policy"]["fallback_from"] = "fcff_dcf"
+            result["model_policy"]["primary"] = policy["primary_model"]
+            return result
+    return None

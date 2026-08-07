@@ -15,7 +15,7 @@ from .assumptions import (
     load_issuer_forecast_evidence,
 )
 from .classification import classify_issuer
-from .equity_models import build_equity_level_result
+from .equity_models import build_equity_level_result, build_fallback_valuation
 from .models import (
     earnings_power_value,
     fcff_dcf,
@@ -398,6 +398,18 @@ def build_us_valuation(
     )
     if not financials["balance_sheet"]["bridge_complete"]:
         missing = ", ".join(financials["balance_sheet"]["bridge_missing_fields"])
+        # FCFF needs the full enterprise->equity bridge; a single missing field
+        # should not withhold a company we can value at the equity level. Fall
+        # back to residual income / DDM before giving up.
+        fallback = build_fallback_valuation(
+            classification=classification,
+            companyfacts=companyfacts,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+            fcff_reason=f"missing {missing}",
+        )
+        if fallback is not None:
+            return fallback
         return _withheld_segment_evidence_result(
             classification=classification,
             financials=financials,
