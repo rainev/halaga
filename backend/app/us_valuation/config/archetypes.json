@@ -98,6 +98,41 @@
       "sector": "Utilities",
       "archetype": "us_utility",
       "confidence": 0.65
+    },
+    {
+      "start": 3400,
+      "end": 3569,
+      "sector": "Industrials",
+      "archetype": "capital_goods_machinery",
+      "confidence": 0.6
+    },
+    {
+      "start": 3580,
+      "end": 3599,
+      "sector": "Industrials",
+      "archetype": "capital_goods_machinery",
+      "confidence": 0.6
+    },
+    {
+      "start": 5200,
+      "end": 5999,
+      "sector": "Consumer Discretionary",
+      "archetype": "retail",
+      "confidence": 0.55
+    },
+    {
+      "start": 4000,
+      "end": 4700,
+      "sector": "Industrials",
+      "archetype": "transportation",
+      "confidence": 0.55
+    },
+    {
+      "start": 4800,
+      "end": 4899,
+      "sector": "Communication Services",
+      "archetype": "telecom",
+      "confidence": 0.55
     }
   ],
   "issuer_overrides": {
@@ -2878,6 +2913,78 @@
       "high_dividend_growth": 0.05,
       "terminal_growth": 0.025,
       "model_policy_reason": "CANDIDATE (review_required) \u2014 regulated utilities valued via two-stage DDM on stable regulated dividends; low beta."
+    },
+    "capital_goods_machinery": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 5,
+      "archetype_median_growth": 0.05,
+      "archetype_target_operating_margin": 0.16,
+      "growth_persistence": 0.7,
+      "margin_persistence": 0.7,
+      "sales_to_capital": 2.2,
+      "unlevered_policy_beta": 1.05,
+      "target_debt_weight": 0.32,
+      "default_debt_spread": 0.012,
+      "terminal_roic_premium": 0.03,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 capital goods/machinery (CAT,DE,ITW,CMI). Calibrated 23 comps: obs growth 0.073, margin 0.17, book debt-wt 0.355 (excludes hardware 3570-3579)."
+    },
+    "retail": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 5,
+      "archetype_median_growth": 0.04,
+      "archetype_target_operating_margin": 0.08,
+      "growth_persistence": 0.7,
+      "margin_persistence": 0.7,
+      "sales_to_capital": 4.0,
+      "unlevered_policy_beta": 0.85,
+      "target_debt_weight": 0.4,
+      "default_debt_spread": 0.013,
+      "terminal_roic_premium": 0.03,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 retail (WMT,TGT,HD,COST,TJX). Calibrated 20 comps; margin set to thin-retail 0.08 (obs median 0.13 inflated by franchise/restaurant names); high sales_to_capital for asset turnover. Cohort heterogeneous \u2014 split discount vs franchise later."
+    },
+    "transportation": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 6,
+      "archetype_median_growth": 0.05,
+      "archetype_target_operating_margin": 0.15,
+      "growth_persistence": 0.7,
+      "margin_persistence": 0.7,
+      "sales_to_capital": 1.5,
+      "unlevered_policy_beta": 1.1,
+      "target_debt_weight": 0.4,
+      "default_debt_spread": 0.014,
+      "terminal_roic_premium": 0.02,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 transport (UNP,CSX,UPS,DAL,FDX). Calibrated 12 comps; growth mean-reverted (obs 0.175 = post-COVID airline/cruise recovery); capital-heavy low sales_to_capital. Mixes rails/airlines \u2014 split later."
+    },
+    "telecom": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 8,
+      "archetype_median_growth": 0.02,
+      "archetype_target_operating_margin": 0.18,
+      "growth_persistence": 0.78,
+      "margin_persistence": 0.78,
+      "sales_to_capital": 1.2,
+      "unlevered_policy_beta": 0.85,
+      "target_debt_weight": 0.45,
+      "default_debt_spread": 0.014,
+      "terminal_roic_premium": 0.02,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 telecom (VZ,T,CMCSA,TMUS). Calibrated 5 comps; mature low growth, very capital-heavy (huge capex compresses FCFF). Dividend-heavy names may suit DDM better \u2014 revisit."
     }
   }
 }
