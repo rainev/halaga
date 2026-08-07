@@ -68,7 +68,9 @@
       "concepts": [
         "AccountsReceivableNetCurrent",
         "AccountsAndNotesReceivableNet",
-        "AccountsAndOtherReceivablesNetCurrent"
+        "AccountsAndOtherReceivablesNetCurrent",
+        "ReceivablesNetCurrent",
+        "AccountsNotesAndLoansReceivableNetCurrent"
       ]
     },
     "inventory": {

@@ -582,25 +582,32 @@ class CompanyFactsNormalizer:
         )
 
     def operating_nwc(self, end: str) -> dict[str, Any]:
+        # Accounts receivable anchors the operating-capital proxy. Some issuers
+        # report the balance sheet only at fiscal-year ends, not at an interim
+        # TTM anchor, so AR is absent at the exact `end`. Fall back to the most
+        # recent balance-sheet date at or before the anchor and build ALL four
+        # accounts there, keeping them internally consistent rather than mixing
+        # dates or blocking the valuation.
+        anchor_ar = self.instant("accounts_receivable", end=end)
+        nwc_end = end
+        anchor_fallback = False
+        if anchor_ar is None:
+            anchor_ar = self.instant("accounts_receivable", at_or_before=end)
+            if anchor_ar is None:
+                raise ValueError(
+                    f"Operating NWC cannot be built at {end}; missing accounts_receivable"
+                )
+            nwc_end = anchor_ar.end
+            anchor_fallback = True
         components = {
-            field: self.instant(field, end=end)
-            for field in (
-                "accounts_receivable",
-                "inventory",
-                "accounts_payable",
-                "deferred_revenue_current",
-            )
+            "accounts_receivable": anchor_ar,
+            "inventory": self.instant("inventory", end=nwc_end),
+            "accounts_payable": self.instant("accounts_payable", end=nwc_end),
+            "deferred_revenue_current": self.instant("deferred_revenue_current", end=nwc_end),
         }
-        # Accounts receivable anchors the operating-capital proxy. The other
-        # three accounts are legitimately absent for whole sectors (software and
-        # services carry no inventory; some issuers net payables into accrued
-        # liabilities), so treat an absent one as zero and record it rather than
-        # blocking the valuation. Missing receivables, by contrast, means the
-        # public four-account definition cannot be applied.
-        if components["accounts_receivable"] is None:
-            raise ValueError(
-                f"Operating NWC cannot be built at {end}; missing accounts_receivable"
-            )
+        # The other three accounts are legitimately absent for whole sectors
+        # (software/services carry no inventory; some issuers net payables into
+        # accrued liabilities), so treat an absent one as zero and record it.
         absent = [field for field, fact in components.items() if fact is None]
 
         def _value(field: str) -> float:
@@ -615,7 +622,9 @@ class CompanyFactsNormalizer:
         )
         return {
             "value": value,
-            "period_end": end,
+            "period_end": nwc_end,
+            "anchor_fallback": anchor_fallback,
+            "requested_end": end,
             "definition": "accounts receivable + inventory - accounts payable - current deferred revenue",
             "absent_components": absent,
             "sources": [fact.as_dict() for fact in components.values() if fact],

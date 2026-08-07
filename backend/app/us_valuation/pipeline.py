@@ -103,7 +103,9 @@ def _forecast_quality_review(
         fcff_cagr = (
             (fcff_values[-1] / fcff_values[0]) ** (1 / (forecast_years - 1))
             - 1
-            if len(fcff_values) > 1 and fcff_values[0] > 0
+            # Both endpoints must be positive: a positive/negative ratio raised to
+            # a fractional power is a complex number (crashes the comparison below).
+            if len(fcff_values) > 1 and fcff_values[0] > 0 and fcff_values[-1] > 0
             else None
         )
         inconsistent_cash_flow = (
