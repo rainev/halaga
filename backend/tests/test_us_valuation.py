@@ -1399,3 +1399,40 @@ def test_positive_dcf_stays_reviewable():
     review = valuation_pipeline._publication_review(**_publication_inputs(50.0))
     assert review["publication_state"] == "review_required"
     assert not any("Non-positive DCF" in e for e in review["errors"])
+
+
+def _usd(val, fy=2025, end="2025-12-31"):
+    return {"units": {"USD": [{"val": val, "fy": fy, "end": end, "form": "10-K", "fp": "FY"}]}}
+
+
+def test_extract_bank_inputs_computes_bvps_and_roe():
+    from app.us_valuation.equity_models import extract_bank_inputs
+    gaap = {
+        "NetIncomeLoss": _usd(1000),
+        "StockholdersEquity": _usd(8000),
+        "CommonStockSharesOutstanding": {"units": {"shares": [{"val": 100, "fy": 2025, "end": "2025-12-31", "form": "10-K", "fp": "FY"}]}},
+        "PaymentsOfDividendsCommonStock": _usd(300),
+    }
+    inp = extract_bank_inputs(gaap, "2026-01-01")
+    assert round(inp["book_value_per_share"], 1) == 80.0
+    assert round(inp["current_roe"], 3) == 0.125
+    assert round(inp["current_payout_ratio"], 2) == 0.30
+
+
+def test_extract_bank_inputs_rejects_loss_year():
+    import pytest
+    from app.us_valuation.equity_models import extract_bank_inputs, EquityInputsUnavailable
+    gaap = {"NetIncomeLoss": _usd(-500), "StockholdersEquity": _usd(8000),
+            "CommonStockSharesOutstanding": {"units": {"shares": [{"val": 100, "fy": 2025, "end": "2025-12-31", "form": "10-K", "fp": "FY"}]}}}
+    with pytest.raises(EquityInputsUnavailable):
+        extract_bank_inputs(gaap, "2026-01-01")
+
+
+def test_extract_utility_inputs_reads_per_share_unit():
+    from app.us_valuation.equity_models import extract_utility_inputs
+    gaap = {
+        "CommonStockDividendsPerShareCashPaid": {"units": {"USD/shares": [{"val": 2.8, "fy": 2025, "end": "2025-12-31", "form": "10-K", "fp": "FY"}]}},
+        "StockholdersEquity": _usd(50000),
+    }
+    inp = extract_utility_inputs(gaap, "2026-01-01")
+    assert inp["last_dividend"] == 2.8

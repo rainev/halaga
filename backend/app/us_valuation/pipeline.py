@@ -15,6 +15,7 @@ from .assumptions import (
     load_issuer_forecast_evidence,
 )
 from .classification import classify_issuer
+from .equity_models import build_equity_level_result
 from .models import (
     earnings_power_value,
     fcff_dcf,
@@ -357,6 +358,15 @@ def build_us_valuation(
     classification = classify_issuer(submissions)
     if str(companyfacts.get("cik", "")).zfill(10) != classification["cik"]:
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
+    # Dispatch archetypes FCFF cannot value (banks -> residual income, utilities
+    # -> DDM) to the equity-level path before the enterprise FCFF normalization.
+    if classification["valuation_policy"]["primary_model"] in ("residual_income", "ddm"):
+        return build_equity_level_result(
+            classification=classification,
+            companyfacts=companyfacts,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+        )
     recent_filings = submissions.get("filings", {}).get("recent", {})
     filing_records = [
         {

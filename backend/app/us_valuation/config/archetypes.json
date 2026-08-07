@@ -84,6 +84,20 @@
       "sector": "Technology",
       "archetype": "internet_digital_services",
       "confidence": 0.5
+    },
+    {
+      "start": 6020,
+      "end": 6099,
+      "sector": "Financials",
+      "archetype": "us_bank",
+      "confidence": 0.7
+    },
+    {
+      "start": 4900,
+      "end": 4991,
+      "sector": "Utilities",
+      "archetype": "us_utility",
+      "confidence": 0.65
     }
   ],
   "issuer_overrides": {
@@ -2835,6 +2849,35 @@
       "terminal_roic_premium": 0.05,
       "normal_company_overlay": 0.0,
       "model_policy_reason": "CANDIDATE (keep review_required) \u2014 internet/digital services. Only 5 comparables, META/GOOGL-dominated: growth mean-reverted from 0.184; margin 0.274; asset-light debt-weight 0.194; ROIC 0.21. Overlaps enterprise_software_cloud \u2014 refine routing before publish."
+    },
+    "us_bank": {
+      "primary_model": "residual_income",
+      "supporting_models": [
+        "justified_pb",
+        "clean_surplus_ddm"
+      ],
+      "forecast_years": 5,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 1.0,
+      "terminal_roe": 0.11,
+      "terminal_growth": 0.02,
+      "default_payout_ratio": 0.3,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 depository banks valued at the equity level via residual income; deposits are operating funding, not an EV->equity debt bridge. Cross-checks: clean-surplus DDM + justified P/B."
+    },
+    "us_utility": {
+      "primary_model": "ddm",
+      "supporting_models": [
+        "two_stage_ddm"
+      ],
+      "forecast_years": 10,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 0.6,
+      "high_growth_years": 5,
+      "high_dividend_growth": 0.05,
+      "terminal_growth": 0.025,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 regulated utilities valued via two-stage DDM on stable regulated dividends; low beta."
     }
   }
 }
