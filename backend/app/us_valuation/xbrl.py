@@ -792,6 +792,7 @@ class CompanyFactsNormalizer:
             "noncurrent_debt",
             "finance_lease_current",
             "finance_lease_noncurrent",
+            "finance_lease_total",
             "preferred_equity",
             "noncontrolling_interests",
             "common_shares_outstanding",
@@ -896,10 +897,32 @@ class CompanyFactsNormalizer:
             "finance_lease_current",
             "finance_lease_noncurrent",
         )
+        # Some issuers tag only the aggregate FinanceLeaseLiability, not the
+        # current/noncurrent split. Finance leases are financing debt (not
+        # operating NWC), so the split is immaterial to the bridge: when both
+        # split fields are absent but the aggregate is reported, use the
+        # aggregate and treat the split as satisfied.
+        fl_current = balance_fields["finance_lease_current"]["value"]
+        fl_noncurrent = balance_fields["finance_lease_noncurrent"]["value"]
+        fl_total_reported = balance_fields["finance_lease_total"]["value"]
+        finance_lease_from_total = (
+            fl_current is None
+            and fl_noncurrent is None
+            and fl_total_reported is not None
+        )
+        finance_lease_debt = (
+            fl_total_reported
+            if finance_lease_from_total
+            else (fl_current or 0.0) + (fl_noncurrent or 0.0)
+        )
         missing_bridge = [
             field
             for field in required_bridge_fields
             if balance_fields[field]["value"] is None
+            and not (
+                finance_lease_from_total
+                and field in ("finance_lease_current", "finance_lease_noncurrent")
+            )
         ]
         # Missing bridge components are captured by ``missing_bridge`` above and
         # force ``bridge_complete`` to False, which routes the pipeline to a
@@ -914,8 +937,7 @@ class CompanyFactsNormalizer:
             (balance_fields["commercial_paper"]["value"] or 0.0)
             + (balance_fields["current_debt"]["value"] or 0.0)
             + (balance_fields["noncurrent_debt"]["value"] or 0.0)
-            + (balance_fields["finance_lease_current"]["value"] or 0.0)
-            + (balance_fields["finance_lease_noncurrent"]["value"] or 0.0)
+            + finance_lease_debt
         )
 
         tax_rates = [

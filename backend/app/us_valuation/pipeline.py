@@ -191,6 +191,13 @@ def _publication_review(
     ]
     if len(scenario_values) != 3:
         errors.append("All three standard valuation scenarios must complete.")
+    base_value = base.get("intrinsic_value_per_share")
+    if base_value is not None and base_value <= 0:
+        errors.append(
+            "Non-positive DCF intrinsic value; FCFF does not apply to this issuer "
+            "(typically unprofitable or pre-FCFF high-growth). Withheld pending a "
+            "growth-appropriate model."
+        )
 
     if errors:
         state = "withheld"

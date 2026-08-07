@@ -14,6 +14,76 @@
       "sector": "Technology",
       "archetype": "enterprise_software_cloud",
       "confidence": 0.9
+    },
+    {
+      "start": 3670,
+      "end": 3679,
+      "sector": "Technology",
+      "archetype": "semiconductors_and_components",
+      "confidence": 0.7
+    },
+    {
+      "start": 3826,
+      "end": 3829,
+      "sector": "Health Care",
+      "archetype": "medical_devices_instruments",
+      "confidence": 0.65
+    },
+    {
+      "start": 3840,
+      "end": 3845,
+      "sector": "Health Care",
+      "archetype": "medical_devices_instruments",
+      "confidence": 0.65
+    },
+    {
+      "start": 3720,
+      "end": 3799,
+      "sector": "Industrials",
+      "archetype": "diversified_industrials",
+      "confidence": 0.6
+    },
+    {
+      "start": 2833,
+      "end": 2836,
+      "sector": "Health Care",
+      "archetype": "pharmaceuticals",
+      "confidence": 0.6
+    },
+    {
+      "start": 2800,
+      "end": 2832,
+      "sector": "Materials",
+      "archetype": "specialty_chemicals",
+      "confidence": 0.55
+    },
+    {
+      "start": 2837,
+      "end": 2899,
+      "sector": "Materials",
+      "archetype": "specialty_chemicals",
+      "confidence": 0.55
+    },
+    {
+      "start": 2000,
+      "end": 2111,
+      "sector": "Consumer Staples",
+      "archetype": "consumer_staples",
+      "confidence": 0.6
+    },
+    {
+      "start": 7370,
+      "end": 7371,
+      "sector": "Technology",
+      "archetype": "internet_digital_services",
+      "confidence": 0.5
+    },
+    {
+      "start": 7373,
+      "end": 7379,
+      "sector": "Technology",
+      "archetype": "internet_digital_services",
+      "confidence": 0.5
     }
   ],
   "issuer_overrides": {
@@ -675,6 +745,1932 @@
           "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
         }
       }
+    },
+    "0000001800": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028357",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028357",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028357",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000002488": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002488-26-000076",
+          "controlled_period_end": "2026-03-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002488-26-000076",
+          "controlled_period_end": "2026-03-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002488-26-000076",
+          "controlled_period_end": "2026-03-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000002969": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002969-26-000036",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002969-26-000036",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000002969-26-000036",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000006281": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000006281-26-000052",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000006281-26-000052",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000006281-26-000052",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000006951": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-037227",
+          "controlled_period_end": "2026-04-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000010795": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000010795-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000010795-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000010795-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000012927": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-050038",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000021344": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028802",
+          "controlled_period_end": "2026-04-03",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028802",
+          "controlled_period_end": "2026-04-03",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028802",
+          "controlled_period_end": "2026-04-03",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000021665": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000021665-26-000042",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000021665-26-000042",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000021665-26-000042",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000031462": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-056737",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-056737",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-056737",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000040533": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000040533-26-000012",
+          "controlled_period_end": "2026-04-05",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000040533-26-000012",
+          "controlled_period_end": "2026-04-05",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000046619": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000046619-26-000016",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000050863": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000050863-26-000157",
+          "controlled_period_end": "2026-06-27",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000050863-26-000157",
+          "controlled_period_end": "2026-06-27",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000066740": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000066740-26-000246",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000080424": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000080424-26-000060",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000080424-26-000060",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000097476": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000097476-26-000152",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000097476-26-000152",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000097476-26-000152",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000200406": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000200406-26-000153",
+          "controlled_period_end": "2026-06-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000200406-26-000153",
+          "controlled_period_end": "2026-06-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000310764": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000310764-26-000050",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000310764-26-000050",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000310764-26-000050",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000318154": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000318154-26-000057",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000318154-26-000057",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000318154-26-000057",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000318154-26-000057",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000319201": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000319201-26-000016",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000319201-26-000016",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000319201-26-000016",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000723125": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000723125-26-000015",
+          "controlled_period_end": "2026-05-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000723125-26-000015",
+          "controlled_period_end": "2026-05-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000773840": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000773840-26-000127",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000818686": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001193125-26-323619",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000820313": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-089194",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-089194",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-089194",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000820318": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000820318-26-000013",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000827054": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000827054-26-000016",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000827054-26-000016",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000858877": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000858877-26-000078",
+          "controlled_period_end": "2026-04-25",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000858877-26-000078",
+          "controlled_period_end": "2026-04-25",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000865752": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-057398",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-057398",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001104659-26-057398",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000866374": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000866374-26-000030",
+          "controlled_period_end": "2026-06-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000866374-26-000030",
+          "controlled_period_end": "2026-06-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000866374-26-000030",
+          "controlled_period_end": "2026-06-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000866374-26-000030",
+          "controlled_period_end": "2026-06-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000872589": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000872589-26-000025",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000872589-26-000025",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000874716": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000874716-26-000076",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000874716-26-000076",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000874716-26-000076",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000874716-26-000076",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000875320": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000875320-26-000173",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000882095": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000882095-26-000024",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000882095-26-000024",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000882095-26-000024",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000898293": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-046138",
+          "controlled_period_end": "2026-05-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000943452": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-049139",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0000943819": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000943819-26-000025",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000943819-26-000025",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000943819-26-000025",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0000943819-26-000025",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001000697": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001193125-26-219487",
+          "controlled_period_end": "2026-04-04",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001193125-26-219487",
+          "controlled_period_end": "2026-04-04",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001193125-26-219487",
+          "controlled_period_end": "2026-04-04",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001193125-26-219487",
+          "controlled_period_end": "2026-04-04",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001001250": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001001250-26-000019",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001030894": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001030894-26-000044",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001030894-26-000044",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001030894-26-000044",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001035267": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001035267-26-000058",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001035267-26-000058",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001035267-26-000058",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001045810": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001045810-26-000052",
+          "controlled_period_end": "2026-04-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001045810-26-000052",
+          "controlled_period_end": "2026-04-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001045810-26-000052",
+          "controlled_period_end": "2026-04-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001045810-26-000052",
+          "controlled_period_end": "2026-04-26",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001090872": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001090872-26-000055",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001090872-26-000055",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001093557": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001093557-26-000143",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001093557-26-000143",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001093557-26-000143",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001099800": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001099800-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001099800-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001099800-26-000026",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001103982": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-027937",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001110803": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001110803-26-000160",
+          "controlled_period_end": "2026-06-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001178670": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001178670-26-000062",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001178670-26-000062",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001178670-26-000062",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001178670-26-000062",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001260221": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001260221-26-000040",
+          "controlled_period_end": "2026-03-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001260221-26-000040",
+          "controlled_period_end": "2026-03-28",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001280452": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001437749-26-014647",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001437749-26-014647",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001437749-26-014647",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001437749-26-014647",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001315098": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-051082",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-051082",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-051082",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001326801": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028526",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-028526",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001327811": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001327811-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001327811-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001327811-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001327811-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001327811-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001393052": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001393052-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001393052-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001393052-26-000026",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001413329": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-049493",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001413447": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001413447-26-000034",
+          "controlled_period_end": "2026-03-29",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001447669": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001447669-26-000049",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001447669-26-000049",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001477333": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001477333-26-000038",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001477333-26-000038",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001477333-26-000038",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001477333-26-000038",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001477333-26-000038",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001512673": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-032200",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001551152": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001551152-26-000017",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001594805": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001594805-26-000019",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001594805-26-000019",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001594805-26-000019",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001594805-26-000019",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001640147": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001640147-26-000030",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001640147-26-000030",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001640147-26-000030",
+          "controlled_period_end": "2026-04-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001651308": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-030867",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-030867",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-030867",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-030867",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001652044": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001652044-26-000071",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001652044-26-000071",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001674101": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-050609",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-050609",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-050609",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-050609",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001707925": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-051289",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001713445": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001713445-26-000100",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001713445-26-000100",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001713445-26-000100",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001713445-26-000100",
+          "controlled_period_end": "2026-06-30",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001736297": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001736297-26-000020",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001736297-26-000020",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001736297-26-000020",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001736297-26-000020",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001736297-26-000020",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001751008": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001751008-26-000044",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001751008-26-000044",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001769628": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001769628-26-000222",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001769628-26-000222",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001807794": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-043303",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-043303",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-043303",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-043303",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "preferred_equity": {
+          "rationale": "'s controlling filing tags no preferred equity concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001628280-26-043303",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001819994": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001819994-26-000028",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001819994-26-000028",
+          "controlled_period_end": "2026-03-31",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001835632": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "commercial_paper": {
+          "rationale": "'s controlling filing tags no commercial paper concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001835632-26-000019",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_current": {
+          "rationale": "'s controlling filing tags no finance lease current concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001835632-26-000019",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "finance_lease_noncurrent": {
+          "rationale": "'s controlling filing tags no finance lease noncurrent concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001835632-26-000019",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        },
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001835632-26-000019",
+          "controlled_period_end": "2026-05-02",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
+    },
+    "0001944048": {
+      "ticker": "",
+      "reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+      "verified_zero_bridge_fields": {
+        "noncontrolling_interests": {
+          "rationale": "'s controlling filing tags no noncontrolling interests concept in its SEC Companyfacts; treated as verified zero pending human confirmation.",
+          "source_accession": "0001944048-26-000098",
+          "controlled_period_end": "2026-03-29",
+          "reviewer": "FinSight automated bridge-absence check",
+          "reviewed_on": "2026-08-01",
+          "verification_version": "US-BRIDGE-ZERO-AUTO-1.0"
+        }
+      }
     }
   },
   "valuation_policies": {
@@ -713,6 +2709,132 @@
       "terminal_roic_premium": 0.05,
       "normal_company_overlay": 0.0,
       "model_policy_reason": "FCFF is the primary governed model for the enterprise software and cloud archetype; EPV is a separate no-growth support value."
+    },
+    "semiconductors_and_components": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 7,
+      "archetype_median_growth": 0.1,
+      "archetype_target_operating_margin": 0.22,
+      "growth_persistence": 0.72,
+      "margin_persistence": 0.72,
+      "sales_to_capital": 2.2,
+      "unlevered_policy_beta": 1.15,
+      "target_debt_weight": 0.2,
+      "default_debt_spread": 0.012,
+      "terminal_roic_premium": 0.04,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 semiconductors & components. Calibrated to 20 SEC comparables: growth mean-reverted from AI-peak 5y CAGR (obs median 0.18, range -0.10..1.30); operating margin blends fabless (~0.30-0.40) and EMS (~0.03-0.05, obs median 0.137); observed ROIC ~0.16, book debt-weight ~0.21. sales_to_capital set on governed reinvestment scale (not trailing book ratio). Recalibrate splitting semis vs EMS."
+    },
+    "medical_devices_instruments": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 7,
+      "archetype_median_growth": 0.07,
+      "archetype_target_operating_margin": 0.2,
+      "growth_persistence": 0.8,
+      "margin_persistence": 0.8,
+      "sales_to_capital": 2.6,
+      "unlevered_policy_beta": 0.85,
+      "target_debt_weight": 0.25,
+      "default_debt_spread": 0.01,
+      "terminal_roic_premium": 0.05,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 medical devices & instruments. Calibrated to 12 SEC comparables: obs revenue CAGR median 0.075, operating margin median 0.20, ROIC ~0.15, book debt-weight ~0.27. Defensive beta by judgment; durable-moat terminal premium."
+    },
+    "diversified_industrials": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 5,
+      "archetype_median_growth": 0.05,
+      "archetype_target_operating_margin": 0.13,
+      "growth_persistence": 0.68,
+      "margin_persistence": 0.68,
+      "sales_to_capital": 2.0,
+      "unlevered_policy_beta": 1.1,
+      "target_debt_weight": 0.35,
+      "default_debt_spread": 0.015,
+      "terminal_roic_premium": 0.02,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 aerospace/machinery/industrials. Calibrated to 9 SEC comparables (small n): growth mean-reverted to GDP+ (obs median 0.095 noisy); operating margin 0.13 excludes BA distress (obs median 0.103); observed ROIC ~0.15, book debt-weight ~0.38 (one negative-equity outlier). Cyclical beta by judgment."
+    },
+    "pharmaceuticals": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 7,
+      "archetype_median_growth": 0.04,
+      "archetype_target_operating_margin": 0.25,
+      "growth_persistence": 0.75,
+      "margin_persistence": 0.75,
+      "sales_to_capital": 2.4,
+      "unlevered_policy_beta": 0.9,
+      "target_debt_weight": 0.3,
+      "default_debt_spread": 0.012,
+      "terminal_roic_premium": 0.04,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 pharma/biotech. Calibrated 14 SEC comparables (ABT,JNJ,AMGN,GILD,VRTX...): growth mean-reverted (obs median 0.021, biotech noise to 1.7); big-pharma margin ~0.25; ROIC ~0.16; book debt-weight ~0.34. Pre-revenue biotech will still withhold."
+    },
+    "specialty_chemicals": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 6,
+      "archetype_median_growth": 0.04,
+      "archetype_target_operating_margin": 0.19,
+      "growth_persistence": 0.75,
+      "margin_persistence": 0.75,
+      "sales_to_capital": 2.2,
+      "unlevered_policy_beta": 0.95,
+      "target_debt_weight": 0.35,
+      "default_debt_spread": 0.013,
+      "terminal_roic_premium": 0.03,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 chemicals & household/personal products. Cohort MIXES industrial gas/chem (APD,LIN,ECL) with household/personal care (PG,CL,EL,KVUE) \u2014 SPLIT before publish. obs growth 0.039, margin 0.198, ROIC 0.116, debt-weight 0.395."
+    },
+    "consumer_staples": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 7,
+      "archetype_median_growth": 0.05,
+      "archetype_target_operating_margin": 0.24,
+      "growth_persistence": 0.82,
+      "margin_persistence": 0.82,
+      "sales_to_capital": 2.6,
+      "unlevered_policy_beta": 0.7,
+      "target_debt_weight": 0.45,
+      "default_debt_spread": 0.012,
+      "terminal_roic_premium": 0.05,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 food/beverage/tobacco. Calibrated 8 comparables (KO,PEP,MO,PM,MDLZ,HSY...): obs growth 0.068, brand margin 0.238, durable ROIC 0.17, book debt-weight 0.526 (MO outlier). Defensive beta by judgment."
+    },
+    "internet_digital_services": {
+      "primary_model": "fcff_dcf",
+      "supporting_models": [
+        "epv"
+      ],
+      "forecast_years": 8,
+      "archetype_median_growth": 0.1,
+      "archetype_target_operating_margin": 0.28,
+      "growth_persistence": 0.78,
+      "margin_persistence": 0.78,
+      "sales_to_capital": 3.0,
+      "unlevered_policy_beta": 1.0,
+      "target_debt_weight": 0.1,
+      "default_debt_spread": 0.01,
+      "terminal_roic_premium": 0.05,
+      "normal_company_overlay": 0.0,
+      "model_policy_reason": "CANDIDATE (keep review_required) \u2014 internet/digital services. Only 5 comparables, META/GOOGL-dominated: growth mean-reverted from 0.184; margin 0.274; asset-light debt-weight 0.194; ROIC 0.21. Overlaps enterprise_software_cloud \u2014 refine routing before publish."
     }
   }
 }

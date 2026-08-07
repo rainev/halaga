@@ -1373,3 +1373,29 @@ def test_fiscal_year_label_uses_declared_fiscal_year_end(companyfacts: dict):
 def test_assumption_source_is_dated():
     assert US_BASE.risk_free_effective_date == "2026-07-30"
     assert US_BASE.erp_effective_date == "2026-07-01"
+
+
+def _publication_inputs(base_value: float) -> dict:
+    """Minimal valid inputs for _publication_review with a given base intrinsic value."""
+    model = lambda v: {"fcff_dcf": {"intrinsic_value_per_share": v}}
+    return dict(
+        classification={"classification_confidence": 0.9},
+        financials={"annual": [1, 2, 3, 4, 5], "warnings": []},
+        base={"intrinsic_value_per_share": base_value, "errors": [], "warnings": []},
+        scenarios={"bear": model(base_value - 2), "base": model(base_value), "bull": model(base_value + 2)},
+        forecast_quality={"errors": [], "warnings": []},
+    )
+
+
+def test_nonpositive_dcf_is_withheld():
+    """A non-positive base intrinsic value must be withheld, not published."""
+    review = valuation_pipeline._publication_review(**_publication_inputs(-5.0))
+    assert review["publication_state"] == "withheld"
+    assert any("Non-positive DCF" in e for e in review["errors"])
+
+
+def test_positive_dcf_stays_reviewable():
+    """A positive base intrinsic value is unaffected by the non-positive guard."""
+    review = valuation_pipeline._publication_review(**_publication_inputs(50.0))
+    assert review["publication_state"] == "review_required"
+    assert not any("Non-positive DCF" in e for e in review["errors"])

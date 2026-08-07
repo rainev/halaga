@@ -67,7 +67,8 @@
       "kind": "instant",
       "concepts": [
         "AccountsReceivableNetCurrent",
-        "AccountsAndNotesReceivableNet"
+        "AccountsAndNotesReceivableNet",
+        "AccountsAndOtherReceivablesNetCurrent"
       ]
     },
     "inventory": {
@@ -124,7 +125,8 @@
       "unit": "USD",
       "kind": "instant",
       "concepts": [
-        "CommercialPaper"
+        "CommercialPaper",
+        "CommercialPaperAtCarryingValue"
       ]
     },
     "current_debt": {
@@ -159,6 +161,13 @@
       "kind": "instant",
       "concepts": [
         "FinanceLeaseLiabilityNoncurrent"
+      ]
+    },
+    "finance_lease_total": {
+      "unit": "USD",
+      "kind": "instant",
+      "concepts": [
+        "FinanceLeaseLiability"
       ]
     },
     "preferred_equity": {
