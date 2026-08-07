@@ -70,9 +70,16 @@ def _latest_instant(gaap: dict, names: list[str], unit: str, cutoff: str | None)
     return None
 
 
+_EQUITY_CONCEPTS = [
+    "StockholdersEquity",
+    "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+    "CommonStockholdersEquity",
+]
+
+
 def extract_bank_inputs(gaap: dict, cutoff: str | None) -> dict[str, Any]:
     ni = _annual_10k(gaap, ["NetIncomeLoss"], cutoff)
-    eq = _latest_instant(gaap, ["StockholdersEquity"], "USD", cutoff)
+    eq = _latest_instant(gaap, _EQUITY_CONCEPTS, "USD", cutoff)
     sh = _latest_instant(
         gaap, ["CommonStockSharesOutstanding", "CommonStockSharesIssued"], "shares", cutoff
     )
@@ -122,13 +129,17 @@ def extract_utility_inputs(gaap: dict, cutoff: str | None) -> dict[str, Any]:
         if div and sh:
             last = div[max(div)] / sh[1]
             dps_series = {max(div): last}
-    eq = _latest_instant(gaap, ["StockholdersEquity"], "USD", cutoff)
-    if not dps_series or not eq:
-        raise EquityInputsUnavailable("missing per-share dividend history or equity")
+    if not dps_series:
+        raise EquityInputsUnavailable("missing per-share dividend history")
     last_dividend = dps_series[max(dps_series)]
     if last_dividend <= 0:
         raise EquityInputsUnavailable("non-positive latest dividend (not a DDM candidate)")
-    return {"last_dividend": last_dividend, "period_end": eq[0]}
+    # DDM needs only the dividend; take a best-effort period_end from any
+    # balance-sheet or share instant (equity is NOT required for a DDM).
+    anchor = _latest_instant(gaap, _EQUITY_CONCEPTS, "USD", cutoff) or _latest_instant(
+        gaap, ["CommonStockSharesOutstanding"], "shares", cutoff
+    )
+    return {"last_dividend": last_dividend, "period_end": anchor[0] if anchor else None}
 
 
 def _shell(classification, valuation_date, source_manifest, period_end):
