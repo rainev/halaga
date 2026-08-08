@@ -35,11 +35,11 @@ jobs:
           - service: frontend
             context: ./frontend
             dockerfile: ./frontend/Dockerfile.prod
-            # Vite bakes these into the browser bundle at build time (not
-            # secrets — they ship to every browser). Staging values from repo
-            # Variables. VITE_API_URL must point at the staging backend URL.
+            # VITE_API_URL is intentionally EMPTY: nginx reverse-proxies /api to
+            # the backend, so the client calls /api on its own origin (first-party
+            # session cookie). Proxy target is BACKEND_ORIGIN on the service.
             build_args: |
-              VITE_API_URL=${{ vars.STAGING_VITE_API_URL }}
+              VITE_API_URL=
               VITE_GOOGLE_CLIENT_ID=${{ vars.STAGING_VITE_GOOGLE_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
@@ -97,8 +97,10 @@ jobs:
       - name: Deploy frontend → staging
         env:
           IMAGE: ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/frontend:${{ github.sha }}
+          # nginx in the frontend image reverse-proxies /api to this backend URL.
+          BACKEND_ORIGIN: ${{ vars.STAGING_VITE_API_URL }}
         run: |
-          envsubst '$IMAGE' < infra/cloudrun/frontend-staging.yaml > /tmp/frontend-staging.yaml
+          envsubst '$IMAGE $BACKEND_ORIGIN' < infra/cloudrun/frontend-staging.yaml > /tmp/frontend-staging.yaml
           gcloud run services replace /tmp/frontend-staging.yaml --region=${{ env.REGION }} --quiet
           gcloud run services add-iam-policy-binding finsight-frontend-staging \
             --region=${{ env.REGION }} --member=allUsers --role=roles/run.invoker --quiet

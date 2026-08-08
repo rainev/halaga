@@ -28,10 +28,13 @@ spec:
           ports:
             - name: http1
               containerPort: 8080
+          # nginx reverse-proxies /api to this backend origin (see nginx.conf.template).
+          env:
+            - name: BACKEND_ORIGIN
+              value: ${BACKEND_ORIGIN}
           resources:
             limits:
               cpu: "1"
-              # gen2 floors memory at 512Mi even though `serve` needs far less.
               memory: 512Mi
           startupProbe:
             failureThreshold: 3
