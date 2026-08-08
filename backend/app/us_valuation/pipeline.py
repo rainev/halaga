@@ -14,8 +14,10 @@ from .assumptions import (
     derive_forecast_assumptions,
     load_issuer_forecast_evidence,
 )
+from .automated_review import repair_provenance_from_submissions
 from .classification import classify_issuer
-from .equity_models import build_equity_level_result, build_fallback_valuation
+from .eligibility import model_eligibility
+from .equity_models import build_equity_level_result
 from .models import (
     earnings_power_value,
     fcff_dcf,
@@ -360,15 +362,19 @@ def build_us_valuation(
     classification = classify_issuer(submissions)
     if str(companyfacts.get("cik", "")).zfill(10) != classification["cik"]:
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
+    eligibility = model_eligibility(classification)
+    if not eligibility["eligible"]:
+        raise ValueError(f"Model eligibility rejected: {eligibility['reason']}")
     # Dispatch archetypes FCFF cannot value (banks -> residual income, utilities
     # -> DDM) to the equity-level path before the enterprise FCFF normalization.
-    if classification["valuation_policy"]["primary_model"] in ("residual_income", "ddm", "ffo"):
-        return build_equity_level_result(
+    if eligibility["model"] in ("residual_income", "ddm", "ffo"):
+        equity_result = build_equity_level_result(
             classification=classification,
             companyfacts=companyfacts,
             valuation_date=valuation_date,
             source_manifest=source_manifest,
         )
+        return repair_provenance_from_submissions(equity_result, submissions)
     recent_filings = submissions.get("filings", {}).get("recent", {})
     filing_records = [
         {
@@ -398,18 +404,6 @@ def build_us_valuation(
     )
     if not financials["balance_sheet"]["bridge_complete"]:
         missing = ", ".join(financials["balance_sheet"]["bridge_missing_fields"])
-        # FCFF needs the full enterprise->equity bridge; a single missing field
-        # should not withhold a company we can value at the equity level. Fall
-        # back to residual income / DDM before giving up.
-        fallback = build_fallback_valuation(
-            classification=classification,
-            companyfacts=companyfacts,
-            valuation_date=valuation_date,
-            source_manifest=source_manifest,
-            fcff_reason=f"missing {missing}",
-        )
-        if fallback is not None:
-            return fallback
         return _withheld_segment_evidence_result(
             classification=classification,
             financials=financials,
