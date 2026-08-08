@@ -143,6 +143,37 @@ def extract_utility_inputs(gaap: dict, cutoff: str | None) -> dict[str, Any]:
     return {"last_dividend": last_dividend, "period_end": anchor[0] if anchor else None}
 
 
+
+_NI_CONCEPTS = ["NetIncomeLoss", "NetIncomeLossAvailableToCommonStockholdersBasic", "ProfitLoss"]
+_REIT_DEP = ["DepreciationDepletionAndAmortization", "DepreciationAndAmortization",
+             "DepreciationAmortizationAndAccretionNet", "RealEstateInvestmentPropertyDepreciation"]
+_REIT_GAIN = ["GainLossOnSaleOfProperties", "GainLossOnDispositionOfRealEstate",
+              "GainsLossesOnSalesOfInvestmentRealEstate"]
+
+
+def extract_reit_inputs(gaap: dict, cutoff: str | None) -> dict[str, Any]:
+    """FFO per share = (net income + real-estate depreciation - property-sale gains) / shares."""
+    ni = _annual_10k(gaap, _NI_CONCEPTS, cutoff)
+    dep = _annual_10k(gaap, _REIT_DEP, cutoff)
+    sh = _latest_instant(gaap, ["CommonStockSharesOutstanding", "CommonStockSharesIssued"], "shares", cutoff)
+    if not ni or not dep or not sh:
+        raise EquityInputsUnavailable("missing net income, depreciation, or shares for FFO")
+    if sh[1] < 1_000_000:
+        # A large-cap issuer with < 1M shares is an extraction error (wrong tag /
+        # par value), which would explode per-share metrics. Refuse it.
+        raise EquityInputsUnavailable("implausible share count for FFO")
+    common = sorted(set(ni) & set(dep))
+    if not common:
+        raise EquityInputsUnavailable("no common NI/depreciation fiscal year")
+    year = common[-1]
+    gains = _annual_10k(gaap, _REIT_GAIN, cutoff)
+    ffo = ni[year] + dep[year] - (gains.get(year, 0.0) if gains else 0.0)
+    ffo_per_share = ffo / sh[1]
+    if ffo_per_share <= 0:
+        raise EquityInputsUnavailable("non-positive FFO per share")
+    return {"ffo_per_share": ffo_per_share, "period_end": sh[0]}
+
+
 def _shell(classification, valuation_date, source_manifest, period_end):
     return {
         "schema_version": "US-VALUATION-RESULT-1.0",
@@ -200,6 +231,8 @@ def _finalize(classification, valuation_date, source_manifest, period_end, model
                          "Model did not produce a base value.")
     if base <= 0:
         errors.append(f"Non-positive {model_name} intrinsic value; equity model does not apply.")
+    if base > 50000:
+        errors.append(f"Implausible {model_name} intrinsic value (~${base:,.0f}/share); withheld.")
     state = "withheld" if errors else "review_required"
     model = {
         "model": model_name, "output_type": "intrinsic_value_per_share", "currency": "USD",
@@ -287,6 +320,20 @@ def build_equity_level_result(*, classification, companyfacts, valuation_date, s
               "last_dividend": inp["last_dividend"], "high_dividend_growth": policy["high_dividend_growth"],
               "terminal_growth": policy["terminal_growth"], "high_growth_years": policy["high_growth_years"]}
         warnings = ["Dividend growth is a governed policy assumption, not a per-issuer forecast."]
+        return _finalize(classification, valuation_date, source_manifest, inp["period_end"],
+                         model_name, scenarios, pa, warnings)
+
+    if model_name == "ffo":
+        try:
+            inp = extract_reit_inputs(gaap, valuation_date)
+        except EquityInputsUnavailable as exc:
+            return _withheld(classification, valuation_date, source_manifest, model_name, str(exc))
+        ffo = inp["ffo_per_share"]
+        scenarios = {"bear": ffo * policy["pffo_bear"], "base": ffo * policy["pffo_base"],
+                     "bull": ffo * policy["pffo_bull"]}
+        pa = {"ffo_per_share": ffo, "pffo_multiple": policy["pffo_base"],
+              "risk_free_rate": policy["risk_free_rate"], "equity_risk_premium": policy["equity_risk_premium"]}
+        warnings = ["FFO is a filing-derived approximation (non-GAAP); valued at a governed P/FFO multiple."]
         return _finalize(classification, valuation_date, source_manifest, inp["period_end"],
                          model_name, scenarios, pa, warnings)
 

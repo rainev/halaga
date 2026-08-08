@@ -362,7 +362,7 @@ def build_us_valuation(
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
     # Dispatch archetypes FCFF cannot value (banks -> residual income, utilities
     # -> DDM) to the equity-level path before the enterprise FCFF normalization.
-    if classification["valuation_policy"]["primary_model"] in ("residual_income", "ddm"):
+    if classification["valuation_policy"]["primary_model"] in ("residual_income", "ddm", "ffo"):
         return build_equity_level_result(
             classification=classification,
             companyfacts=companyfacts,

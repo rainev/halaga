@@ -154,6 +154,13 @@
       "sector": "Financials",
       "archetype": "us_credit",
       "confidence": 0.55
+    },
+    {
+      "start": 6500,
+      "end": 6799,
+      "sector": "Real Estate",
+      "archetype": "us_reit",
+      "confidence": 0.6
     }
   ],
   "issuer_overrides": {
@@ -3048,6 +3055,20 @@
       "terminal_growth": 0.02,
       "default_payout_ratio": 0.3,
       "model_policy_reason": "CANDIDATE (review_required) \u2014 nondepository credit/consumer finance via residual income."
+    },
+    "us_reit": {
+      "primary_model": "ffo",
+      "supporting_models": [
+        "justified_pffo"
+      ],
+      "forecast_years": 0,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 0.75,
+      "pffo_bear": 13.0,
+      "pffo_base": 15.5,
+      "pffo_bull": 18.0,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 REITs valued on FFO (net income + real-estate depreciation - property-sale gains), a filing-derived non-GAAP approximation, at a governed P/FFO multiple (13-18x). DDM is inappropriate (monthly payers, growth REITs); a full AFFO/NAV model is a future refinement."
     }
   }
 }
