@@ -27,19 +27,6 @@ export default function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              {/* Public: filing-only US valuations are price-free + carry no user
-                  data, so they're viewable without an account (no cross-site
-                  session cookie needed). */}
-              <Route
-                path="/us-valuations"
-                element={
-                  <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-text)]">
-                    <div className="mx-auto w-full max-w-[1420px] px-5 py-9 lg:px-[4.5vw] lg:py-12">
-                      <UsValuations />
-                    </div>
-                  </div>
-                }
-              />
               <Route
                 element={
                   <ProtectedRoute>
@@ -52,6 +39,7 @@ export default function App() {
                 <Route path="/rankings" element={<Rankings />} />
                 <Route path="/health" element={<FinancialHealth />} />
                 <Route path="/valuation" element={<ValuationLab />} />
+                <Route path="/us-valuations" element={<UsValuations />} />
                 <Route path="/brief" element={<SmartBrief />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/companies" element={<Companies />} />
