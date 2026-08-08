@@ -22,12 +22,21 @@ def _validate_inputs(
         )
     if terminal_growth > 0.025:
         errors.append("Terminal growth above 2.5% requires manual approval.")
-    if (
-        float(assumptions["initial_revenue_growth"]) > 0
-        and float(assumptions["initial_marginal_roic"]) <= 0
-    ):
+    explicit_growths = [
+        float(assumptions["initial_revenue_growth"]),
+        terminal_growth,
+    ]
+    segment_forecast = assumptions.get("segment_forecast")
+    if segment_forecast:
+        explicit_growths.extend(
+            float(segment["initial_revenue_growth"])
+            for segment in segment_forecast["segments"].values()
+        )
+    if any(growth > 0 for growth in explicit_growths) and float(
+        assumptions["initial_marginal_roic"]
+    ) <= 0:
         errors.append(
-            "Positive forecast growth requires positive initial marginal ROIC."
+            "Positive explicit forecast growth requires positive initial marginal ROIC."
         )
     if assumptions["terminal_marginal_roic"] <= terminal_growth:
         errors.append("Terminal marginal ROIC must exceed terminal growth.")
@@ -287,6 +296,7 @@ def fcff_dcf(
             "shares_proxy": shares,
             "wacc": wacc,
             "terminal_growth": terminal_growth,
+            "initial_marginal_roic": initial_roic,
             "terminal_marginal_roic": terminal_roic,
         },
     }
@@ -349,6 +359,12 @@ def _apply_forecast_delta(
 ) -> None:
     assumptions["initial_revenue_growth"] += growth_delta
     assumptions["target_operating_margin"] += margin_delta
+    if "sales_to_capital" in assumptions:
+        assumptions["initial_marginal_roic"] = (
+            assumptions["target_operating_margin"]
+            * (1 - assumptions["normalized_tax_rate"])
+            * assumptions["sales_to_capital"]
+        )
     segment_forecast = assumptions.get("segment_forecast")
     if not segment_forecast:
         return
@@ -473,6 +489,9 @@ def one_way_sensitivities(
                 "publication_state": result["publication_state"],
                 "terminal_marginal_roic": result.get("detail", {}).get(
                     "terminal_marginal_roic"
+                ),
+                "initial_marginal_roic": result.get("detail", {}).get(
+                    "initial_marginal_roic"
                 ),
             }
         )
