@@ -44,3 +44,9 @@ Refinitiv Interface/
 *.xlsx
 ~$*
 github-deployer-key.json
+
+# Local reference material (spreadsheets, source PDFs, data dumps)
+reference/
+
+# Generated doc outputs (regenerate via docs/build_*.py)
+docs/generated/

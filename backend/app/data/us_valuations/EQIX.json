@@ -1,0 +1,112 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0001101239",
+    "ticker": "EQIX",
+    "issuer_name": "EQUINIX INC",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "6798",
+    "sec_sic_label": "Real Estate Investment Trusts",
+    "finsight_sector": "Real Estate",
+    "primary_archetype": "us_reit",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.6,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0001101239-26-000147",
+      "0001101239-26-000091",
+      "0001101239-26-000032",
+      "0001101239-25-000062",
+      "0001101239-25-000029",
+      "0001628280-25-021086",
+      "0001628280-25-005126",
+      "0001628280-24-044355"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-06-30",
+    "filed_date": null,
+    "accession": "0001101239-26-000147",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001101239",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "ffo",
+    "supporting": [
+      "justified_pffo"
+    ],
+    "blend_models": false,
+    "reason": "CANDIDATE (review_required) \u2014 REITs valued on FFO (net income + real-estate depreciation - property-sale gains), a filing-derived non-GAAP approximation, at a governed P/FFO multiple (13-18x). DDM is inappropriate (monthly payers, growth REITs); a full AFFO/NAV model is a future refinement."
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "ffo_per_share": 34.45794610371842,
+    "pffo_multiple": 15.5,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045
+  },
+  "models": {
+    "ffo": {
+      "model": "ffo",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 534.0981646076356,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FFO is a filing-derived approximation (non-GAAP); valued at a governed P/FFO multiple."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "ffo": {
+        "intrinsic_value_per_share": 447.95329934833944,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "ffo": {
+        "intrinsic_value_per_share": 534.0981646076356,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "ffo": {
+        "intrinsic_value_per_share": 620.2430298669316,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 447.95329934833944,
+    "base": 534.0981646076356,
+    "high": 620.2430298669316,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FFO is a filing-derived approximation (non-GAAP); valued at a governed P/FFO multiple."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}
