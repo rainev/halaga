@@ -1,0 +1,117 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0000077476",
+    "ticker": "PEP",
+    "issuer_name": "PEPSICO INC",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "2080",
+    "sec_sic_label": "Beverages",
+    "finsight_sector": "Consumer Staples",
+    "primary_archetype": "consumer_staples",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.6,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0000077476-26-000035",
+      "0000077476-26-000017",
+      "0000077476-26-000007",
+      "0000077476-25-000053",
+      "0000077476-25-000044",
+      "0000077476-25-000019",
+      "0000077476-25-000007",
+      "0000077476-24-000052"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-06-13",
+    "filed_date": null,
+    "accession": "0000077476-26-000035",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000077476",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "ddm",
+    "supporting": [],
+    "blend_models": false,
+    "reason": "Fallback (DDM): FCFF enterprise bridge incomplete.",
+    "fallback_from": "fcff_dcf"
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.0873,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 0.9,
+    "last_dividend": 5.6225,
+    "high_dividend_growth": 0.03,
+    "terminal_growth": 0.025,
+    "high_growth_years": 5
+  },
+  "models": {
+    "ddm": {
+      "model": "ddm",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 94.5356386323593,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_noncurrent, finance_lease_current, finance_lease_noncurrent); valued via ddm equity-level fallback.",
+        "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "ddm": {
+        "intrinsic_value_per_share": 86.63274826061435,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "ddm": {
+        "intrinsic_value_per_share": 94.5356386323593,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "ddm": {
+        "intrinsic_value_per_share": 103.03821560583366,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 86.63274826061435,
+    "base": 94.5356386323593,
+    "high": 103.03821560583366,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_noncurrent, finance_lease_current, finance_lease_noncurrent); valued via ddm equity-level fallback.",
+      "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}

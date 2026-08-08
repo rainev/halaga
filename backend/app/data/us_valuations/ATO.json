@@ -1,0 +1,116 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0000731802",
+    "ticker": "ATO",
+    "issuer_name": "ATMOS ENERGY CORP",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "4924",
+    "sec_sic_label": "Natural Gas Distribution",
+    "finsight_sector": "Utilities",
+    "primary_archetype": "us_utility",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.65,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0000731802-26-000089",
+      "0000731802-26-000013",
+      "0000731802-25-000056",
+      "0000731802-25-000026",
+      "0000731802-25-000017",
+      "0000731802-25-000006",
+      "0000731802-24-000030",
+      "0000731802-24-000023"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-03-31",
+    "filed_date": null,
+    "accession": "0000731802-26-000089",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000731802",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "ddm",
+    "supporting": [
+      "two_stage_ddm"
+    ],
+    "blend_models": false,
+    "reason": "CANDIDATE (review_required) \u2014 regulated utilities valued via two-stage DDM on stable regulated dividends; low beta."
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.0738,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 0.6,
+    "last_dividend": 3.48,
+    "high_dividend_growth": 0.05,
+    "terminal_growth": 0.025,
+    "high_growth_years": 5
+  },
+  "models": {
+    "ddm": {
+      "model": "ddm",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 81.62171631329143,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "ddm": {
+        "intrinsic_value_per_share": 74.7374228312412,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "ddm": {
+        "intrinsic_value_per_share": 81.62171631329143,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "ddm": {
+        "intrinsic_value_per_share": 89.02618366323628,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 74.7374228312412,
+    "base": 81.62171631329143,
+    "high": 89.02618366323628,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}

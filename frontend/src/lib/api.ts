@@ -19,6 +19,7 @@ import type {
   Sentiment,
   SmartBrief,
   UsValuation,
+  UsValuationList,
   ValuationResult,
 } from './types'
 
@@ -177,6 +178,10 @@ export function getBrief(ticker: string, risk: number, sentiment: Sentiment): Pr
 }
 
 // Filing-only U.S. valuations (precomputed, reviewed, price-free public artifact).
+export function listUsValuations(): Promise<UsValuationList> {
+  return request<UsValuationList>('/us-valuations')
+}
+
 export function getUsValuation(ticker: string): Promise<UsValuation> {
   return request<UsValuation>(`/us-valuations/${ticker}`)
 }

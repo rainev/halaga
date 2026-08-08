@@ -1,0 +1,118 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0000833444",
+    "ticker": "JCI",
+    "issuer_name": "Johnson Controls International plc",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "3585",
+    "sec_sic_label": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+    "finsight_sector": "Industrials",
+    "primary_archetype": "capital_goods_machinery",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.6,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0000833444-26-000087",
+      "0000833444-26-000050",
+      "0000833444-26-000019",
+      "0000833444-25-000097",
+      "0000833444-25-000063",
+      "0000833444-25-000032",
+      "0000833444-25-000011",
+      "0000833444-24-000064"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-03-31",
+    "filed_date": null,
+    "accession": "0000833444-26-000087",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000833444",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "residual_income",
+    "supporting": [],
+    "blend_models": false,
+    "reason": "Fallback (residual income): FCFF enterprise bridge incomplete.",
+    "fallback_from": "fcff_dcf"
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.09179999999999999,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 1.0,
+    "book_value_per_share": 14.450026723677178,
+    "current_roe": 0.2434531735463826,
+    "current_payout_ratio": 0.2965663931935582,
+    "terminal_roe": 0.11,
+    "terminal_growth": 0.02
+  },
+  "models": {
+    "residual_income": {
+      "model": "residual_income",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 22.554915389152413,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FCFF enterprise-to-equity bridge incomplete (missing finance_lease_current, finance_lease_noncurrent); valued via residual_income equity-level fallback.",
+        "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "residual_income": {
+        "intrinsic_value_per_share": 19.64667329616923,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "residual_income": {
+        "intrinsic_value_per_share": 22.554915389152413,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "residual_income": {
+        "intrinsic_value_per_share": 28.32958567862766,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 19.64667329616923,
+    "base": 22.554915389152413,
+    "high": 28.32958567862766,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FCFF enterprise-to-equity bridge incomplete (missing finance_lease_current, finance_lease_noncurrent); valued via residual_income equity-level fallback.",
+      "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}

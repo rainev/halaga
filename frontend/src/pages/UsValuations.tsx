@@ -1,22 +1,11 @@
 import { useEffect, useState } from 'react'
 import { AlertTriangle, ExternalLink } from 'lucide-react'
-import { getUsValuation } from '@/lib/api'
-import type { UsModelResult, UsValuation } from '@/lib/types'
+import { getUsValuation, listUsValuations } from '@/lib/api'
+import type { UsModelResult, UsValuation, UsValuationSummary } from '@/lib/types'
 import { PageHeading, panel, percent } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
-// The precomputed, reviewed filing-only set served by the backend. There is no
-// list endpoint yet, so the picker is the known published universe.
-const US_TICKERS = [
-  // FCFF (tech / hardware / software)
-  'AAPL', 'MSFT', 'ANET', 'ADSK', 'CRM', 'DELL', 'FTNT', 'NTAP', 'PANW', 'STX', 'WDC', 'NOW',
-  // Banks (residual income)
-  'JPM', 'BAC', 'WFC', 'USB',
-  // Utilities (DDM)
-  'SO', 'AEP', 'DUK', 'XEL', 'ED',
-  // Large-cap operating cos (equity-level fallback)
-  'WMT', 'UNP', 'HD', 'MCD', 'CAT',
-]
+// The available valuations are discovered from GET /api/us-valuations.
 
 const usd = (value: number | null | undefined, digits = 2) =>
   Number.isFinite(value)
@@ -83,10 +72,22 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export default function UsValuations() {
+  const [list, setList] = useState<UsValuationSummary[]>([])
   const [ticker, setTicker] = useState('AAPL')
   const [data, setData] = useState<UsValuation | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    listUsValuations()
+      .then((r) => {
+        setList(r.items)
+        if (r.items.length && !r.items.some((i) => i.ticker === 'AAPL')) {
+          setTicker(r.items[0].ticker)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     let live = true
@@ -112,21 +113,23 @@ export default function UsValuations() {
         description="Reviewed, price-free intrinsic-value ranges derived from SEC filings — FCFF DCF with an EPV cross-check, under governed forecast and discount policy. No market price, no buy/hold/sell call."
       />
 
-      <div className="mb-7 flex flex-wrap gap-2">
-        {US_TICKERS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTicker(t)}
-            className={cn(
-              'rounded-lg border px-3 py-1.5 text-xs font-bold tracking-wide',
-              t === ticker
-                ? 'border-[var(--app-text)] bg-[var(--app-text)] text-[var(--app-bg)]'
-                : 'border-[var(--app-border)] text-[var(--app-muted)] hover:bg-[var(--app-subtle)] hover:text-[var(--app-text)]',
-            )}
-          >
-            {t}
-          </button>
-        ))}
+      <div className="mb-7 flex items-center gap-3">
+        <select
+          value={ticker}
+          onChange={(e) => setTicker(e.target.value)}
+          className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] px-3 py-2 text-sm font-semibold text-[var(--app-text)]"
+        >
+          {list.map((it) => (
+            <option key={it.ticker} value={it.ticker}>
+              {it.ticker}
+              {it.name ? ` — ${it.name}` : ''}
+              {it.model ? ` · ${it.model.replace(/_/g, ' ')}` : ''}
+            </option>
+          ))}
+        </select>
+        {list.length > 0 && (
+          <span className="text-xs text-[var(--app-muted)]">{list.length} filing-only valuations</span>
+        )}
       </div>
 
       {loading && <p className="text-sm text-[var(--app-muted)]">Loading {ticker}…</p>}

@@ -33,6 +33,27 @@ def load_generated_result(ticker: str) -> dict:
     return sanitize_public_artifact(result)
 
 
+@router.get("")
+def list_us_valuations() -> dict:
+    """Public-safe summary of every available valuation (no raw financials)."""
+    items = []
+    for path in sorted(DATA_ROOT.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        issuer = data.get("issuer", {})
+        items.append({
+            "ticker": issuer.get("ticker", path.stem),
+            "name": issuer.get("issuer_name"),
+            "sector": issuer.get("finsight_sector"),
+            "model": data.get("model_policy", {}).get("primary"),
+            "base": data.get("scenario_range", {}).get("base"),
+            "publication_state": data.get("review", {}).get("publication_state"),
+        })
+    return {"count": len(items), "items": items}
+
+
 @router.get("/{ticker}")
 def get_us_valuation(ticker: str) -> dict:
     return load_generated_result(ticker)

@@ -1,0 +1,118 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0000031462",
+    "ticker": "ECL",
+    "issuer_name": "ECOLAB INC.",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "2840",
+    "sec_sic_label": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+    "finsight_sector": "Materials",
+    "primary_archetype": "specialty_chemicals",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.55,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": true,
+    "classification_reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+    "source_accessions": [
+      "0001104659-26-056737",
+      "0001104659-26-018357",
+      "0001104659-25-104386",
+      "0001558370-25-010768",
+      "0001558370-25-006969",
+      "0001558370-25-001263",
+      "0001558370-24-014051",
+      "0001558370-24-010647"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-03-31",
+    "filed_date": null,
+    "accession": "0001104659-26-056737",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000031462",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "residual_income",
+    "supporting": [],
+    "blend_models": false,
+    "reason": "Fallback (residual income): FCFF enterprise bridge incomplete.",
+    "fallback_from": "fcff_dcf"
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.09179999999999999,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 1.0,
+    "book_value_per_share": 35.55046197583511,
+    "current_roe": 0.20747908315756855,
+    "current_payout_ratio": 0.36307573713624974,
+    "terminal_roe": 0.11,
+    "terminal_growth": 0.02
+  },
+  "models": {
+    "residual_income": {
+      "model": "residual_income",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 52.45620520496983,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_current, marketable_securities_noncurrent); valued via residual_income equity-level fallback.",
+        "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "residual_income": {
+        "intrinsic_value_per_share": 46.008312596662016,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "residual_income": {
+        "intrinsic_value_per_share": 52.45620520496983,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "residual_income": {
+        "intrinsic_value_per_share": 65.48583932343922,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 46.008312596662016,
+    "base": 52.45620520496983,
+    "high": 65.48583932343922,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_current, marketable_securities_noncurrent); valued via residual_income equity-level fallback.",
+      "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}

@@ -252,3 +252,17 @@ export interface UsValuation {
   methodology?: string
   data_boundary?: string
 }
+
+export interface UsValuationSummary {
+  ticker: string
+  name: string | null
+  sector: string | null
+  model: string | null
+  base: number | null
+  publication_state: UsPublicationState
+}
+
+export interface UsValuationList {
+  count: number
+  items: UsValuationSummary[]
+}

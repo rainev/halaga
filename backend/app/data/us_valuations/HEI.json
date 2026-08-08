@@ -1,0 +1,118 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0000046619",
+    "ticker": "HEI",
+    "issuer_name": "HEICO CORP",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "3724",
+    "sec_sic_label": "Aircraft Engines & Engine Parts",
+    "finsight_sector": "Industrials",
+    "primary_archetype": "diversified_industrials",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.6,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": true,
+    "classification_reason": " routes via SEC SIC to a supported archetype; issuer-level economic review is still required. Bridge overrides record fields absent from the controlling filing.",
+    "source_accessions": [
+      "0000046619-26-000016",
+      "0000046619-26-000005",
+      "0000046619-25-000082",
+      "0000046619-25-000062",
+      "0000046619-25-000046",
+      "0000046619-25-000015",
+      "0000046619-24-000111",
+      "0000046619-24-000059"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-04-30",
+    "filed_date": null,
+    "accession": "0000046619-26-000016",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000046619",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "residual_income",
+    "supporting": [],
+    "blend_models": false,
+    "reason": "Fallback (residual income): FCFF enterprise bridge incomplete.",
+    "fallback_from": "fcff_dcf"
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.09179999999999999,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 1.0,
+    "book_value_per_share": 86.53968772101626,
+    "current_roe": 0.14467238243960992,
+    "current_payout_ratio": 0.04630459815899824,
+    "terminal_roe": 0.11,
+    "terminal_growth": 0.02
+  },
+  "models": {
+    "residual_income": {
+      "model": "residual_income",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 118.33332124566809,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_current, marketable_securities_noncurrent); valued via residual_income equity-level fallback.",
+        "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "residual_income": {
+        "intrinsic_value_per_share": 103.92267267854977,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "residual_income": {
+        "intrinsic_value_per_share": 118.33332124566809,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "residual_income": {
+        "intrinsic_value_per_share": 149.3535257287437,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 103.92267267854977,
+    "base": 118.33332124566809,
+    "high": 149.3535257287437,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_current, marketable_securities_noncurrent); valued via residual_income equity-level fallback.",
+      "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}

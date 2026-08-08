@@ -1,0 +1,117 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0001090727",
+    "ticker": "UPS",
+    "issuer_name": "UNITED PARCEL SERVICE INC",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "4210",
+    "sec_sic_label": "Trucking & Courier Services (No Air)",
+    "finsight_sector": "Industrials",
+    "primary_archetype": "transportation",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.55,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0001628280-26-031154",
+      "0001628280-26-008432",
+      "0001628280-25-049661",
+      "0001090727-25-000064",
+      "0001090727-25-000049",
+      "0001090727-25-000019",
+      "0001090727-24-000064",
+      "0001090727-24-000045"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-03-31",
+    "filed_date": null,
+    "accession": "0001628280-26-031154",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001090727",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "ddm",
+    "supporting": [],
+    "blend_models": false,
+    "reason": "Fallback (DDM): FCFF enterprise bridge incomplete.",
+    "fallback_from": "fcff_dcf"
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.0873,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 0.9,
+    "last_dividend": 6.56,
+    "high_dividend_growth": 0.03,
+    "terminal_growth": 0.025,
+    "high_growth_years": 5
+  },
+  "models": {
+    "ddm": {
+      "model": "ddm",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 110.29858415798611,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_noncurrent, preferred_equity); valued via ddm equity-level fallback.",
+        "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "ddm": {
+        "intrinsic_value_per_share": 101.07795973137041,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "ddm": {
+        "intrinsic_value_per_share": 110.29858415798611,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "ddm": {
+        "intrinsic_value_per_share": 120.21888739426747,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 101.07795973137041,
+    "base": 110.29858415798611,
+    "high": 120.21888739426747,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "FCFF enterprise-to-equity bridge incomplete (missing marketable_securities_noncurrent, preferred_equity); valued via ddm equity-level fallback.",
+      "Dividend growth is a governed policy assumption, not a per-issuer forecast."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}
