@@ -50,3 +50,8 @@ reference/
 
 # Generated doc outputs (regenerate via docs/build_*.py)
 docs/generated/
+
+# Generated parser output & marketing renders
+tools/**/out/
+docs/marketing/*.pdf
+docs/marketing/*.html
