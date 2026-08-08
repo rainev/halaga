@@ -30,11 +30,11 @@
     ]
   },
   "source_financial_statement": {
-    "form": "10-K / 10-Q",
+    "form": "10-Q",
     "period_end": "2024-03-31",
-    "filed_date": null,
+    "filed_date": "2026-07-29",
     "accession": "0001628280-26-050612",
-    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001393311",
+    "url": "https://www.sec.gov/Archives/edgar/data/1393311/000162828026050612/psa-20260630.htm",
     "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
   },
   "model_policy": {
