@@ -11,6 +11,7 @@ Price-free (no ``current_price`` passed) and default ``review_required``.
 """
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import date
 from typing import Any
 
@@ -150,6 +151,15 @@ def _shell(classification, valuation_date, source_manifest, period_end):
         "currency": "USD",
         "issuer": {k: classification[k] for k in _ISSUER_KEYS},
         "financial_period_end": period_end,
+        "source_financial_statement": {
+            "form": "10-K / 10-Q",
+            "period_end": period_end,
+            "filed_date": None,
+            "accession": (classification.get("source_accessions") or [None])[0],
+            "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK="
+                   + classification.get("cik", ""),
+            "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge.",
+        },
         "source_manifest": source_manifest or {"status": "not_supplied"},
         "model_policy": {
             "primary": classification["valuation_policy"]["primary_model"],
@@ -200,7 +210,8 @@ def _finalize(classification, valuation_date, source_manifest, period_end, model
     result.update({
         "public_assumptions": public_assumptions,
         "models": {model_name: model},
-        "scenarios": {k: {model_name: {"intrinsic_value_per_share": v}} for k, v in scenarios.items()},
+        "scenarios": {k: {model_name: {"intrinsic_value_per_share": v, "publication_state": state}}
+                      for k, v in scenarios.items()},
         "scenario_range": {
             "low": min(scenarios.values()), "base": base, "high": max(scenarios.values()),
             "label": "assumption range, not a statistical confidence interval",
@@ -325,3 +336,16 @@ def build_fallback_valuation(*, classification, companyfacts, valuation_date, so
             result["model_policy"]["primary"] = policy["primary_model"]
             return result
     return None
+
+
+# Fields carried for internal/harvest use but stripped from the SERVED public
+# artifact (the FCFF path strips the same via public_result). Equity results hold
+# no raw financials, so stripping these two makes them public-safe.
+_PUBLIC_STRIP = ("financial_period_end", "source_manifest")
+
+
+def public_equity_artifact(result: dict) -> dict:
+    art = deepcopy(result)
+    for key in _PUBLIC_STRIP:
+        art.pop(key, None)
+    return art

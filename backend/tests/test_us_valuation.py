@@ -1436,3 +1436,17 @@ def test_extract_utility_inputs_reads_per_share_unit():
     }
     inp = extract_utility_inputs(gaap, "2026-01-01")
     assert inp["last_dividend"] == 2.8
+
+
+def test_public_equity_artifact_strips_internal_fields():
+    """The served equity artifact must drop internal/private fields (public-safety)."""
+    from app.us_valuation.equity_models import public_equity_artifact
+    result = {
+        "issuer": {"ticker": "JPM"}, "financial_period_end": "2025-12-31",
+        "source_manifest": {"cache": "secret"}, "models": {"residual_income": {}},
+        "scenario_range": {"base": 100.0}, "review": {"publication_state": "review_required"},
+    }
+    art = public_equity_artifact(result)
+    assert "financial_period_end" not in art
+    assert "source_manifest" not in art
+    assert "models" in art and "review" in art  # public fields retained

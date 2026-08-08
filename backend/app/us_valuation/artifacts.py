@@ -168,9 +168,14 @@ def sanitize_public_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(model, dict) or model.get("publication_state") not in PUBLICATION_STATES:
             invalid_state = True
     for scenario in public.get("scenarios", {}).values():
-        model = scenario.get("fcff_dcf") if isinstance(scenario, dict) else None
-        if not isinstance(model, dict) or model.get("publication_state") not in PUBLICATION_STATES:
+        # Scenarios are keyed by model name (fcff_dcf, residual_income, ddm, ...);
+        # validate whichever model each scenario carries.
+        scenario_models = list(scenario.values()) if isinstance(scenario, dict) else []
+        if not scenario_models:
             invalid_state = True
+        for model in scenario_models:
+            if not isinstance(model, dict) or model.get("publication_state") not in PUBLICATION_STATES:
+                invalid_state = True
     if invalid_state:
         review["publication_state"] = "withheld"
         review.setdefault("errors", []).append(
@@ -184,9 +189,10 @@ def sanitize_public_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
         model["intrinsic_value_per_share"] = None
         model["publication_state"] = "withheld"
     for scenario in scenarios.values():
-        scenario_model = scenario["fcff_dcf"]
-        scenario_model["intrinsic_value_per_share"] = None
-        scenario_model["publication_state"] = "withheld"
+        for scenario_model in (scenario.values() if isinstance(scenario, dict) else []):
+            if isinstance(scenario_model, dict):
+                scenario_model["intrinsic_value_per_share"] = None
+                scenario_model["publication_state"] = "withheld"
     public["scenario_range"] = {
         "low": None,
         "base": None,

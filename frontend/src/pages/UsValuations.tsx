@@ -8,8 +8,14 @@ import { cn } from '@/lib/utils'
 // The precomputed, reviewed filing-only set served by the backend. There is no
 // list endpoint yet, so the picker is the known published universe.
 const US_TICKERS = [
-  'AAPL', 'MSFT', 'ANET', 'ADSK', 'CRM', 'DELL',
-  'FTNT', 'NTAP', 'PANW', 'STX', 'WDC', 'NOW',
+  // FCFF (tech / hardware / software)
+  'AAPL', 'MSFT', 'ANET', 'ADSK', 'CRM', 'DELL', 'FTNT', 'NTAP', 'PANW', 'STX', 'WDC', 'NOW',
+  // Banks (residual income)
+  'JPM', 'BAC', 'WFC', 'USB',
+  // Utilities (DDM)
+  'SO', 'AEP', 'DUK', 'XEL', 'ED',
+  // Large-cap operating cos (equity-level fallback)
+  'WMT', 'UNP', 'HD', 'MCD', 'CAT',
 ]
 
 const usd = (value: number | null | undefined, digits = 2) =>
