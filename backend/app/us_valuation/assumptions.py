@@ -397,7 +397,6 @@ def derive_forecast_assumptions(
     forecast_years = int(policy["forecast_years"])
     growth_persistence = float(policy["growth_persistence"])
     margin_persistence = float(policy["margin_persistence"])
-    terminal_roic_premium = float(policy["terminal_roic_premium"])
     target_opex_ratio = None
     evidence_status = "standardized_consolidated_facts"
     evidence_sources: list[dict[str, Any]] = []
@@ -545,9 +544,6 @@ def derive_forecast_assumptions(
         forecast_years = int(issuer_evidence["forecast_years"])
         growth_persistence = float(issuer_evidence["growth_persistence"])
         margin_persistence = float(issuer_evidence["margin_persistence"])
-        terminal_roic_premium = float(
-            issuer_evidence["terminal_roic_premium"]
-        )
         evidence_status = issuer_evidence["evidence_status"]
         evidence_sources = list(issuer_evidence["sources"])
         forecast_policy_version = issuer_evidence[
@@ -696,9 +692,6 @@ def derive_forecast_assumptions(
         forecast_years = segment_forecast_years
         growth_persistence = segment_growth_persistence
         margin_persistence = float(issuer_evidence["margin_persistence"])
-        terminal_roic_premium = float(
-            issuer_evidence["terminal_roic_premium"]
-        )
         evidence_status = issuer_evidence["evidence_status"]
         evidence_sources = list(issuer_evidence["sources"])
         forecast_policy_version = issuer_evidence[
@@ -725,13 +718,13 @@ def derive_forecast_assumptions(
         "growth_persistence": growth_persistence,
         "margin_persistence": margin_persistence,
         "normalized_tax_rate": float(financials["normalized"]["tax_rate"]),
-        "initial_marginal_roic": max(
+        "initial_marginal_roic": (
             target_margin
             * (1 - float(financials["normalized"]["tax_rate"]))
-            * float(policy["sales_to_capital"]),
-            wacc + 0.03,
+            * float(policy["sales_to_capital"])
         ),
-        "terminal_marginal_roic": wacc + terminal_roic_premium,
+        "terminal_marginal_roic": wacc,
+        "terminal_roic_basis": "competitive_fade_to_wacc",
         "forecast_evidence_status": evidence_status,
         "forecast_evidence_sources": evidence_sources,
         "forecast_evidence_field_provenance": (

@@ -22,6 +22,13 @@ def _validate_inputs(
         )
     if terminal_growth > 0.025:
         errors.append("Terminal growth above 2.5% requires manual approval.")
+    if (
+        float(assumptions["initial_revenue_growth"]) > 0
+        and float(assumptions["initial_marginal_roic"]) <= 0
+    ):
+        errors.append(
+            "Positive forecast growth requires positive initial marginal ROIC."
+        )
     if assumptions["terminal_marginal_roic"] <= terminal_growth:
         errors.append("Terminal marginal ROIC must exceed terminal growth.")
     if financials["balance_sheet"]["fully_diluted_shares_proxy"] <= 0:
@@ -171,7 +178,6 @@ def fcff_dcf(
         reinvestment_rate = (
             max(year_growth, 0.0) / marginal_roic if marginal_roic > 0 else 1.0
         )
-        reinvestment_rate = min(reinvestment_rate, 0.95)
         reinvestment = nopat * reinvestment_rate
         fcff = nopat - reinvestment
         present_value = fcff / (1 + wacc) ** year
@@ -281,6 +287,7 @@ def fcff_dcf(
             "shares_proxy": shares,
             "wacc": wacc,
             "terminal_growth": terminal_growth,
+            "terminal_marginal_roic": terminal_roic,
         },
     }
 
@@ -390,13 +397,16 @@ def scenario_set(
         )
         scenario_assumptions["terminal_growth"] += deltas["terminal_growth_delta"]
         scenario_rate["wacc"] += deltas["wacc_delta"]
-        scenario_assumptions["terminal_marginal_roic"] = (
-            scenario_rate["wacc"]
-            + (
-                assumptions["terminal_marginal_roic"]
-                - discount_rate["wacc"]
+        if scenario_assumptions.get("terminal_roic_basis") == "competitive_fade_to_wacc":
+            scenario_assumptions["terminal_marginal_roic"] = scenario_rate["wacc"]
+        else:
+            scenario_assumptions["terminal_marginal_roic"] = (
+                scenario_rate["wacc"]
+                + (
+                    assumptions["terminal_marginal_roic"]
+                    - discount_rate["wacc"]
+                )
             )
-        )
         results[name] = {
             "assumption_changes": deltas,
             "fcff_dcf": fcff_dcf(
@@ -442,6 +452,12 @@ def one_way_sensitivities(
             )
         else:
             scenario_assumptions[field] += delta
+        if (
+            field == "wacc"
+            and scenario_assumptions.get("terminal_roic_basis")
+            == "competitive_fade_to_wacc"
+        ):
+            scenario_assumptions["terminal_marginal_roic"] = scenario_rate["wacc"]
         result = fcff_dcf(
             assumptions=scenario_assumptions,
             discount_rate=scenario_rate,
@@ -455,6 +471,9 @@ def one_way_sensitivities(
                     "intrinsic_value_per_share"
                 ),
                 "publication_state": result["publication_state"],
+                "terminal_marginal_roic": result.get("detail", {}).get(
+                    "terminal_marginal_roic"
+                ),
             }
         )
     return rows

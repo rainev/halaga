@@ -1229,7 +1229,7 @@ def test_terminal_state_is_continuous(result: dict):
 
 def test_apple_golden_values_and_scenario_order(result: dict):
     assert result["models"]["fcff_dcf"]["intrinsic_value_per_share"] == pytest.approx(
-        137.8839487,
+        130.5140765,
         abs=0.001,
     )
     assert result["models"]["epv"]["intrinsic_value_per_share"] == pytest.approx(
