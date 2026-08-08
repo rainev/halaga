@@ -172,10 +172,17 @@ export default function UsValuations() {
             )}
           </div>
 
-          {/* Models */}
+          {/* Models — render whichever the artifact carries (fcff_dcf/epv,
+              residual_income, ddm, ffo) */}
           <div className="grid gap-4 md:grid-cols-2">
-            <ModelCard label="FCFF DCF" primary result={data.models.fcff_dcf} />
-            <ModelCard label="Earnings Power Value" result={data.models.epv} />
+            {Object.entries(data.models ?? {}).map(([key, result]) => (
+              <ModelCard
+                key={key}
+                label={humanize(key)}
+                primary={key === data.model_policy?.primary}
+                result={result}
+              />
+            ))}
           </div>
 
           {/* Governed assumptions */}
@@ -185,12 +192,21 @@ export default function UsValuations() {
                 Governed assumptions
               </p>
               <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-                <Stat label="Policy WACC" value={percent(pa.policy_wacc)} />
-                <Stat label="Risk-free" value={percent(pa.risk_free_rate)} />
-                <Stat label="Equity risk prem." value={percent(pa.equity_risk_premium)} />
-                <Stat label="Terminal growth" value={percent(pa.terminal_growth)} />
-                <Stat label="Forecast years" value={String(pa.forecast_years)} />
-                <Stat label="Forecast mode" value={humanize(pa.forecast_mode)} />
+                {Object.entries(pa)
+                  .filter(([, v]) => typeof v === 'number' || typeof v === 'string')
+                  .map(([k, v]) => (
+                    <Stat
+                      key={k}
+                      label={humanize(k)}
+                      value={
+                        typeof v === 'number'
+                          ? Math.abs(v) < 1
+                            ? percent(v)
+                            : String(Math.round(v * 100) / 100)
+                          : humanize(String(v))
+                      }
+                    />
+                  ))}
               </div>
               {segments.length > 0 && (
                 <div className="mt-6 border-t border-[var(--app-border)] pt-5">
@@ -235,9 +251,11 @@ export default function UsValuations() {
               </a>
             </div>
             <p className="mt-4 text-[11px] leading-relaxed text-[var(--app-muted)]">
-              {data.data_boundary ??
-                'Public artifact: derived outputs and governed assumptions only — no reported statement amounts, prices, or recommendations.'}
-              {' '}Valuation date {data.valuation_date}. Educational estimate, not investment advice.
+              Public artifact contains{' '}
+              {data.data_boundary?.public_payload_contains ??
+                'derived outputs and governed assumptions only'}
+              {' '}— no reported statement amounts, no stock prices, no recommendations. Valuation date{' '}
+              {data.valuation_date}. Educational estimate, not investment advice.
             </p>
           </div>
         </div>

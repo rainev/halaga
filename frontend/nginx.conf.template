@@ -1,0 +1,28 @@
+# nginx serves the SPA and reverse-proxies /api to the backend, so the browser
+# only ever talks to ONE origin (the frontend). That makes the session cookie
+# first-party — fixing the cross-site third-party-cookie blocking that broke
+# auth when the frontend and backend were on separate run.app subdomains.
+#
+# ${PORT} and ${BACKEND_ORIGIN} are filled by the nginx image's envsubst at
+# container start (from env vars); nginx's own $variables are left untouched.
+server {
+    listen       ${PORT};
+    server_name  _;
+    root         /usr/share/nginx/html;
+    index        index.html;
+
+    # Reverse-proxy the API to the backend Cloud Run service. proxy_pass has no
+    # trailing path, so the full /api/... URI is forwarded unchanged.
+    location /api/ {
+        proxy_pass            ${BACKEND_ORIGIN};
+        proxy_http_version    1.1;
+        proxy_ssl_server_name on;
+        proxy_set_header      X-Forwarded-Proto $scheme;
+        proxy_set_header      X-Forwarded-For   $proxy_add_x_forwarded_for;
+    }
+
+    # SPA client-side routing — every non-file route serves index.html.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
