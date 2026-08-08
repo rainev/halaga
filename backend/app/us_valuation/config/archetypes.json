@@ -133,6 +133,27 @@
       "sector": "Communication Services",
       "archetype": "telecom",
       "confidence": 0.55
+    },
+    {
+      "start": 6300,
+      "end": 6411,
+      "sector": "Financials",
+      "archetype": "us_insurance",
+      "confidence": 0.6
+    },
+    {
+      "start": 6200,
+      "end": 6299,
+      "sector": "Financials",
+      "archetype": "us_securities",
+      "confidence": 0.6
+    },
+    {
+      "start": 6100,
+      "end": 6199,
+      "sector": "Financials",
+      "archetype": "us_credit",
+      "confidence": 0.55
     }
   ],
   "issuer_overrides": {
@@ -2985,6 +3006,48 @@
       "terminal_roic_premium": 0.02,
       "normal_company_overlay": 0.0,
       "model_policy_reason": "CANDIDATE (review_required) \u2014 telecom (VZ,T,CMCSA,TMUS). Calibrated 5 comps; mature low growth, very capital-heavy (huge capex compresses FCFF). Dividend-heavy names may suit DDM better \u2014 revisit."
+    },
+    "us_insurance": {
+      "primary_model": "residual_income",
+      "supporting_models": [
+        "justified_pb"
+      ],
+      "forecast_years": 5,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 0.9,
+      "terminal_roe": 0.1,
+      "terminal_growth": 0.02,
+      "default_payout_ratio": 0.3,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 insurance carriers/agents valued at equity level via residual income (book + excess return); FCFF does not apply. Refine with embedded-value/P&C-vs-life split."
+    },
+    "us_securities": {
+      "primary_model": "residual_income",
+      "supporting_models": [
+        "justified_pb"
+      ],
+      "forecast_years": 5,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 1.2,
+      "terminal_roe": 0.12,
+      "terminal_growth": 0.02,
+      "default_payout_ratio": 0.3,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 securities/broker-dealers/exchanges via residual income; higher beta (market-sensitive)."
+    },
+    "us_credit": {
+      "primary_model": "residual_income",
+      "supporting_models": [
+        "justified_pb"
+      ],
+      "forecast_years": 5,
+      "risk_free_rate": 0.0468,
+      "equity_risk_premium": 0.045,
+      "policy_beta": 1.1,
+      "terminal_roe": 0.11,
+      "terminal_growth": 0.02,
+      "default_payout_ratio": 0.3,
+      "model_policy_reason": "CANDIDATE (review_required) \u2014 nondepository credit/consumer finance via residual income."
     }
   }
 }

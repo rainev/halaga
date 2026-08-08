@@ -1,0 +1,117 @@
+{
+  "schema_version": "US-VALUATION-RESULT-1.0",
+  "valuation_date": "2026-08-01",
+  "market": "US",
+  "currency": "USD",
+  "issuer": {
+    "cik": "0001374310",
+    "ticker": "CBOE",
+    "issuer_name": "Cboe Global Markets, Inc.",
+    "filing_regime": "10-K_10-Q",
+    "accounting_standard": "US-GAAP",
+    "sec_sic_code": "6200",
+    "sec_sic_label": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+    "finsight_sector": "Financials",
+    "primary_archetype": "us_securities",
+    "secondary_archetypes": [],
+    "classification_confidence": 0.6,
+    "mapping_version": "US-ARCHETYPE-1.0",
+    "override_applied": false,
+    "classification_reason": "Mapped from SEC SIC; issuer-level economic review is still required.",
+    "source_accessions": [
+      "0001628280-26-051239",
+      "0001628280-26-029112",
+      "0001628280-26-010013",
+      "0001628280-25-047680",
+      "0001628280-25-037149",
+      "0001628280-25-021680",
+      "0001628280-25-006984",
+      "0001628280-24-044657"
+    ]
+  },
+  "source_financial_statement": {
+    "form": "10-K / 10-Q",
+    "period_end": "2026-06-30",
+    "filed_date": null,
+    "accession": "0001628280-26-051239",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001374310",
+    "note": "Equity-level model (residual income / DDM); no enterprise-to-equity bridge."
+  },
+  "model_policy": {
+    "primary": "residual_income",
+    "supporting": [
+      "justified_pb"
+    ],
+    "blend_models": false,
+    "reason": "CANDIDATE (review_required) \u2014 securities/broker-dealers/exchanges via residual income; higher beta (market-sensitive)."
+  },
+  "methodology": {
+    "forecast_policy": "docs/methodology/united-states/forecast-discount-validation-policy.md",
+    "sector_framework": "docs/methodology/united-states/equity-valuation-engine-framework.md",
+    "source_policy": "SEC Companyfacts and submissions; no exchange prices"
+  },
+  "public_assumptions": {
+    "cost_of_equity": 0.1008,
+    "risk_free_rate": 0.0468,
+    "equity_risk_premium": 0.045,
+    "policy_beta": 1.2,
+    "book_value_per_share": 53.807167975949234,
+    "current_roe": 0.19552774716484767,
+    "current_payout_ratio": 0.25845454545454544,
+    "terminal_roe": 0.12,
+    "terminal_growth": 0.02
+  },
+  "models": {
+    "residual_income": {
+      "model": "residual_income",
+      "output_type": "intrinsic_value_per_share",
+      "currency": "USD",
+      "intrinsic_value_per_share": 76.46349732101736,
+      "publication_state": "review_required",
+      "errors": [],
+      "warnings": [
+        "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+      ]
+    }
+  },
+  "scenarios": {
+    "bear": {
+      "residual_income": {
+        "intrinsic_value_per_share": 66.89748730087294,
+        "publication_state": "review_required"
+      }
+    },
+    "base": {
+      "residual_income": {
+        "intrinsic_value_per_share": 76.46349732101736,
+        "publication_state": "review_required"
+      }
+    },
+    "bull": {
+      "residual_income": {
+        "intrinsic_value_per_share": 94.35861242727117,
+        "publication_state": "review_required"
+      }
+    }
+  },
+  "scenario_range": {
+    "low": 66.89748730087294,
+    "base": 76.46349732101736,
+    "high": 94.35861242727117,
+    "label": "assumption range, not a statistical confidence interval"
+  },
+  "review": {
+    "publication_state": "review_required",
+    "confidence_grade": "medium",
+    "errors": [],
+    "warnings": [
+      "Single-period book/ROE snapshot; average-equity and preferred-stock refinements pending."
+    ],
+    "prohibited_output_check": {
+      "current_price": false,
+      "upside_downside": false,
+      "buy_hold_sell": false,
+      "trading_multiples": false
+    }
+  }
+}
