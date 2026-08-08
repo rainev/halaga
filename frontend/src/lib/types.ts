@@ -250,7 +250,12 @@ export interface UsValuation {
   scenario_range: { low: number; base: number; high: number; label?: string }
   review?: { publication_state: UsPublicationState; errors?: string[]; warnings?: string[] }
   methodology?: string
-  data_boundary?: string
+  // Machine-readable public-safety attestation baked into every artifact.
+  data_boundary?: {
+    raw_financial_statement_values_included: boolean
+    stock_prices_used: boolean
+    public_payload_contains: string
+  }
 }
 
 export interface UsValuationSummary {

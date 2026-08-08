@@ -251,9 +251,11 @@ export default function UsValuations() {
               </a>
             </div>
             <p className="mt-4 text-[11px] leading-relaxed text-[var(--app-muted)]">
-              {data.data_boundary ??
-                'Public artifact: derived outputs and governed assumptions only — no reported statement amounts, prices, or recommendations.'}
-              {' '}Valuation date {data.valuation_date}. Educational estimate, not investment advice.
+              Public artifact contains{' '}
+              {data.data_boundary?.public_payload_contains ??
+                'derived outputs and governed assumptions only'}
+              {' '}— no reported statement amounts, no stock prices, no recommendations. Valuation date{' '}
+              {data.valuation_date}. Educational estimate, not investment advice.
             </p>
           </div>
         </div>
