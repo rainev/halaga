@@ -51,6 +51,10 @@ add_security_headers(app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[env.CLIENT_URL],
+    # Cloud Run exposes each service on two URL forms (project-number and hash);
+    # accept either for the finsight staging/prod frontend so the app isn't
+    # blocked depending on which URL the user opens.
+    allow_origin_regex=r"https://finsight-frontend-(staging|prod)-[a-z0-9.-]+\.run\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
