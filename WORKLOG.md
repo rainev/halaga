@@ -1,4 +1,4 @@
-# FinSight (Halaga) — Worklog
+# FinSight — Worklog
 
 **Project:** PSE (Philippine Stock Exchange) valuation workbench
 **Stack:** Vite + React + TypeScript · **FastAPI** (Python, raw SQL via psycopg, no ORM) · Postgres 16 + MinIO · docker-compose

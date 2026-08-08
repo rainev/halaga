@@ -81,7 +81,7 @@ gate; 206 served; banks, utilities, insurance, securities/credit, REITs; engine-
 3. **Domain sign-off on the policies.** Correct the growth/margin/ROE/P·FFO/P/FFO assumptions per archetype where your
    judgment differs; flag cohort splits (retail, internet, transport).
 4. **Priorities for the remaining models** — is commodity/energy (M4) or FFO-refinement worth building next?
-5. **Retire the dev repo?** All work now lives in **this repo (`halaga`/finsight)**. The pipeline dev repo
+5. **Retire the dev repo?** All work now lives in **this repo (`finsight`)**. The pipeline dev repo
    (`finsight-pipeline`) still holds the SEC caches and this session's memory/notes — decide whether to reconcile +
    retire it (roadmap D4).
 
