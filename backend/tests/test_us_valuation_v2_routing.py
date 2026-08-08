@@ -47,6 +47,47 @@ def test_model_eligibility_matches_archetype_model_pair(
     assert result["reason"]
 
 
+@pytest.mark.parametrize(
+    "classification",
+    [
+        classification_for("unknown_archetype", "fcff_dcf"),
+        {"valuation_policy": {"primary_model": "fcff_dcf"}},
+        classification_for(["enterprise_software_cloud"], "fcff_dcf"),
+    ],
+)
+def test_model_eligibility_rejects_unknown_missing_and_malformed_archetypes(
+    classification: dict,
+) -> None:
+    result = model_eligibility(classification)
+
+    assert result["eligible"] is False
+    assert result["reason"]
+
+
+def test_ineligible_model_pair_returns_withheld_artifact(monkeypatch) -> None:
+    submissions = load_fixture("msft-submissions.json")
+    classification = {
+        **valuation_pipeline.classify_issuer(submissions),
+        "valuation_policy": {
+            **valuation_pipeline.classify_issuer(submissions)["valuation_policy"],
+            "primary_model": "residual_income",
+        },
+    }
+    monkeypatch.setattr(valuation_pipeline, "classify_issuer", lambda _: classification)
+
+    result = valuation_pipeline.build_us_valuation(
+        submissions=submissions,
+        companyfacts={"cik": submissions["cik"]},
+        valuation_date="2026-08-01",
+    )
+
+    assert result["model_policy"]["primary"] == "residual_income"
+    assert result["models"]["residual_income"]["intrinsic_value_per_share"] is None
+    assert result["models"]["residual_income"]["publication_state"] == "withheld"
+    assert result["review"]["publication_state"] == "withheld"
+    assert "eligibility" in " ".join(result["review"]["errors"]).lower()
+
+
 def test_incomplete_fcff_bridge_is_withheld_without_model_fallback(monkeypatch) -> None:
     submissions = load_fixture("msft-submissions.json")
     companyfacts = {

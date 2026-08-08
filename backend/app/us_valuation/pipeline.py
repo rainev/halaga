@@ -14,7 +14,6 @@ from .assumptions import (
     derive_forecast_assumptions,
     load_issuer_forecast_evidence,
 )
-from .automated_review import repair_provenance_from_submissions
 from .classification import classify_issuer
 from .eligibility import model_eligibility
 from .equity_models import build_equity_level_result
@@ -340,6 +339,81 @@ def _withheld_segment_evidence_result(
     }
 
 
+def _withheld_eligibility_result(
+    *,
+    classification: dict[str, Any],
+    eligibility: dict[str, Any],
+    valuation_date: str | None,
+    source_manifest: dict[str, Any] | None,
+) -> dict[str, Any]:
+    model_name = eligibility["model"] or "unknown"
+    message = f"Model eligibility rejected: {eligibility['reason']}"
+    policy = classification.get("valuation_policy")
+    policy = policy if isinstance(policy, dict) else {}
+    issuer_keys = (
+        "cik",
+        "ticker",
+        "issuer_name",
+        "filing_regime",
+        "accounting_standard",
+        "sec_sic_code",
+        "sec_sic_label",
+        "finsight_sector",
+        "primary_archetype",
+        "secondary_archetypes",
+        "classification_confidence",
+        "mapping_version",
+        "override_applied",
+        "classification_reason",
+        "source_accessions",
+    )
+    withheld_model = {
+        "model": model_name,
+        "output_type": "intrinsic_value_per_share",
+        "currency": "USD",
+        "intrinsic_value_per_share": None,
+        "publication_state": "withheld",
+        "errors": [message],
+        "warnings": [],
+    }
+    return {
+        "schema_version": "US-VALUATION-RESULT-1.0",
+        "valuation_date": valuation_date or date.today().isoformat(),
+        "market": "US",
+        "currency": "USD",
+        "issuer": {key: classification.get(key) for key in issuer_keys},
+        "financial_period_end": None,
+        "source_manifest": source_manifest or {"status": "not_supplied"},
+        "model_policy": {
+            "primary": model_name,
+            "supporting": policy.get("supporting_models", []),
+            "blend_models": False,
+            "reason": message,
+        },
+        "models": {model_name: withheld_model},
+        "scenarios": {},
+        "scenario_range": {
+            "low": None,
+            "base": None,
+            "high": None,
+            "label": "assumption range, not a statistical confidence interval",
+        },
+        "review": {
+            "publication_state": "withheld",
+            "confidence_grade": "insufficient",
+            "errors": [message],
+            "warnings": [],
+            "price_dependent_inputs_used": False,
+            "prohibited_output_check": {
+                "current_price": False,
+                "upside_downside": False,
+                "buy_hold_sell": False,
+                "trading_multiples": False,
+            },
+        },
+    }
+
+
 def build_us_valuation(
     *,
     submissions: dict[str, Any],
@@ -364,17 +438,21 @@ def build_us_valuation(
         raise ValueError("SEC submissions and Companyfacts CIK values do not match")
     eligibility = model_eligibility(classification)
     if not eligibility["eligible"]:
-        raise ValueError(f"Model eligibility rejected: {eligibility['reason']}")
+        return _withheld_eligibility_result(
+            classification=classification,
+            eligibility=eligibility,
+            valuation_date=valuation_date,
+            source_manifest=source_manifest,
+        )
     # Dispatch archetypes FCFF cannot value (banks -> residual income, utilities
     # -> DDM) to the equity-level path before the enterprise FCFF normalization.
     if eligibility["model"] in ("residual_income", "ddm", "ffo"):
-        equity_result = build_equity_level_result(
+        return build_equity_level_result(
             classification=classification,
             companyfacts=companyfacts,
             valuation_date=valuation_date,
             source_manifest=source_manifest,
         )
-        return repair_provenance_from_submissions(equity_result, submissions)
     recent_filings = submissions.get("filings", {}).get("recent", {})
     filing_records = [
         {
